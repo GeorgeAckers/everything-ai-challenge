@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 3 — Introduction to Claude | Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0a0a0a;--white:#f5f4f0;--blue:#1a56db;--blue-light:#dbeafe;--blue-dark:#1e3a8a;--blue-bright:#93c5fd;--surface:#fff;--grey-50:#f8f7f4;--grey-100:#f0eeea;--grey-200:#dddbd5;--grey-300:#c5c3bc;--grey-400:#9e9c97;--grey-600:#5a5855;--ok:#16a34a;--ok-light:#f0fdf4;--ok-dark:#166534;--red:#dc2626;--red-light:#fef2f2;--amber:#d97706;--amber-light:#fffbeb}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:0 0 80px;min-height:100vh}
+.page{max-width:680px;margin:0 auto;padding:0 20px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;margin-bottom:32px;border-bottom:1px solid var(--grey-200)}
+.brand{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.day-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--blue);color:#fff;padding:6px 14px;border-radius:100px}
+.progress-row{display:flex;align-items:center;gap:6px;margin-bottom:32px}
+.prog-dot{width:48px;height:5px;border-radius:3px;background:var(--grey-200)}
+.prog-dot.active{background:var(--blue)}
+.prog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400);margin-left:4px}
+.hero{margin-bottom:28px}
+.day-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.08;letter-spacing:-.02em;color:var(--black);margin-bottom:12px}
+.hero-sub{font-size:15px;color:var(--grey-600);line-height:1.65;font-weight:300}
+.task-card{background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:32px;display:flex;gap:16px;align-items:flex-start}
+.task-icon{width:36px;height:36px;border-radius:8px;background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.task-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:5px}
+.task-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300}
+.task-text strong{color:#fff;font-weight:500}
+
+/* PART DIVIDER */
+.part-divider{display:flex;align-items:center;gap:14px;margin:36px 0 28px}
+.part-divider-line{flex:1;height:1px;background:var(--grey-200)}
+.part-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--black);white-space:nowrap;padding:6px 14px;border:1.5px solid var(--grey-200);border-radius:100px}
+
+/* PROGRESS TRACKER */
+.progress-tracker{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:28px}
+.pt-item{border:1.5px solid var(--grey-200);border-radius:10px;padding:12px 8px;text-align:center;transition:all .2s}
+.pt-item.done{border-color:var(--ok);background:var(--ok-light)}
+.pt-num{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--grey-300);margin-bottom:3px;transition:color .2s}
+.pt-item.done .pt-num{color:var(--ok)}
+.pt-label{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;color:var(--grey-400);line-height:1.3;transition:color .2s}
+.pt-item.done .pt-label{color:var(--ok)}
+.pt-tick{display:none;font-size:13px;color:var(--ok)}
+.pt-item.done .pt-tick{display:block}
+.pt-item.done .pt-num{display:none}
+
+/* SEC LABEL */
+.sec-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--black);margin-bottom:5px}
+.sec-hint{font-size:13px;color:var(--grey-400);margin-bottom:18px;font-weight:300;line-height:1.5}
+
+/* STEP CARDS (Part 1) */
+.step-card{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:12px;transition:border-color .2s}
+.step-card.done{border-color:var(--ok)}
+.step-head{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--grey-50);border-bottom:1px solid var(--grey-200);transition:background .15s}
+.step-card.done .step-head{background:var(--ok-light);border-bottom-color:rgba(22,163,74,.2)}
+.step-num-badge{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-family:'DM Mono',monospace;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.step-card.done .step-num-badge{background:var(--ok)}
+.step-head-text{flex:1}
+.step-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--black)}
+.step-card.done .step-title{color:var(--ok)}
+.step-subtitle{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+.check-btn{width:28px;height:28px;border-radius:6px;border:2px solid var(--grey-200);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:14px;flex-shrink:0}
+.check-btn:hover{border-color:var(--ok)}
+.check-btn.checked{background:var(--ok);border-color:var(--ok);color:#fff}
+.step-body{padding:16px 18px}
+.step-desc{font-size:13px;color:var(--grey-600);line-height:1.65;font-weight:300;margin-bottom:14px}
+.step-how{background:var(--grey-50);border-radius:10px;padding:13px 15px;margin-bottom:12px;border-left:3px solid var(--blue)}
+.step-how-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.step-how-text{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.6}
+.step-how-text ol{padding-left:16px;margin-top:5px;display:flex;flex-direction:column;gap:4px}
+.step-how-text ol li{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.5}
+.step-notes-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400);margin-bottom:6px}
+.step-notes{width:100%;border:1.5px solid var(--grey-200);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--black);background:transparent;outline:none;resize:none;line-height:1.6;min-height:60px;transition:border-color .15s}
+.step-notes:focus{border-color:var(--blue)}
+.step-notes::placeholder{color:var(--grey-300)}
+.step-notes.done-input{border-color:rgba(22,163,74,.3);background:var(--ok-light)}
+
+/* MODEL TABLE */
+.model-table{border:1.5px solid var(--grey-200);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.model-row{display:grid;grid-template-columns:90px 1fr;border-bottom:1px solid var(--grey-200)}
+.model-row:last-child{border-bottom:none}
+.model-row.hdr{background:var(--grey-100)}
+.model-cell{padding:9px 13px;font-size:12px;font-weight:300;color:var(--grey-600);line-height:1.4}
+.model-cell.hdr-cell{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--black)}
+.model-name{font-family:'DM Mono',monospace;font-weight:500;color:var(--black);font-size:12px}
+.model-best{font-size:10px;color:var(--blue);font-weight:500;margin-top:2px}
+
+/* TRANSITION CARD */
+.transition-card{background:var(--black);border-radius:14px;padding:20px 22px;margin-bottom:28px;display:flex;gap:14px;align-items:flex-start}
+.transition-icon{width:36px;height:36px;border-radius:8px;background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.transition-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:5px}
+.transition-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300}
+.transition-text strong{color:#fff;font-weight:500}
+
+/* CRITERIA GRID */
+.criteria-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.criteria-card{border:1.5px solid var(--grey-200);border-radius:12px;padding:14px;text-align:center}
+.criteria-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--blue);display:block;margin-bottom:5px}
+.criteria-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--black);margin-bottom:4px}
+.criteria-desc{font-size:11px;color:var(--grey-400);font-weight:300;line-height:1.4}
+
+/* TASK INPUT */
+input[type=text]{width:100%;border:1.5px solid var(--grey-200);border-radius:9px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s;margin-bottom:20px}
+input[type=text]:focus{border-color:var(--blue)}
+input[type=text]::placeholder{color:var(--grey-300)}
+
+/* FILTER CARDS */
+.filter-q-card{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:12px;transition:border-color .2s}
+.filter-q-card.pass-state{border-color:var(--ok)}
+.filter-q-card.fail-state{border-color:var(--red)}
+.fq-header{display:flex;align-items:flex-start;gap:12px;padding:14px 17px;border-bottom:1px solid var(--grey-200);background:var(--grey-50)}
+.fq-num{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.fq-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--black);line-height:1.3}
+.fq-body{padding:14px 17px}
+.fq-hint{font-size:13px;color:var(--grey-400);margin-bottom:12px;font-weight:300;line-height:1.5}
+.yn-row{display:flex;gap:10px;margin-bottom:10px}
+.yn-btn{flex:1;padding:10px;border:1.5px solid var(--grey-200);border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;background:#fff;color:var(--grey-600)}
+.yn-btn:hover{border-color:var(--blue)}
+.yn-btn.pass{border-color:var(--ok);background:var(--ok-light);color:var(--ok)}
+.yn-btn.fail{border-color:var(--red);background:var(--red-light);color:var(--red)}
+textarea.fq-notes{width:100%;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--black);background:var(--grey-50);border:none;border-top:1px solid var(--grey-200);outline:none;resize:none;line-height:1.6}
+textarea.fq-notes::placeholder{color:var(--grey-300)}
+
+/* RESULT BLOCK */
+.result-block{border-radius:12px;padding:20px;margin:20px 0;border:2px solid var(--grey-200);text-align:center;transition:all .3s}
+.result-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:8px;display:block}
+.result-status{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.result-desc{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.55}
+
+/* CLAUDE TIP */
+.claude-tip{background:var(--blue-light);border:1.5px solid #bfdbfe;border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.claude-tip-hdr{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--blue-dark);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.claude-tip-text{font-size:13px;color:var(--blue-dark);font-weight:300;line-height:1.6;opacity:.9}
+.claude-tip-text code{font-family:'DM Mono',monospace;font-size:12px;background:rgba(26,86,219,.12);padding:2px 6px;border-radius:4px}
+
+/* BONUS */
+.bonus-block{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.bonus-hdr{background:var(--grey-100);padding:9px 17px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-600);border-bottom:1px solid var(--grey-200)}
+.bonus-body{padding:16px 17px}
+.bonus-hint{font-size:13px;color:var(--grey-600);margin-bottom:12px;font-weight:300;line-height:1.5}
+.bonus-eg{background:var(--grey-50);border-radius:8px;padding:11px 13px;margin-bottom:12px;border-left:3px solid var(--blue)}
+.bonus-eg-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--grey-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.bonus-eg-text{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.5}
+.bonus-textarea{width:100%;border:1.5px solid var(--grey-200);border-radius:8px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--black);background:transparent;outline:none;resize:none;line-height:1.6;min-height:80px}
+.bonus-textarea:focus{border-color:var(--blue)}
+.bonus-textarea::placeholder{color:var(--grey-300)}
+
+/* REFLECTION */
+.reflection-block{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:32px}
+.reflection-hdr{background:var(--grey-50);padding:10px 17px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--black);border-bottom:1px solid var(--grey-200)}
+.reflection-hint{font-size:13px;color:var(--grey-400);padding:11px 17px 0;font-weight:300;line-height:1.5}
+.reflection-textarea{width:100%;padding:11px 17px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:transparent;border:none;outline:none;resize:none;line-height:1.65}
+.reflection-textarea::placeholder{color:var(--grey-300)}
+
+/* EMAIL */
+.email-section{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:32px}
+.email-section-header{background:var(--grey-50);padding:17px 20px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;gap:14px}
+.email-section-icon{width:38px;height:38px;border-radius:9px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.email-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.email-section-sub{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+.email-section-body{padding:18px 20px}
+.email-desc{font-size:13px;color:var(--grey-600);line-height:1.6;font-weight:300;margin-bottom:16px}
+.email-row{display:flex;gap:10px}
+.email-input{flex:1;border:1.5px solid var(--grey-200);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s}
+.email-input:focus{border-color:var(--blue)}
+.email-input::placeholder{color:var(--grey-300)}
+.send-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 20px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.send-btn:hover{background:var(--blue-dark)}
+.send-btn:disabled{opacity:.6;cursor:not-allowed}
+.email-status{margin-top:12px;font-size:13px;line-height:1.5;display:none;padding:10px 14px;border-radius:8px}
+.email-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.email-status.success{display:block;background:var(--blue-light);color:var(--blue-dark);border:1px solid #bfdbfe}
+.email-status.loading{display:block;background:var(--grey-100);color:var(--grey-600);border:1px solid var(--grey-200)}
+
+/* REVEAL */
+.reveal-wrap{margin:0 0 32px}
+.reveal-locked{background:var(--black);border-radius:16px;padding:36px 24px;text-align:center;position:relative;overflow:hidden}
+.reveal-border{position:absolute;inset:0;border-radius:16px;border:1.5px solid transparent;background:linear-gradient(var(--black),var(--black)) padding-box,linear-gradient(135deg,#1a56db 0%,#93c5fd 50%,#1a56db 100%) border-box;background-size:300% 300%;animation:borderSpin 3s linear infinite}
+@keyframes borderSpin{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.reveal-inner{position:relative;z-index:1}
+.reveal-lock{width:52px;height:52px;border-radius:50%;background:rgba(147,197,253,.12);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.reveal-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:8px}
+.reveal-heading{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.reveal-sub{font-size:13px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;max-width:380px;margin:0 auto 22px}
+.reveal-btn-main{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.reveal-btn-main:hover{background:var(--blue-dark);transform:scale(1.02)}
+.reveal-open{display:none;border:2px solid var(--blue);border-radius:16px;overflow:hidden;animation:popIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.reveal-open-top{background:var(--black);padding:28px 24px;text-align:center}
+.done-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.2);border:1px solid rgba(147,197,253,.3);color:var(--blue-bright);font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border-radius:100px;margin-bottom:16px}
+.code-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px}
+.code-display{font-family:'DM Mono',monospace;font-size:clamp(20px,5vw,30px);font-weight:500;letter-spacing:.14em;color:#fff;background:rgba(26,86,219,.2);border:1.5px solid rgba(147,197,253,.25);padding:14px 22px;border-radius:10px;display:inline-block;margin-bottom:16px;animation:pulse 2.5s ease-in-out infinite alternate}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(26,86,219,0)}to{box-shadow:0 0 18px 3px rgba(26,86,219,.3)}}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.copy-btn:hover,.copy-btn.copied{border-color:var(--blue-bright);color:var(--blue-bright)}
+.reveal-open-bottom{background:var(--blue-light);padding:14px 22px;text-align:center}
+.reveal-instruction{font-size:13px;color:var(--blue-dark);font-weight:400;line-height:1.6}
+.reveal-instruction a{color:var(--blue-dark);font-weight:700;text-decoration:underline}
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center;margin-top:40px}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-next{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);font-weight:500}
+/* PROMPT COPY BOX */
+.prompt-copy-wrap{background:var(--grey-50);border:1.5px solid var(--grey-200);border-radius:10px;overflow:hidden;margin-top:12px}
+.prompt-copy-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 13px;border-bottom:1px solid var(--grey-200);background:var(--black)}
+.prompt-copy-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.prompt-copy-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.prompt-copy-btn:hover{background:var(--blue-dark)}
+.prompt-copy-btn.copied{background:var(--ok)}
+.prompt-text{font-family:'DM Mono',monospace;font-size:12px;color:var(--grey-600);line-height:1.65;padding:12px 13px;white-space:pre-wrap;word-break:break-word}
+.prompt-text .prompt-task{color:var(--blue);font-weight:500}
+.prompt-text .prompt-q{color:var(--black);font-weight:500}
+@media(max-width:480px){.progress-tracker{grid-template-columns:repeat(2,1fr)}.criteria-grid{grid-template-columns:1fr}}
+.copy-section{margin-bottom:32px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.copy-response-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 22px;background:var(--black);color:var(--white);border:1.5px solid var(--grey-200);border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.copy-response-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.copy-hint{font-size:12px;color:var(--grey-400);font-weight:300;text-align:center;line-height:1.5}
+.copy-status{font-size:13px;font-weight:400;text-align:center;min-height:20px;transition:all .2s}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+  <div class="top-bar"><span class="brand">Everything AI</span><span class="day-badge">Day 03 — Challenge</span></div>
+  <div class="progress-row">
+    <div class="prog-dot active"></div><div class="prog-dot active"></div><div class="prog-dot active"></div><div class="prog-dot"></div><div class="prog-dot"></div>
+    <span class="prog-label">3 of 5</span>
+  </div>
+
+  <div class="hero">
+    <span class="day-eyebrow">Day 03 — Introduction to Claude + Your First Real Opportunity</span>
+    <h1>Set up your tool.<br>Then put it to work.</h1>
+    <p class="hero-sub">Today has two parts. First — get Claude properly set up for your business in four steps. Then — immediately use it on something real. Pick one task from your business and run it through the opportunity filter. By the end, you'll have Claude working and a clear target for Day 4.</p>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l3.5 3.5L14 6"/><circle cx="9" cy="9" r="7"/></svg></div>
+    <div>
+      <div class="task-label">Today's task</div>
+      <div class="task-text"><strong>Two parts — both matter equally.</strong> Part 1: set Claude up in four steps so it knows who you are and is connected to your tools. Part 2: run one real business task through the AI opportunity filter using Claude as your analysis tool. The result tells you exactly where to focus in Day 4.</div>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- PART 1 — CLAUDE SETUP         -->
+  <!-- ============================== -->
+
+  <div class="part-divider">
+    <div class="part-divider-line"></div>
+    <div class="part-label">Part 1 — Set Claude Up</div>
+    <div class="part-divider-line"></div>
+  </div>
+
+  <div class="sec-label">Four setup steps</div>
+  <div class="sec-hint">Tick each one off as you complete it. The notes are optional but worth filling in — they'll be emailed to you at the end.</div>
+
+  <div class="progress-tracker">
+    <div class="pt-item" id="pt-1"><div class="pt-tick">✓</div><div class="pt-num">01</div><div class="pt-label">Memory Import</div></div>
+    <div class="pt-item" id="pt-2"><div class="pt-tick">✓</div><div class="pt-num">02</div><div class="pt-label">Model Selector</div></div>
+    <div class="pt-item" id="pt-3"><div class="pt-tick">✓</div><div class="pt-num">03</div><div class="pt-label">Gmail</div></div>
+    <div class="pt-item" id="pt-4"><div class="pt-tick">✓</div><div class="pt-num">04</div><div class="pt-label">Calendar</div></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-card" id="card-1">
+    <div class="step-head">
+      <div class="step-num-badge">01</div>
+      <div class="step-head-text">
+        <div class="step-title">Memory Import — bring your context into Claude</div>
+        <div class="step-subtitle">Transfer your business information so Claude knows who you are from day one</div>
+      </div>
+      <button class="check-btn" id="chk-1" onclick="tick(1)" title="Mark as done">✓</button>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">If you've been using ChatGPT, you've likely built up custom instructions — your business name, your tone, how you like responses formatted. You don't need to rebuild that from scratch. Paste it into Claude once and it carries that context into every conversation automatically.</div>
+      <div class="step-how">
+        <div class="step-how-label">How to do it</div>
+        <div class="step-how-text">
+          <ol>
+            <li>Go to <strong>claude.ai</strong> and sign in (free account is fine)</li>
+            <li>Click your profile icon → <strong>Settings</strong></li>
+            <li>Find <strong>Capabilities</strong> and click <strong>"Start Import"</strong> — copy the prompt provided and paste it into ChatGPT</li>
+            <li>ChatGPT will generate a summary of your custom instructions — copy that and paste it back into Claude</li>
+            <li>Save — Claude now knows who you are.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="step-notes-label">Your notes (optional)</div>
+      <textarea class="step-notes" id="notes-1" rows="2" placeholder="e.g. Added business name, tone preference, and the types of tasks I use AI for most often..."></textarea>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="card-2">
+    <div class="step-head">
+      <div class="step-num-badge">02</div>
+      <div class="step-head-text">
+        <div class="step-title">Model Selector — use the right Claude for the job</div>
+        <div class="step-subtitle">Three models, each built for different tasks — here's which one to use when</div>
+      </div>
+      <button class="check-btn" id="chk-2" onclick="tick(2)" title="Mark as done">✓</button>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">Claude isn't one tool — it's three. Using the wrong model is like hiring a specialist to answer emails or a junior to write your strategy. The model selector sits at the top of every new chat.</div>
+      <div class="model-table">
+        <div class="model-row hdr"><div class="model-cell hdr-cell">Model</div><div class="model-cell hdr-cell">What it does best</div></div>
+        <div class="model-row">
+          <div class="model-cell"><div class="model-name">Haiku</div><div class="model-best">Speed</div></div>
+          <div class="model-cell">Fast and light. Quick answers, simple drafts, short summaries. Use it when you just need something done quickly.</div>
+        </div>
+        <div class="model-row">
+          <div class="model-cell"><div class="model-name">Sonnet</div><div class="model-best">Most tasks</div></div>
+          <div class="model-cell">The everyday model. Writing, analysis, content, research. Smart, capable, fast. Start here for almost everything.</div>
+        </div>
+        <div class="model-row">
+          <div class="model-cell"><div class="model-name">Opus</div><div class="model-best">Complexity</div></div>
+          <div class="model-cell">The most powerful. Long documents, complex reasoning, detailed analysis. Slower — but the best output available.</div>
+        </div>
+      </div>
+      <div class="step-how">
+        <div class="step-how-label">How to do it</div>
+        <div class="step-how-text">
+          <ol>
+            <li>Open a new chat in Claude and click the model name at the top</li>
+            <li>Select <strong>Sonnet</strong> as your default for day-to-day work</li>
+            <li>Test it now: ask Claude to summarise what you do in one sentence</li>
+          </ol>
+        </div>
+      </div>
+      <div class="step-notes-label">Your notes (optional)</div>
+      <textarea class="step-notes" id="notes-2" rows="2" placeholder="e.g. Tested Sonnet — noticeably better than ChatGPT on longer writing. Will use Haiku for quick email replies..."></textarea>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="card-3">
+    <div class="step-head">
+      <div class="step-num-badge">03</div>
+      <div class="step-head-text">
+        <div class="step-title">Gmail Connector — Claude in your inbox</div>
+        <div class="step-subtitle">Find emails, summarise threads, and draft replies without leaving Claude</div>
+      </div>
+      <button class="check-btn" id="chk-3" onclick="tick(3)" title="Mark as done">✓</button>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">Once connected, you can ask Claude to find specific emails, summarise what's outstanding with a client, or draft a reply in your tone — all without opening Gmail. It uses OAuth — the same secure standard every major app uses with Google. Claude does not store your emails.</div>
+      <div class="step-how">
+        <div class="step-how-label">How to do it</div>
+        <div class="step-how-text">
+          <ol>
+            <li>In Claude, go to <strong>Settings</strong> then <strong>Connectors</strong></li>
+            <li>Click <strong>Customise</strong>, then <strong>"Add connector"</strong></li>
+            <li>Search for <strong>Gmail</strong> and select it</li>
+            <li>Sign in with Google and grant permissions</li>
+            <li>Test it: <em>"Summarise the last 5 unread emails in my inbox"</em></li>
+            <li>Then try: <em>"Draft a reply to the most recent email from [name] — brief and professional"</em></li>
+          </ol>
+        </div>
+      </div>
+      <div class="step-notes-label">Your notes (optional)</div>
+      <textarea class="step-notes" id="notes-3" rows="2" placeholder="e.g. Connected Gmail — it found all emails from my main supplier this month in seconds. Game-changer for Monday morning reviews..."></textarea>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="card-4">
+    <div class="step-head">
+      <div class="step-num-badge">04</div>
+      <div class="step-head-text">
+        <div class="step-title">Calendar Connector — manage your time with AI</div>
+        <div class="step-subtitle">Ask Claude what's in your week, find gaps, and handle scheduling</div>
+      </div>
+      <button class="check-btn" id="chk-4" onclick="tick(4)" title="Mark as done">✓</button>
+    </div>
+    <div class="step-body">
+      <div class="step-desc">The calendar connector turns Claude into a genuine time management tool — not just a chat assistant. It reads your actual schedule and gives you specific, useful answers based on what's really in your week.</div>
+      <div class="step-how">
+        <div class="step-how-label">How to do it</div>
+        <div class="step-how-text">
+          <ol>
+            <li>Back in <strong>Settings → Integrations</strong>, find <strong>Google Calendar</strong></li>
+            <li>Connect it the same way as Gmail — same OAuth, same security</li>
+            <li>Try: <em>"What does my week look like? Where are the gaps?"</em></li>
+            <li>Then: <em>"Am I free on Thursday afternoon?"</em></li>
+            <li>Then: <em>"I need a 45-minute call this week — what's my best slot?"</em></li>
+          </ol>
+        </div>
+      </div>
+      <div class="step-notes-label">Your notes (optional)</div>
+      <textarea class="step-notes" id="notes-4" rows="2" placeholder="e.g. Asked Claude to find a gap for a client call — spotted Thursday 2pm instantly. Saved 5 minutes of back and forth..."></textarea>
+    </div>
+  </div>
+
+  <!-- ============================== -->
+  <!-- PART 2 — OPPORTUNITY FILTER   -->
+  <!-- ============================== -->
+
+  <div class="part-divider">
+    <div class="part-divider-line"></div>
+    <div class="part-label">Part 2 — Your First Real Opportunity</div>
+    <div class="part-divider-line"></div>
+  </div>
+
+  <div class="transition-card">
+    <div class="transition-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v14M2 9h14"/></svg>
+    </div>
+    <div>
+      <div class="transition-label">Now put Claude to work</div>
+      <div class="transition-text">Claude is set up. Now use it. Pick one task from your business that eats time every week and run it through the 3-criteria filter below. <strong>Use Claude to help you think through each answer</strong> — paste the question into Claude and let it analyse your specific situation. That's what today is about: real use, on a real problem, right now.</div>
+    </div>
+  </div>
+
+  <div class="criteria-grid">
+    <div class="criteria-card"><span class="criteria-num">01</span><div class="criteria-name">Free to test</div><div class="criteria-desc">No capital risk to try it</div></div>
+    <div class="criteria-card"><span class="criteria-num">02</span><div class="criteria-name">Works without you</div><div class="criteria-desc">Runs while you sleep</div></div>
+    <div class="criteria-card"><span class="criteria-num">03</span><div class="criteria-name">No coding needed</div><div class="criteria-desc">Any business owner can build it</div></div>
+  </div>
+
+  <div class="sec-label">The task you're testing</div>
+  <div class="sec-hint">One repetitive task that eats your time. The more specific, the more useful your result will be.</div>
+  <input type="text" id="taskName" placeholder="e.g. Writing follow-up emails after sales calls, creating weekly social posts, writing up meeting notes..." />
+
+  <div class="claude-tip">
+    <div class="claude-tip-hdr">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#1e3a8a" stroke-width="1.5" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M6.5 4.5v3M6.5 9v.5"/></svg>
+      Ready-to-copy prompts below each question
+    </div>
+    <div class="claude-tip-text">Each question has a prompt box underneath it. Your task is filled in automatically — just hit copy and paste it straight into Claude.</div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="filter-q-card" id="fq1">
+    <div class="fq-header">
+      <div class="fq-num">1</div>
+      <div class="fq-text">Can you test this with AI for free or near-free — without committing significant money?</div>
+    </div>
+    <div class="fq-body">
+      <div class="fq-hint">Could you trial a basic version with free tool tiers or tools under £50/month? Or would it need custom development, agency fees, or a big platform investment upfront?</div>
+      <div class="yn-row">
+        <div class="yn-btn" id="q1pass" onclick="ans('q1','pass',this)">Yes — cheap or free to test</div>
+        <div class="yn-btn" id="q1fail" onclick="ans('q1','fail',this)">No — needs real investment</div>
+      </div>
+      <textarea class="fq-notes" id="q1notes" rows="2" placeholder="Notes on testing cost — what would it actually take to test this?"></textarea>
+      <div class="prompt-copy-wrap">
+        <div class="prompt-copy-hdr">
+          <span class="prompt-copy-label">Claude prompt — click to copy</span>
+          <button class="prompt-copy-btn" id="pcbq1" onclick="copyPrompt('q1','pcbq1')">
+            <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg>
+            Copy prompt
+          </button>
+        </div>
+        <div class="prompt-text" id="ptext-q1"><span class="prompt-task">My business task is: <span id="pd-q1">your task</span>.</span> <span class="prompt-q">Could you trial a basic version with free tool tiers or tools under £50/month? Or would it need custom development, agency fees, or a big platform investment upfront?</span> Help me think through whether this passes or fails for my specific situation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="filter-q-card" id="fq2">
+    <div class="fq-header">
+      <div class="fq-num">2</div>
+      <div class="fq-text">Once set up, would this run and produce results without you actively involved?</div>
+    </div>
+    <div class="fq-body">
+      <div class="fq-hint">Would it work on a Saturday morning while you're not in the office? Or does it still need you present and hands-on to function each time?</div>
+      <div class="yn-row">
+        <div class="yn-btn" id="q2pass" onclick="ans('q2','pass',this)">Yes — runs without me</div>
+        <div class="yn-btn" id="q2fail" onclick="ans('q2','fail',this)">No — still needs me there</div>
+      </div>
+      <textarea class="fq-notes" id="q2notes" rows="2" placeholder="Notes on autonomy — how hands-on would this need to be?"></textarea>
+      <div class="prompt-copy-wrap">
+        <div class="prompt-copy-hdr">
+          <span class="prompt-copy-label">Claude prompt — click to copy</span>
+          <button class="prompt-copy-btn" id="pcbq2" onclick="copyPrompt('q2','pcbq2')">
+            <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg>
+            Copy prompt
+          </button>
+        </div>
+        <div class="prompt-text" id="ptext-q2"><span class="prompt-task">My business task is: <span id="pd-q2">your task</span>.</span> <span class="prompt-q">Once set up, would this run and produce results without me actively involved? Would it work on a Saturday morning while I'm not in the office? Or does it still need me present and hands-on to function each time?</span> Help me think through whether this passes or fails for my specific situation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="filter-q-card" id="fq3">
+    <div class="fq-header">
+      <div class="fq-num">3</div>
+      <div class="fq-text">Could a non-technical business owner set this up without writing any code?</div>
+    </div>
+    <div class="fq-body">
+      <div class="fq-hint">Could you follow a clear guide and build it yourself? Or would this need a developer to actually make it work?</div>
+      <div class="yn-row">
+        <div class="yn-btn" id="q3pass" onclick="ans('q3','pass',this)">Yes — no coding needed</div>
+        <div class="yn-btn" id="q3fail" onclick="ans('q3','fail',this)">No — needs technical help</div>
+      </div>
+      <textarea class="fq-notes" id="q3notes" rows="2" placeholder="Notes on complexity — how technical would the setup actually be?"></textarea>
+      <div class="prompt-copy-wrap">
+        <div class="prompt-copy-hdr">
+          <span class="prompt-copy-label">Claude prompt — click to copy</span>
+          <button class="prompt-copy-btn" id="pcbq3" onclick="copyPrompt('q3','pcbq3')">
+            <svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg>
+            Copy prompt
+          </button>
+        </div>
+        <div class="prompt-text" id="ptext-q3"><span class="prompt-task">My business task is: <span id="pd-q3">your task</span>.</span> <span class="prompt-q">Could a non-technical business owner set this up without writing any code? Could you follow a clear guide and build it yourself? Or would this need a developer to actually make it work?</span> Help me think through whether this passes or fails for my specific situation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-block" id="resultBlock">
+    <span class="result-eyebrow">Your result</span>
+    <div class="result-status" style="color:var(--grey-300)">Answer all 3 questions above</div>
+    <div class="result-desc">Your filter result will appear here as you answer each question.</div>
+  </div>
+
+  <!-- EMAIL -->
+
+  <div class="copy-section">
+    <button class="copy-response-btn" id="copyBtn" onclick="copyResponse()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg>
+      Copy my responses to clipboard
+    </button>
+    <div class="copy-hint">Paste into a notes app, Google Doc, or anywhere you keep your work.</div>
+    <div class="copy-status" id="copyStatus"></div>
+  </div>
+
+<!-- REVEAL -->
+  <div class="reveal-wrap">
+    <div class="reveal-locked" id="locked">
+      <div class="reveal-border"></div>
+      <div class="reveal-inner">
+        <div class="reveal-lock"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="10" width="14" height="11" rx="2.5"/><path d="M7 10V7.5a4 4 0 018 0V10"/><circle cx="11" cy="16" r="1.5" fill="#93c5fd" stroke="none"/></svg></div>
+        <p class="reveal-eyebrow">Day 3 complete</p>
+        <p class="reveal-heading">Your reward is waiting</p>
+        <p class="reveal-sub">Tick all four Claude setup steps, complete the opportunity filter, and write your reflection — then tap to reveal your Day 3 unlock code.</p>
+        <button class="reveal-btn-main" onclick="revealCode()">Reveal my code <span style="font-size:17px;margin-left:2px">→</span></button>
+      </div>
+    </div>
+    <div class="reveal-open" id="opened">
+      <div class="reveal-open-top">
+        <div class="done-badge"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Day 3 complete</div>
+        <div class="code-label">Your unlock code</div>
+        <div class="code-display">EAI-D3-FILTER</div><br>
+        <button class="copy-btn" id="cpBtn" onclick="cp('EAI-D3-FILTER','cpBtn')"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code</button>
+      </div>
+      <div class="reveal-open-bottom">
+        <p class="reveal-instruction">Go to the <a href="../rewards-tracker/">Everything AI rewards tracker</a>, enter this code and unlock your Day 3 reward — <strong>The Specialist AI Tool Stack</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-note">Everything AI · everythingai.org.uk</span>
+    <span class="footer-next">Day 04 tomorrow →</span>
+  </footer>
+
+</div>
+<script>
+const checked={1:false,2:false,3:false,4:false};
+const A={q1:null,q2:null,q3:null};
+
+// LIVE TASK NAME UPDATE
+document.addEventListener('DOMContentLoaded',function(){
+  const taskInput=document.getElementById('taskName');
+  function updateTaskDisplays(){
+    const val=taskInput.value.trim()||'your task';
+    ['q1','q2','q3'].forEach(q=>{
+      const el=document.getElementById('pd-'+q);
+      if(el) el.textContent=val;
+    });
+  }
+  taskInput.addEventListener('input',updateTaskDisplays);
+});
+
+// COPY PROMPT
+const promptTexts={
+  q1:'My business task is: {task}. Could you trial a basic version with free tool tiers or tools under £50/month? Or would it need custom development, agency fees, or a big platform investment upfront? Help me think through whether this passes or fails for my specific situation.',
+  q2:'My business task is: {task}. Once set up, would this run and produce results without me actively involved? Would it work on a Saturday morning while I\'m not in the office? Or does it still need me present and hands-on to function each time? Help me think through whether this passes or fails for my specific situation.',
+  q3:'My business task is: {task}. Could a non-technical business owner set this up without writing any code? Could you follow a clear guide and build it yourself? Or would this need a developer to actually make it work? Help me think through whether this passes or fails for my specific situation.'
+};
+function copyPrompt(q,btnId){
+  const task=document.getElementById('taskName').value.trim()||'your task';
+  const text=promptTexts[q].replace('{task}',task);
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById(btnId);
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg width="12" height="12" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy prompt';
+    },2500);
+  });
+}
+
+// PART 1 — SETUP STEPS
+function tick(n){
+  checked[n]=!checked[n];
+  document.getElementById('card-'+n).classList.toggle('done',checked[n]);
+  document.getElementById('chk-'+n).classList.toggle('checked',checked[n]);
+  document.getElementById('pt-'+n).classList.toggle('done',checked[n]);
+  document.getElementById('notes-'+n).classList.toggle('done-input',checked[n]);
+}
+
+// PART 2 — FILTER
+function ans(q,v,btn){
+  const ids={q1:['q1pass','q1fail'],q2:['q2pass','q2fail'],q3:['q3pass','q3fail']};
+  ids[q].forEach(id=>{const b=document.getElementById(id);b.classList.remove('pass','fail');});
+  btn.classList.add(v);
+  A[q]=v;
+  const card=document.getElementById(q==='q1'?'fq1':q==='q2'?'fq2':'fq3');
+  card.classList.remove('pass-state','fail-state');
+  card.classList.add(v==='pass'?'pass-state':'fail-state');
+  updateResult();
+}
+
+function updateResult(){
+  const vals=Object.values(A);
+  if(vals.includes(null)) return;
+  const p=vals.filter(v=>v==='pass').length;
+  const b=document.getElementById('resultBlock');
+  if(p===3){
+    b.style.cssText='border-color:var(--ok);background:var(--ok-light)';
+    b.innerHTML='<span class="result-eyebrow">Your result</span><div class="result-status" style="color:var(--ok)">Strong opportunity ✓</div><div class="result-desc" style="color:var(--ok-dark)">This passes all 3 criteria. It\'s a genuine starting point — take this into Day 4 as your first task to implement.</div>';
+  } else if(p===2){
+    b.style.cssText='border-color:var(--amber);background:var(--amber-light)';
+    b.innerHTML='<span class="result-eyebrow">Your result</span><div class="result-status" style="color:var(--amber)">Possible with adjustments</div><div class="result-desc" style="color:#78350f">Passes 2 of 3. Worth exploring further — think about how you\'d address the failing criterion before committing Day 4 time to it.</div>';
+  } else {
+    b.style.cssText='border-color:var(--red);background:var(--red-light)';
+    b.innerHTML=`<span class="result-eyebrow">Your result</span><div class="result-status" style="color:var(--red)">Not the right starting point</div><div class="result-desc" style="color:#991b1b">Only passes ${p} of 3. Choose a different task from your business and run it through again before Day 4.</div>`;
+  }
+}
+
+function getResultText(){
+  const p=Object.values(A).filter(v=>v==='pass').length;
+  if(Object.values(A).includes(null)) return 'Not fully answered';
+  if(p===3) return 'STRONG OPPORTUNITY — passes all 3 criteria. Ready for Day 4.';
+  if(p===2) return 'POSSIBLE WITH ADJUSTMENTS — passes 2 of 3.';
+  return `NOT THE RIGHT STARTING POINT — passes only ${p} of 3. Try a different task.`;
+}
+
+function ansText(q){return A[q]==='pass'?'Yes (passes)':A[q]==='fail'?'No (fails)':'Not answered';}
+
+// BUILD SUMMARY
+function buildSummary(){
+  const task=document.getElementById('taskName').value.trim();
+  const q=id=>document.getElementById(id).value.trim()||'No notes.';
+  const missing=[];
+  if(!checked[1]) missing.push('Step 1 — Memory Import');
+  if(!checked[2]) missing.push('Step 2 — Model Selector');
+  if(!checked[3]) missing.push('Step 3 — Gmail Connector');
+  if(!checked[4]) missing.push('Step 4 — Calendar Connector');
+  if(!task) missing.push('the task you\'re testing (Part 2)');
+  if(!A.q1) missing.push('Question 1 answer');
+  if(!A.q2) missing.push('Question 2 answer');
+  if(!A.q3) missing.push('Question 3 answer');
+  if(missing.length) return{error:missing};
+  const n=i=>document.getElementById('notes-'+i).value.trim()||'No notes.';
+  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  return{text:`EVERYTHING AI — DAY 3: CLAUDE SETUP + OPPORTUNITY FILTER\n${date}\n─────────────────────────────────────────\n\nPART 1 — CLAUDE SETUP\n\n✓ Step 1: Memory Import\n${n(1)}\n\n✓ Step 2: Model Selector\n${n(2)}\n\n✓ Step 3: Gmail Connector\n${n(3)}\n\n✓ Step 4: Calendar Connector\n${n(4)}\n\n─────────────────────────────────────────\n\nPART 2 — OPPORTUNITY FILTER\n\nTask tested: ${task}\n\nQ1. Free or near-free to test?\nAnswer: ${ansText('q1')}\n${q('q1notes')}\n\nQ2. Runs without active involvement?\nAnswer: ${ansText('q2')}\n${q('q2notes')}\n\nQ3. No coding required?\nAnswer: ${ansText('q3')}\n${q('q3notes')}\n\nOVERALL RESULT\n${getResultText()}\n\n─────────────────────────────────────────\nTomorrow: AI in Marketing, Sales & Operations.\n\nEverything AI · everythingai.org.uk`};
+}
+
+function revealCode(){
+  const task=document.getElementById('taskName').value.trim();
+  const missing=[];
+  if(!checked[1]) missing.push('Step 1 — Memory Import (tick the checkbox)');
+  if(!checked[2]) missing.push('Step 2 — Model Selector (tick the checkbox)');
+  if(!checked[3]) missing.push('Step 3 — Gmail Connector (tick the checkbox)');
+  if(!checked[4]) missing.push('Step 4 — Calendar Connector (tick the checkbox)');
+  if(!task) missing.push('the task you\'re testing in Part 2');
+  if(!A.q1) missing.push('Question 1');
+  if(!A.q2) missing.push('Question 2');
+  if(!A.q3) missing.push('Question 3');
+  if(missing.length){alert('Please complete all sections before revealing your reward:\n\n• '+missing.join('\n• '));return;}
+  document.getElementById('locked').style.display='none';
+  document.getElementById('opened').style.display='block';
+}
+
+function copyResponse() {
+  const btn = document.getElementById('copyBtn');
+  const status = document.getElementById('copyStatus');
+  const result = buildSummary();
+  if (result.error) {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Please complete all sections first: ' + result.error.join(', ') + '.';
+    return;
+  }
+  navigator.clipboard.writeText(result.text).then(function() {
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg> Copied!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+    status.style.color = '#16a34a';
+    status.textContent = 'Your responses are on your clipboard — paste them anywhere.';
+    setTimeout(function() {
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg> Copy my responses to clipboard';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      status.textContent = '';
+    }, 3000);
+  }).catch(function() {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Copy failed — please try again.';
+  });
+}
+
+function cp(code,id){navigator.clipboard.writeText(code).then(()=>{const b=document.getElementById(id);b.classList.add('copied');b.innerHTML='<svg width="13" height="13" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';setTimeout(()=>{b.classList.remove('copied');b.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code'},2500)});}
+</script>
+</body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Strategy in the Real World — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--white:#f5f4f0;
+  --green:#1a9e6e;--green-light:#d4f0e5;--green-dark:#0f6e4d;--green-mid:#5dcaa5;
+  --blue:#185fa5;--blue-light:#e6f1fb;--blue-dark:#0c447c;
+  --purple:#6c4fcf;--purple-light:#eeebfd;
+  --amber:#d97706;--amber-light:#fffbeb;
+  --grey-100:#f0eeea;--grey-200:#dddbd5;--grey-400:#9e9c97;--grey-600:#5a5855;
+}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:48px 24px 80px;min-height:100vh}
+.page{max-width:760px;margin:0 auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--grey-200);margin-bottom:48px}
+.brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.reward-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--blue-light);color:var(--blue-dark);padding:5px 12px;border-radius:100px}
+
+.hero{margin-bottom:48px}
+.reward-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+h1 span{color:var(--blue)}
+.hero-sub{font-size:16px;color:var(--grey-600);line-height:1.65;font-weight:300;max-width:560px}
+
+.intro{background:var(--black);color:var(--white);border-radius:14px;padding:28px 32px;margin-bottom:48px}
+.intro p{font-size:15px;line-height:1.75;font-weight:300;color:rgba(255,255,255,.7)}
+.intro p+p{margin-top:12px}
+.intro strong{color:white;font-weight:500}
+
+h2{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--black);margin-bottom:20px}
+
+/* STRATEGY SECTIONS */
+.strategy-section{margin-bottom:52px}
+.strategy-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--grey-200)}
+.strategy-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+.strategy-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--black)}
+.strategy-sub{font-size:13px;color:var(--grey-400);font-weight:300;margin-top:2px}
+
+/* EXAMPLE CARDS */
+.example-card{border:1px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.example-head{background:var(--grey-100);padding:13px 18px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.example-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--black)}
+.example-tool-tags{display:flex;gap:6px;flex-wrap:wrap}
+.example-tag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:100px;font-weight:500}
+.example-body{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;padding:14px 18px}
+@media(max-width:560px){.example-body{grid-template-columns:1fr;}}
+.ex-cell{border-radius:8px;padding:13px}
+.ex-before{background:var(--grey-100)}
+.ex-before .ex-label{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--grey-400);margin-bottom:7px}
+.ex-before .ex-text{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.5}
+.ex-after{background:var(--green-light)}
+.ex-after .ex-label{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--green-dark);margin-bottom:7px}
+.ex-after .ex-text{font-size:13px;color:var(--green-dark);font-weight:300;line-height:1.5}
+.ex-arrow{display:flex;align-items:center;justify-content:center;color:var(--grey-300);font-size:18px;padding-top:14px}
+@media(max-width:560px){.ex-arrow{padding:2px 0;justify-content:flex-start;font-size:14px}}
+.example-footer{padding:10px 18px;border-top:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.example-tools-label{font-size:12px;color:var(--grey-400);font-weight:300}
+.tool-link-row{display:flex;gap:8px;flex-wrap:wrap}
+.tlink{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--blue-dark);text-decoration:none;border:1px solid var(--blue-light);border-radius:5px;padding:4px 10px;transition:all .15s;background:#fff}
+.tlink:hover{background:var(--blue-light);border-color:var(--blue)}
+.tlink svg{flex-shrink:0}
+.tlink.affiliate{color:#7c4c00;border-color:#d4933a;background:#fffbeb}
+.tlink.affiliate:hover{background:#fef3c7}
+
+/* CHATBOT CALLOUT */
+.chatbot-callout{background:var(--amber-light);border:1.5px solid #fcd34d;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px}
+.chatbot-callout-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.chatbot-callout-text{font-size:13px;color:#78350f;font-weight:300;line-height:1.6}
+.chatbot-callout-text strong{color:#7c2d12;font-weight:500}
+.chatbot-callout-text a{color:#7c2d12;font-weight:600;text-decoration:underline}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--grey-200);margin:48px 0}
+
+/* CASE STUDIES */
+.case{border:1px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.case-head{background:var(--grey-100);padding:13px 20px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.case-type{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400)}
+.case-source{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.case-source:hover{text-decoration:underline}
+.case-body{padding:18px 20px}
+.case-headline{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--black);margin-bottom:10px;line-height:1.3}
+.case-text{font-size:13px;color:var(--grey-600);line-height:1.65;font-weight:300}
+.case-results{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.case-result{display:inline-flex;align-items:center;background:var(--green-light);color:var(--green-dark);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px}
+.case-lesson{background:var(--blue-light);border-radius:8px;padding:11px 14px;margin-top:14px;font-size:13px;color:var(--blue-dark);font-weight:300;line-height:1.55}
+.case-lesson strong{font-weight:500}
+
+/* GATE */
+.gate-block{background:var(--black);color:var(--white);border-radius:14px;padding:32px;margin-bottom:48px}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-600);margin-bottom:12px}
+.gate-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:14px;line-height:1.25}
+.gate-body{font-size:14px;color:rgba(255,255,255,.6);line-height:1.75;font-weight:300;margin-bottom:20px}
+.gate-body strong{color:white;font-weight:500}
+.gate-items{display:flex;flex-direction:column;gap:10px}
+.gate-item{display:flex;gap:10px;align-items:flex-start}
+.gate-tick{width:20px;height:20px;border-radius:4px;background:rgba(26,158,110,.2);border:1px solid rgba(26,158,110,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.gate-tick svg{width:10px;height:10px}
+.gate-item-text{font-size:13px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.5}
+.gate-item-text strong{color:white;font-weight:500}
+
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+<div class="top-bar">
+  <span class="brand">Everything AI</span>
+  <span class="reward-badge">Day 4 Reward</span>
+</div>
+
+<div class="hero">
+  <span class="reward-tag">5-Day Challenge — Unlocked</span>
+  <h1>AI Strategy in the<br><span>Real World</span></h1>
+  <p class="hero-sub">What AI implementation actually looks like across marketing, sales, and operations — with real before/after examples, the specific tools that do each job, and verified case studies from real businesses that have done it.</p>
+</div>
+
+<div class="intro">
+  <p>The gap between "knowing about AI" and "using it in your business" almost always comes down to one thing: not being able to see yourself in the examples. Generic AI content is everywhere. What's rare is specific, practical strategy that maps to how a real business like yours actually operates.</p>
+  <p><strong>These are strategies I'd use in my own business.</strong> Real tools, real workflows, real before and afters — not theory. Use them as a reference as you build your roadmap tomorrow.</p>
+</div>
+
+<!-- ================================ -->
+<!-- MARKETING & CONTENT              -->
+<!-- ================================ -->
+<div class="strategy-section">
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:#6c4fcf">M</div>
+    <div>
+      <div class="strategy-title">Marketing & Content</div>
+      <div class="strategy-sub">Content production, repurposing, email, social, and brand voice</div>
+    </div>
+  </div>
+
+  <!-- Example 1 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Content repurposing engine</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Notion AI</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">One blog post takes 3 hours to write. It lives on the website. Nothing else comes from it. You're starting from scratch every time you need a LinkedIn post, an email, or a caption.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">One blog post becomes 5 LinkedIn posts, 1 email newsletter, 3 short captions, and 2 ad headlines — all in one 20-minute Claude session. You write once. Everything else flows from it.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude</a>
+        <a class="tlink" href="https://www.notion.com" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Notion AI</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Brand voice project — consistent output at scale</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude Projects</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">Every AI output sounds generic. You spend more time editing than you saved writing. The tone is wrong, the voice is off, and you keep telling the AI the same things about your brand over and over.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">A Claude Project with your business description, 3 tone examples, and your audience defined. Every piece of content that comes out sounds like you. First draft is usable 80% of the time with minimal editing.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude — use Projects feature</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 3 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Pitch deck & proposal creation</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#e1f5ee;color:#0f6e4d">Gamma</span>
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">Building a proposal takes half a day. Decks are inconsistent. You use the same template for every client. Something that should take 30 minutes takes an entire morning.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">Claude drafts the proposal copy. Gamma builds the deck from a text prompt — layout, design, content — in minutes. A polished, client-ready document in under an hour, every time.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude</a>
+        <a class="tlink" href="https://gamma.app" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Gamma (free)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- SALES & COMMUNICATION            -->
+<!-- ================================ -->
+<div class="strategy-section">
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:#185fa5">S</div>
+    <div>
+      <div class="strategy-title">Sales & Customer Communication</div>
+      <div class="strategy-sub">Lead follow-up, proposals, outreach, and client management</div>
+    </div>
+  </div>
+
+  <!-- Example 1 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Automated lead follow-up sequence</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#faeeda;color:#633806">GoHighLevel</span>
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">A lead fills in a form. You reply when you get round to it — sometimes same day, sometimes day three. No follow-up system. You lose business to whoever was faster.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">GHL triggers an instant personalised reply the moment a lead comes in. A 4-step sequence runs automatically over 14 days with Claude-written messages. You only speak to people who are warm and ready.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink affiliate" href="https://www.gohighlevel.com/?fp_ref=everything-ai32" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>GoHighLevel — free trial</a>
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude (write the messages)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Personalised cold outreach at scale</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#e6f1fb;color:#0c447c">Instantly</span>
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">Cold outreach is either generic (ignored) or takes hours to personalise (not scalable). You write 10 emails and feel like you've done a day's work. Response rates reflect it.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">Claude writes personalised opening lines using info about each prospect. Instantly sends them at scale with proper sending infrastructure — readable as personal, delivered as a system.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://instantly.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Instantly</a>
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot callout -->
+  <div class="chatbot-callout">
+    <div class="chatbot-callout-icon">💡</div>
+    <div class="chatbot-callout-text">
+      <strong>AI chatbots, voice receptionists, and AI agents</strong> are powerful tools for this pillar — but they go deeper than we can cover here. If you want to build an AI receptionist that qualifies leads 24/7, or an agent that handles bookings and enquiries automatically, that's covered in detail in <a href="https://everythingai.org.uk" target="_blank">AI for Business Domination</a>.
+    </div>
+  </div>
+</div>
+
+<!-- ================================ -->
+<!-- OPERATIONS                       -->
+<!-- ================================ -->
+<div class="strategy-section">
+  <div class="strategy-header">
+    <div class="strategy-icon" style="background:#0891b2">O</div>
+    <div>
+      <div class="strategy-title">Operations & Internal Processes</div>
+      <div class="strategy-sub">Meeting notes, SOPs, admin, reporting, and workflow automation</div>
+    </div>
+  </div>
+
+  <!-- Example 1 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Automatic meeting notes and action items</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#cffafe;color:#0c5f6e">Fathom</span>
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">You come out of every meeting and either write notes from memory (inaccurate) or don't write them at all. Action items get forgotten. You spend 20 minutes after each call trying to reconstruct what was agreed.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">Fathom auto-joins every meeting, transcribes in full, and delivers a structured summary with decisions and action items within minutes of the call ending. Paste into Claude to generate a follow-up email. Zero manual effort.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://fathom.video" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Fathom (free tier)</a>
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude (follow-up emails)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">SOP creation from your existing process</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#eeebfd;color:#6c4fcf">Claude</span>
+        <span class="example-tag" style="background:#faeeda;color:#633806">Notion AI</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">Processes live in your head. Onboarding a new team member takes weeks. If you're not there, things fall apart. Nothing is documented. You're the bottleneck for everything that requires context.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">Describe your process to Claude in plain English. It turns it into a full SOP — step by step, with reasoning for each stage. Store it in Notion. Anyone can follow it without asking you a single question.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://claude.ai" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Claude</a>
+        <a class="tlink" href="https://www.notion.com" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Notion AI</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example 3 -->
+  <div class="example-card">
+    <div class="example-head">
+      <div class="example-name">Cross-tool automation — connecting everything together</div>
+      <div class="example-tool-tags">
+        <span class="example-tag" style="background:#faeeda;color:#633806">Make.com</span>
+        <span class="example-tag" style="background:#faeeda;color:#633806">Zapier</span>
+      </div>
+    </div>
+    <div class="example-body">
+      <div class="ex-cell ex-before">
+        <div class="ex-label">Before</div>
+        <div class="ex-text">Your tools don't talk to each other. You manually copy data between platforms. A new client requires 6 separate manual actions across 3 different apps. Small errors happen constantly.</div>
+      </div>
+      <div class="ex-arrow">→</div>
+      <div class="ex-cell ex-after">
+        <div class="ex-label">After</div>
+        <div class="ex-text">When a new client signs, a Make workflow fires: creates their record in GHL, sends a welcome email, creates a Notion page, and adds them to your project tracker — all without you touching it.</div>
+      </div>
+    </div>
+    <div class="example-footer">
+      <span class="example-tools-label">Tools for this:</span>
+      <div class="tool-link-row">
+        <a class="tlink" href="https://www.make.com" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Make.com (free tier)</a>
+        <a class="tlink" href="https://zapier.com" target="_blank"><svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>Zapier (free tier)</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ================================ -->
+<!-- REAL CASE STUDIES                -->
+<!-- ================================ -->
+<h2>Real businesses. Real results. Verified sources.</h2>
+<p style="font-size:14px;color:var(--grey-600);font-weight:300;line-height:1.6;margin-bottom:24px">These are not hypotheticals. These are documented, named examples with source links — so you can read the original reporting yourself.</p>
+
+<!-- Case 1: Adore Me -->
+<div class="case">
+  <div class="case-head">
+    <span class="case-type">E-commerce — content production</span>
+    <a class="case-source" href="https://visme.co/blog/ai-marketing-case-studies/" target="_blank">
+      <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>
+      Read source ↗
+    </a>
+  </div>
+  <div class="case-body">
+    <div class="case-headline">Adore Me — from 20 hours to 20 minutes per product batch</div>
+    <div class="case-text">Adore Me, a direct-to-consumer lingerie brand, needed to scale content production across product descriptions, multilingual website copy, and stylist notes without expanding headcount. They built role-specific AI agents using Writer's AI Studio — one for SEO product descriptions, one for Spanish translations, one for stylist note drafts. The results were significant: product description generation dropped from 20 hours per batch to 20 minutes, stylist note writing time fell by 36%, and their Mexico market launch timeline shrank from months to 10 days. They also recorded a 40% increase in non-branded SEO traffic as a direct outcome.</div>
+    <div class="case-results">
+      <span class="case-result">20 hrs → 20 mins per batch</span>
+      <span class="case-result">36% less time on stylist notes</span>
+      <span class="case-result">+40% non-branded SEO traffic</span>
+    </div>
+    <div class="case-lesson"><strong>The lesson for your business:</strong> You don't need to do everything yourself. Identify one repeatable content task — product descriptions, email templates, captions — and train an AI on your existing examples. The batch efficiency gains are immediate and compound over time.</div>
+  </div>
+</div>
+
+<!-- Case 2: Octopus Energy -->
+<div class="case">
+  <div class="case-head">
+    <span class="case-type">Service business — customer email handling</span>
+    <a class="case-source" href="https://aiexpert.network/case-study-enhanced-customer-service-through-ai-at-octopus-energy/" target="_blank">
+      <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>
+      Read source ↗
+    </a>
+  </div>
+  <div class="case-body">
+    <div class="case-headline">Octopus Energy — AI-assisted emails outperform human ones on satisfaction</div>
+    <div class="case-text">Octopus Energy, the UK's largest energy supplier, began rolling out AI to assist with customer email responses in early 2023. Within months, AI was helping draft over 40% of all customer communications. The outcome surprised even their own team: emails assisted by AI achieved an 80% customer satisfaction rating, compared to 65% for responses written by human agents alone. CEO Greg Jackson noted openly that the AI was outperforming people on the metric that matters most — customer happiness. The company handled the workload equivalent of roughly 250 additional staff through the AI system, without replacing existing employees.</div>
+    <div class="case-results">
+      <span class="case-result">80% satisfaction (AI) vs 65% (human)</span>
+      <span class="case-result">40%+ of emails AI-assisted</span>
+      <span class="case-result">Equiv. of 250 staff handled</span>
+    </div>
+    <div class="case-lesson"><strong>The lesson for your business:</strong> AI doesn't just save time — in the right context, it can actually improve the quality of output your customers receive. Start with the most formulaic, high-volume communications and let AI draft. Humans review. The satisfaction data follows.</div>
+  </div>
+</div>
+
+<!-- Case 3: Klarna -->
+<div class="case">
+  <div class="case-head">
+    <span class="case-type">Fintech — customer service automation</span>
+    <a class="case-source" href="https://www.twig.so/blog/klarna-ai-customer-support-efficiency" target="_blank">
+      <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>
+      Read source ↗
+    </a>
+  </div>
+  <div class="case-body">
+    <div class="case-headline">Klarna — 2.3 million conversations handled in 30 days, resolution time cut 82%</div>
+    <div class="case-text">In February 2024, Klarna launched an AI customer service assistant built with OpenAI. In its first month, it handled 2.3 million customer conversations — work equivalent to roughly 700 full-time agents — and automated 67% of all customer interactions. Resolution time dropped from 11 minutes to under 2 minutes. The company projected $40 million in annual cost savings as a result. It's worth noting the full picture: by 2025, Klarna acknowledged it had leaned too hard into AI-only support and began reintroducing human agents for complex cases. The lesson isn't "automate everything" — it's that AI handles volume brilliantly while humans handle nuance. The hybrid model is the one that works.</div>
+    <div class="case-results">
+      <span class="case-result">2.3M conversations in 30 days</span>
+      <span class="case-result">11 min → under 2 min resolution</span>
+      <span class="case-result">67% of chats automated</span>
+    </div>
+    <div class="case-lesson"><strong>The lesson for your business:</strong> Tier-1, repeat, high-volume queries are where AI wins. Complex, emotional, or relationship-critical conversations stay human. The businesses making it work aren't replacing people — they're redeploying them to the work that actually needs them.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- GATE -->
+<div class="gate-block">
+  <div class="gate-eyebrow">Tomorrow — Day 5</div>
+  <div class="gate-title">You've seen the examples. Tomorrow you build your own version.</div>
+  <div class="gate-body">Day 5 is where everything this week comes together. You'll take everything you've identified — your area, your tools, your strategy, your measurable result — and turn it into a structured three-part roadmap you can actually execute. Here's what Day 5 covers:</div>
+  <div class="gate-items">
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#5dcaa5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gate-item-text"><strong>Section 1 — Setup:</strong> The right area and the right tools — locked in with clarity</div></div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#5dcaa5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gate-item-text"><strong>Section 2 — Implementation:</strong> Your exact strategy — what happens first, what happens next, what the output looks like</div></div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#5dcaa5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gate-item-text"><strong>Section 3 — Results:</strong> Your measurable outcome — does it save time, save money, or produce output good enough to use?</div></div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#5dcaa5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="gate-item-text"><strong>Community post:</strong> Share your roadmap in the Everything AI Skool community — get feedback from people who've already implemented what you're building</div></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span class="footer-note">Everything AI · everythingai.org.uk</span>
+  <a class="footer-day" href="../rewards-tracker/" style="color:inherit;text-decoration:none">Day 4 of 5 · Back to Rewards Tracker →</a>
+</footer>
+
+</div>
+</body>
+</html>

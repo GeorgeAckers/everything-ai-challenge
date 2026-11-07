@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Challenge Command Centre — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#07080c;
+  --deep:#0d0f1a;
+  --card:#111420;
+  --card-border:#1e2236;
+  --white:#f0eff8;
+  --blue:#3a7fff;
+  --blue-dim:rgba(58,127,255,.15);
+  --blue-glow:rgba(58,127,255,.35);
+  --gold:#f0c040;
+  --gold-dim:rgba(240,192,64,.12);
+  --green:#1db87a;
+  --green-dim:rgba(29,184,122,.12);
+  --purple:#9b6dff;
+  --purple-dim:rgba(155,109,255,.12);
+  --red:#ff4f4f;
+  --red-dim:rgba(255,79,79,.12);
+  --cyan:#22d4d4;
+  --cyan-dim:rgba(34,212,212,.12);
+  --grey-dim:rgba(255,255,255,.06);
+  --text-primary:#e8e6f4;
+  --text-muted:rgba(232,230,244,.45);
+  --text-faint:rgba(232,230,244,.25);
+}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:transparent;position:relative;z-index:0;
+  color:var(--text-primary);
+  min-height:100vh;
+  padding:0 0 80px;
+  overflow-x:hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+}
+
+.page{max-width:760px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* ── HEADER HERO ── */
+.hero-wrap{
+  padding:64px 0 48px;
+  text-align:center;
+  position:relative;
+}
+.hero-wrap::before{
+  content:'';
+  position:absolute;
+  top:-60px;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;
+  background:radial-gradient(ellipse at 50% 30%, rgba(58,127,255,.18) 0%, transparent 65%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);
+  background:var(--gold-dim);
+  border:1px solid rgba(240,192,64,.25);
+  border-radius:100px;padding:6px 16px;margin-bottom:24px;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(32px,6vw,52px);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-.025em;
+  color:var(--white);
+  margin-bottom:16px;
+}
+h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--purple) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:15px;color:var(--text-muted);font-weight:300;line-height:1.7;
+  max-width:480px;margin:0 auto 32px;
+}
+.hero-divider{
+  width:60px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),transparent);
+  margin:0 auto;
+}
+
+/* ── SECTION TITLES ── */
+.section-title-wrap{display:flex;align-items:center;gap:14px;margin:48px 0 20px}
+.section-title-line{flex:1;height:1px;background:var(--card-border)}
+.section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);white-space:nowrap}
+
+/* ── DAY CHALLENGE CARDS ── */
+.challenge-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+
+.day-card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:12px;
+  display:grid;
+  grid-template-columns:52px 1fr auto;
+  align-items:center;
+  gap:0;
+  overflow:hidden;
+  transition:border-color .2s,transform .15s;
+  text-decoration:none;
+}
+.day-card:hover{border-color:rgba(58,127,255,.4);transform:translateX(3px)}
+
+.day-card-num{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--grey-dim);
+  border-right:1px solid var(--card-border);
+  align-self:stretch;
+  font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text-faint);
+}
+.day-card-body{padding:14px 18px}
+.day-card-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:3px}
+.day-card-sub{font-size:12px;color:var(--text-muted);font-weight:300}
+.day-card-arrow{padding:0 18px;color:var(--text-faint);font-size:16px;transition:color .2s}
+.day-card:hover .day-card-arrow{color:var(--blue)}
+
+/* ── REWARD CARDS ── */
+.reward-grid{display:flex;flex-direction:column;gap:8px}
+.reward-card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:12px;
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  align-items:center;
+  overflow:hidden;
+  transition:border-color .2s,transform .15s;
+  text-decoration:none;
+}
+.reward-card:hover{transform:translateX(3px)}
+.reward-card-icon{
+  display:flex;align-items:center;justify-content:center;
+  align-self:stretch;
+  border-right:1px solid var(--card-border);
+  font-size:17px;
+}
+.reward-card-body{padding:13px 18px}
+.reward-card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:2px}
+.reward-card-sub{font-size:11px;color:var(--text-muted);font-weight:300}
+.reward-card-arrow{padding:0 16px;color:var(--text-faint);font-size:15px;transition:color .2s}
+.reward-card:hover .reward-card-arrow{color:var(--blue)}
+
+/* colour accents per reward */
+.reward-card.r1{border-left:3px solid var(--blue)}
+.reward-card.r1:hover{border-color:var(--blue)}
+.reward-card.r2{border-left:3px solid var(--red)}
+.reward-card.r2:hover{border-color:var(--red)}
+.reward-card.r3{border-left:3px solid var(--purple)}
+.reward-card.r3:hover{border-color:var(--purple)}
+.reward-card.r4{border-left:3px solid var(--cyan)}
+.reward-card.r4:hover{border-color:var(--cyan)}
+.reward-card.r5{border-left:3px solid var(--gold)}
+.reward-card.r5:hover{border-color:var(--gold)}
+
+/* ── LINK CATEGORIES ── */
+.link-cat{margin-bottom:28px}
+.link-cat-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-faint);margin-bottom:10px;padding-left:2px;
+}
+.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.link-grid{grid-template-columns:1fr}}
+
+.link-card{
+  background:var(--card);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  padding:14px 16px;
+  text-decoration:none;
+  transition:all .2s;
+  display:flex;flex-direction:column;gap:5px;
+  position:relative;overflow:hidden;
+}
+.link-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:0;transition:opacity .2s;
+}
+.link-card:hover{border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
+.link-card:hover::before{opacity:1}
+
+.link-card.accent-blue::before{background:var(--blue)}
+.link-card.accent-blue:hover{box-shadow:0 8px 24px rgba(58,127,255,.12)}
+.link-card.accent-gold::before{background:var(--gold)}
+.link-card.accent-gold:hover{box-shadow:0 8px 24px rgba(240,192,64,.1)}
+.link-card.accent-green::before{background:var(--green)}
+.link-card.accent-green:hover{box-shadow:0 8px 24px rgba(29,184,122,.1)}
+.link-card.accent-purple::before{background:var(--purple)}
+.link-card.accent-purple:hover{box-shadow:0 8px 24px rgba(155,109,255,.1)}
+.link-card.accent-cyan::before{background:var(--cyan)}
+.link-card.accent-cyan:hover{box-shadow:0 8px 24px rgba(34,212,212,.1)}
+.link-card.accent-red::before{background:var(--red)}
+.link-card.accent-red:hover{box-shadow:0 8px 24px rgba(255,79,79,.1)}
+
+.link-card-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-primary)}
+.link-card-desc{font-size:12px;color:var(--text-muted);font-weight:300;line-height:1.45}
+.link-card-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-faint);margin-top:2px}
+
+/* ── FEATURED BLOCK (EverythingAI) ── */
+.featured-block{
+  background:linear-gradient(135deg,#0a0e1c 0%,#0d1530 50%,#0a0e1c 100%);
+  border:1px solid rgba(58,127,255,.3);
+  border-radius:14px;
+  padding:28px 28px;
+  margin-bottom:8px;
+  position:relative;overflow:hidden;
+  text-decoration:none;
+  display:block;
+  transition:border-color .2s,transform .15s;
+}
+.featured-block:hover{border-color:var(--blue);transform:translateY(-2px)}
+.featured-block::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:180px;height:180px;
+  background:radial-gradient(circle,rgba(58,127,255,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.featured-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;opacity:.8}
+.featured-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--white);margin-bottom:8px;line-height:1.2}
+.featured-text{font-size:13px;color:var(--text-muted);font-weight:300;line-height:1.65;margin-bottom:16px}
+.featured-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--blue);color:#fff;
+  font-family:'Syne',sans-serif;font-size:13px;font-weight:700;
+  padding:9px 18px;border-radius:8px;
+  transition:background .15s;
+}
+.featured-block:hover .featured-cta{background:#2a6fff}
+
+/* ── GHL BLOCK ── */
+.ghl-block{
+  background:linear-gradient(135deg,#0f1208 0%,#141b0a 100%);
+  border:1px solid rgba(29,184,122,.25);
+  border-radius:14px;
+  padding:24px 28px;
+  margin-bottom:8px;
+  text-decoration:none;display:block;
+  transition:border-color .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.ghl-block:hover{border-color:var(--green);transform:translateY(-2px)}
+.ghl-block::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:140px;height:140px;
+  background:radial-gradient(circle,rgba(29,184,122,.12) 0%,transparent 70%);
+}
+.ghl-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:8px;opacity:.8}
+.ghl-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);margin-bottom:6px}
+.ghl-text{font-size:13px;color:var(--text-muted);font-weight:300;line-height:1.6;margin-bottom:12px}
+.ghl-pill{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--green);background:var(--green-dim);border:1px solid rgba(29,184,122,.25);padding:5px 12px;border-radius:100px}
+
+/* ── PROMPT CHEATSHEET ── */
+.prompt-block{background:var(--card);border:1px solid var(--card-border);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.prompt-hdr{background:var(--grey-dim);padding:12px 18px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between}
+.prompt-hdr-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text-primary)}
+.prompt-hdr-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-faint);letter-spacing:.06em}
+.prompt-item{padding:13px 18px;border-bottom:1px solid var(--card-border);display:flex;gap:14px;align-items:flex-start}
+.prompt-item:last-child{border-bottom:none}
+.prompt-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:6px}
+.prompt-text-wrap{flex:1}
+.prompt-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:.06em;margin-bottom:4px;text-transform:uppercase}
+.prompt-body{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted);line-height:1.6}
+.prompt-copy{background:var(--grey-dim);border:1px solid var(--card-border);color:var(--text-faint);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 11px;border-radius:6px;cursor:pointer;flex-shrink:0;transition:all .15s;white-space:nowrap}
+.prompt-copy:hover{border-color:var(--blue);color:var(--blue)}
+.prompt-copy.copied{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+
+/* ── COMMUNITY BLOCK ── */
+.community-block{
+  background:linear-gradient(135deg,#0e0a1a 0%,#150e28 100%);
+  border:1px solid rgba(155,109,255,.25);
+  border-radius:14px;
+  padding:24px 28px;
+  text-decoration:none;display:block;
+  transition:border-color .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.community-block:hover{border-color:var(--purple);transform:translateY(-2px)}
+.community-block::before{
+  content:'';position:absolute;top:-30px;right:-20px;
+  width:140px;height:140px;
+  background:radial-gradient(circle,rgba(155,109,255,.12) 0%,transparent 70%);
+}
+.community-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--purple);margin-bottom:8px;opacity:.8}
+.community-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);margin-bottom:6px}
+.community-text{font-size:13px;color:var(--text-muted);font-weight:300;line-height:1.6}
+
+/* ── FOOTER ── */
+.pg-footer{padding-top:32px;border-top:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:48px}
+
+/* ── LINKEDIN BLOCK ── */
+.linkedin-block{
+  background:linear-gradient(135deg,#071427 0%,#0b1f3d 100%);
+  border:1px solid rgba(10,102,194,.35);
+  border-radius:14px;padding:18px 24px;margin-bottom:8px;
+  text-decoration:none;display:flex;align-items:center;gap:18px;
+  transition:border-color .2s,transform .15s;
+}
+.linkedin-block:hover{border-color:rgba(10,102,194,.7);transform:translateY(-2px)}
+.linkedin-icon{width:42px;height:42px;border-radius:10px;background:#0a66c2;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.linkedin-icon svg{width:22px;height:22px;fill:#fff}
+.linkedin-content{flex:1}
+.linkedin-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(64,145,240,.9);margin-bottom:5px}
+.linkedin-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:3px}
+.linkedin-sub{font-size:12px;color:var(--text-muted);font-weight:300}
+.linkedin-arrow{color:var(--text-faint);font-size:18px;transition:color .2s}
+.linkedin-block:hover .linkedin-arrow{color:#0a66c2}
+
+/* ── STRATEGY SESSION BLOCK ── */
+.session-block{
+  background:linear-gradient(135deg,#120a06 0%,#1e1208 50%,#120a06 100%);
+  border:1px solid rgba(240,192,64,.3);border-radius:14px;
+  padding:28px 28px;margin-bottom:8px;
+  text-decoration:none;display:block;
+  transition:border-color .2s,transform .15s;
+  position:relative;overflow:hidden;
+}
+.session-block:hover{border-color:rgba(240,192,64,.6);transform:translateY(-2px)}
+.session-block::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(240,192,64,.1) 0%,transparent 70%);pointer-events:none}
+.session-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:.85}
+.session-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--white);margin-bottom:8px;line-height:1.2}
+.session-text{font-size:13px;color:var(--text-muted);font-weight:300;line-height:1.65;margin-bottom:16px}
+.session-text strong{color:rgba(255,255,255,.85);font-weight:500}
+.session-cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#0a0a0a;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;padding:10px 20px;border-radius:8px;transition:all .15s}
+.session-block:hover .session-cta{background:#ffd84d}
+.pg-footer-note{font-size:12px;color:var(--text-faint);font-weight:300}
+.pg-footer-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-faint);letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#07080c;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero-wrap">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      5-Day Challenge — Complete
+    </div>
+    <h1>The Challenge<br><em>Command Centre</em></h1>
+    <p class="hero-sub">Everything from the 5-Day AI Challenge in one place. Your challenges, your rewards, the tools, the resources — and everything you need to keep moving forward.</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- CHALLENGES -->
+  <div class="section-title-wrap">
+    <div class="section-title-line"></div>
+    <div class="section-title">Your 5 challenges</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <div class="challenge-grid">
+    <a class="day-card" href="../day-1-challenge/" target="_blank" rel="noopener">
+      <div class="day-card-num">01</div>
+      <div class="day-card-body">
+        <div class="day-card-title">Where Do You Actually Stand?</div>
+        <div class="day-card-sub">The self-audit — your AI type, your gap, your honest inventory</div>
+      </div>
+      <div class="day-card-arrow">→</div>
+    </a>
+    <a class="day-card" href="../day-2-challenge/" target="_blank" rel="noopener">
+      <div class="day-card-num">02</div>
+      <div class="day-card-body">
+        <div class="day-card-title">Where Should You Not Go?</div>
+        <div class="day-card-sub">The danger zone checklist — red flags, risk scores, and what to avoid</div>
+      </div>
+      <div class="day-card-arrow">→</div>
+    </a>
+    <a class="day-card" href="../day-3-challenge/" target="_blank" rel="noopener">
+      <div class="day-card-num">03</div>
+      <div class="day-card-body">
+        <div class="day-card-title">Introduction to Claude + Your First Opportunity</div>
+        <div class="day-card-sub">Claude setup, the opportunity filter, and your first real AI task</div>
+      </div>
+      <div class="day-card-arrow">→</div>
+    </a>
+    <a class="day-card" href="../day-4-challenge/" target="_blank" rel="noopener">
+      <div class="day-card-num">04</div>
+      <div class="day-card-body">
+        <div class="day-card-title">Finding the Right Tools & Strategy</div>
+        <div class="day-card-sub">Three pillars, real tools, starter prompts, and your one starting focus</div>
+      </div>
+      <div class="day-card-arrow">→</div>
+    </a>
+    <a class="day-card" href="../day-5-challenge/" target="_blank" rel="noopener">
+      <div class="day-card-num">05</div>
+      <div class="day-card-body">
+        <div class="day-card-title">Building Your AI Roadmap</div>
+        <div class="day-card-sub">Setup, implementation, results — your complete personalised plan</div>
+      </div>
+      <div class="day-card-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- REWARDS -->
+  <div class="section-title-wrap">
+    <div class="section-title-line"></div>
+    <div class="section-title">Your unlocked rewards</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <div class="reward-grid">
+    <a class="reward-card r1" href="../reward-day-1/" target="_blank" rel="noopener">
+      <div class="reward-card-icon" style="background:rgba(58,127,255,.08)">🗺️</div>
+      <div class="reward-card-body">
+        <div class="reward-card-title">The AI Wealth Map</div>
+        <div class="reward-card-sub">Every major business type and where AI creates the most value — by category</div>
+      </div>
+      <div class="reward-card-arrow">→</div>
+    </a>
+    <a class="reward-card r2" href="../reward-day-2/" target="_blank" rel="noopener">
+      <div class="reward-card-icon" style="background:rgba(255,79,79,.08)">🔍</div>
+      <div class="reward-card-body">
+        <div class="reward-card-title">7 Things AI Gurus Won't Tell You</div>
+        <div class="reward-card-sub">The uncomfortable truths the loudest voices in AI are leaving out</div>
+      </div>
+      <div class="reward-card-arrow">→</div>
+    </a>
+    <a class="reward-card r3" href="../reward-day-3/" target="_blank" rel="noopener">
+      <div class="reward-card-icon" style="background:rgba(155,109,255,.08)">🛠️</div>
+      <div class="reward-card-body">
+        <div class="reward-card-title">The Specialist AI Tool Stack</div>
+        <div class="reward-card-sub">The exact tools doing real work in real businesses — named, described, linked</div>
+      </div>
+      <div class="reward-card-arrow">→</div>
+    </a>
+    <a class="reward-card r4" href="../reward-day-4/" target="_blank" rel="noopener">
+      <div class="reward-card-icon" style="background:rgba(34,212,212,.08)">📊</div>
+      <div class="reward-card-body">
+        <div class="reward-card-title">AI Strategy in the Real World</div>
+        <div class="reward-card-sub">Real before/afters, verified case studies, and strategies I'd use myself</div>
+      </div>
+      <div class="reward-card-arrow">→</div>
+    </a>
+    <a class="reward-card r5" href="../rewards-tracker/" target="_blank" rel="noopener">
+      <div class="reward-card-icon" style="background:rgba(240,192,64,.08)">🏆</div>
+      <div class="reward-card-body">
+        <div class="reward-card-title">Rewards Tracker</div>
+        <div class="reward-card-sub">All five unlock codes in one place — enter any you haven't claimed yet</div>
+      </div>
+      <div class="reward-card-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- EVERYTHINGAI FEATURED -->
+  <div class="section-title-wrap">
+    <div class="section-title-line"></div>
+    <div class="section-title">Continue learning</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <a class="featured-block" href="../reward-day-5/" target="_blank">
+    <div class="featured-eyebrow">Everything AI — the next step</div>
+    <div class="featured-title">AI for Business Domination</div>
+    <div class="featured-text">The complete course for business owners who want to implement AI properly. Step-by-step build guides for every tool in the stack, AI chatbots and voice agents, pre-built automation blueprints, prompt libraries, and a community of people doing the same thing. Everything the challenge prepared you for — this is where you execute it.</div>
+    <span class="featured-cta">Visit Everything AI <span>→</span></span>
+  </a>
+
+  <a class="ghl-block" href="https://www.gohighlevel.com/?fp_ref=everything-ai32" target="_blank">
+    <div class="ghl-eyebrow">Recommended tool — free trial</div>
+    <div class="ghl-title">GoHighLevel</div>
+    <div class="ghl-text">The most complete AI-integrated business platform available. CRM, email, SMS, funnels, booking, and automation — all in one place. The tool behind the Sales pillar in Day 4. Start your free trial through Everything AI.</div>
+    <div class="ghl-pill">
+      <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg>
+      Start free trial →
+    </div>
+  </a>
+
+  <!-- USEFUL LINKS -->
+  <div class="section-title-wrap">
+    <div class="section-title-line"></div>
+    <div class="section-title">Connect & go further</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <a class="session-block" href="https://everythingai.org.uk/strategy" target="_blank">
+    <div class="session-eyebrow">Exclusive — challenge graduates only</div>
+    <div class="session-title">Free AI Strategy Session</div>
+    <div class="session-text">You've done the work. You have a roadmap. Now let's make sure you execute it properly. <strong>As someone who completed the full 5-Day Challenge, you're eligible for a free 1-on-1 AI strategy session with me.</strong> We'll look at your specific business, your roadmap, and make sure you're starting in exactly the right place. Limited availability — book while slots are open.</div>
+    <span class="session-cta">Book your free session →</span>
+  </a>
+
+  <a class="linkedin-block" href="https://www.linkedin.com/in/george-ackerley" target="_blank">
+    <div class="linkedin-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </div>
+    <div class="linkedin-content">
+      <div class="linkedin-label">Follow on LinkedIn</div>
+      <div class="linkedin-title">George Ackerley</div>
+      <div class="linkedin-sub">AI for business — practical content, honest takes, no hype</div>
+    </div>
+    <div class="linkedin-arrow">→</div>
+  </a>
+  <div class="section-title-wrap" style="margin-top:40px">
+    <div class="section-title-line"></div>
+    <div class="section-title">Stay sharp — useful resources</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <div class="link-cat">
+    <div class="link-cat-label">AI news & intelligence</div>
+    <div class="link-grid">
+      <a class="link-card accent-blue" href="https://www.artificialintelligence-news.com/" target="_blank">
+        <div class="link-card-name">AI News</div>
+        <div class="link-card-desc">Daily AI news covering business applications, new tools, and industry developments</div>
+        <div class="link-card-tag">artificialintelligence-news.com</div>
+      </a>
+      <a class="link-card accent-blue" href="https://www.therundown.ai/" target="_blank">
+        <div class="link-card-name">The Rundown AI</div>
+        <div class="link-card-desc">One of the most-read AI newsletters — practical daily updates on what matters</div>
+        <div class="link-card-tag">therundown.ai</div>
+      </a>
+      <a class="link-card accent-blue" href="https://www.producthunt.com/topics/artificial-intelligence" target="_blank">
+        <div class="link-card-name">Product Hunt — AI</div>
+        <div class="link-card-desc">New AI tools launching daily, with community reviews and use cases</div>
+        <div class="link-card-tag">producthunt.com</div>
+      </a>
+      <a class="link-card accent-blue" href="https://theresanaiforthat.com" target="_blank">
+        <div class="link-card-name">There's An AI For That</div>
+        <div class="link-card-desc">The largest AI tools database — searchable by use case and category</div>
+        <div class="link-card-tag">theresanaiforthat.com</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="link-cat">
+    <div class="link-cat-label">Tools from the challenge</div>
+    <div class="link-grid">
+      <a class="link-card accent-purple" href="https://claude.ai" target="_blank">
+        <div class="link-card-name">Claude</div>
+        <div class="link-card-desc">Your primary AI — writing, strategy, research, and analysis</div>
+        <div class="link-card-tag">claude.ai</div>
+      </a>
+      <a class="link-card accent-gold" href="https://fathom.video" target="_blank">
+        <div class="link-card-name">Fathom</div>
+        <div class="link-card-desc">Automatic meeting transcription and summaries — free tier available</div>
+        <div class="link-card-tag">fathom.video</div>
+      </a>
+      <a class="link-card accent-green" href="https://gamma.app" target="_blank">
+        <div class="link-card-name">Gamma</div>
+        <div class="link-card-desc">Pitch decks and presentations built from a text prompt in seconds</div>
+        <div class="link-card-tag">gamma.app</div>
+      </a>
+      <a class="link-card accent-cyan" href="https://www.make.com" target="_blank">
+        <div class="link-card-name">Make.com</div>
+        <div class="link-card-desc">Visual no-code automation — connects your tools and removes manual work</div>
+        <div class="link-card-tag">make.com</div>
+      </a>
+      <a class="link-card accent-purple" href="https://elevenlabs.io" target="_blank">
+        <div class="link-card-name">ElevenLabs</div>
+        <div class="link-card-desc">AI voice cloning and audio generation — free tier included</div>
+        <div class="link-card-tag">elevenlabs.io</div>
+      </a>
+      <a class="link-card accent-red" href="https://ideogram.ai" target="_blank">
+        <div class="link-card-name">Ideogram</div>
+        <div class="link-card-desc">AI image generation for social graphics, ads, and brand assets</div>
+        <div class="link-card-tag">ideogram.ai</div>
+      </a>
+      <a class="link-card accent-blue" href="https://www.notion.com" target="_blank">
+        <div class="link-card-name">Notion AI</div>
+        <div class="link-card-desc">Docs, SOPs, and your AI-powered knowledge base in one workspace</div>
+        <div class="link-card-tag">notion.com</div>
+      </a>
+      <a class="link-card accent-gold" href="https://instantly.ai" target="_blank">
+        <div class="link-card-name">Instantly</div>
+        <div class="link-card-desc">AI-powered cold outreach at scale — personalised emails to thousands</div>
+        <div class="link-card-tag">instantly.ai</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- PROMPT CHEATSHEET -->
+  <div class="section-title-wrap">
+    <div class="section-title-line"></div>
+    <div class="section-title">Quick-start prompt cheatsheet</div>
+    <div class="section-title-line"></div>
+  </div>
+
+  <div class="prompt-block">
+    <div class="prompt-hdr">
+      <div class="prompt-hdr-title">Copy and use these immediately in Claude</div>
+      <div class="prompt-hdr-badge">5 starter prompts</div>
+    </div>
+    <div class="prompt-item">
+      <div class="prompt-dot"></div>
+      <div class="prompt-text-wrap">
+        <div class="prompt-label">Content repurposing</div>
+        <div class="prompt-body">Take this [blog post / video transcript / LinkedIn post] and turn it into: 5 LinkedIn posts (100–150 words each, single point, ends with a question), 1 email newsletter (300 words, conversational), and 3 short captions for Instagram. Match my tone — direct, no fluff, no hype.</div>
+      </div>
+      <button class="prompt-copy" onclick="copyP(this,'Take this [blog post / video transcript / LinkedIn post] and turn it into: 5 LinkedIn posts (100-150 words each, single point, ends with a question), 1 email newsletter (300 words, conversational), and 3 short captions for Instagram. Match my tone - direct, no fluff, no hype.')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="prompt-dot"></div>
+      <div class="prompt-text-wrap">
+        <div class="prompt-label">Meeting transcript → action items</div>
+        <div class="prompt-body">Here's a meeting transcript. Give me: (1) a 3-sentence summary of what was discussed, (2) every decision made, (3) all action items with owners and deadlines, (4) anything that needs follow-up but wasn't resolved. Be precise and concise.</div>
+      </div>
+      <button class="prompt-copy" onclick="copyP(this,'Here\'s a meeting transcript. Give me: (1) a 3-sentence summary of what was discussed, (2) every decision made, (3) all action items with owners and deadlines, (4) anything that needs follow-up but wasn\'t resolved. Be precise and concise.')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="prompt-dot"></div>
+      <div class="prompt-text-wrap">
+        <div class="prompt-label">Brand voice setup</div>
+        <div class="prompt-body">Here are 3 pieces of content I've written that I'm proud of: [paste examples]. Study the voice, tone, sentence length, and word choices carefully. From now on, when I ask you to write anything, match this style exactly. Don't summarise — write in this voice.</div>
+      </div>
+      <button class="prompt-copy" onclick="copyP(this,'Here are 3 pieces of content I\'ve written that I\'m proud of: [paste examples]. Study the voice, tone, sentence length, and word choices carefully. From now on, when I ask you to write anything, match this style exactly. Don\'t summarise - write in this voice.')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="prompt-dot"></div>
+      <div class="prompt-text-wrap">
+        <div class="prompt-label">Lead follow-up sequence</div>
+        <div class="prompt-body">Write a 4-message follow-up sequence for a lead who received a quote but hasn't replied. Message 1 (Day 1): warm check-in. Message 2 (Day 3): add value — share one relevant insight or resource. Message 3 (Day 7): gentle scarcity or soft deadline. Message 4 (Day 14): graceful close. Tone: professional, warm, never pushy.</div>
+      </div>
+      <button class="prompt-copy" onclick="copyP(this,'Write a 4-message follow-up sequence for a lead who received a quote but hasn\'t replied. Message 1 (Day 1): warm check-in. Message 2 (Day 3): add value - share one relevant insight or resource. Message 3 (Day 7): gentle scarcity or soft deadline. Message 4 (Day 14): graceful close. Tone: professional, warm, never pushy.')">Copy</button>
+    </div>
+    <div class="prompt-item">
+      <div class="prompt-dot"></div>
+      <div class="prompt-text-wrap">
+        <div class="prompt-label">SOP from your process</div>
+        <div class="prompt-body">Here's a process I do regularly: [describe it step by step in plain language]. Turn this into a clean, structured Standard Operating Procedure that anyone on my team could follow without asking me a single question. Include what to do, how to do it, and why each step matters.</div>
+      </div>
+      <button class="prompt-copy" onclick="copyP(this,'Here\'s a process I do regularly: [describe it step by step in plain language]. Turn this into a clean, structured Standard Operating Procedure that anyone on my team could follow without asking me a single question. Include what to do, how to do it, and why each step matters.')">Copy</button>
+    </div>
+  </div>
+
+  <div class="pg-footer">
+    <span class="pg-footer-note">Everything AI · everythingai.org.uk</span>
+    <span class="pg-footer-badge">Challenge Command Centre · 2025</span>
+  </div>
+
+</div>
+
+<script>
+function copyP(btn, text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.textContent='Copied ✓';
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='Copy';},2200);
+  });
+}
+</script>
+</body>
+</html>

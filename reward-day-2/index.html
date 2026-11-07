@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7 Things AI Gurus Won't Tell You — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--white:#f5f4f0;
+  --red:#c0392b;--red-light:#fdecea;--red-mid:#f09595;
+  --green:#1a9e6e;--green-light:#d4f0e5;--green-dark:#0f6e4d;
+  --grey-100:#f0eeea;--grey-200:#dddbd5;--grey-400:#9e9c97;--grey-600:#5a5855;
+}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:48px 24px 80px;min-height:100vh}
+.page{max-width:720px;margin:0 auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--grey-200);margin-bottom:48px}
+.brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.reward-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--red-light);color:var(--red);padding:5px 12px;border-radius:100px}
+
+.hero{margin-bottom:48px}
+.reward-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+.hero-sub{font-size:16px;color:var(--grey-600);line-height:1.65;font-weight:300;max-width:540px}
+
+.warning-bar{background:var(--black);color:var(--white);border-radius:12px;padding:20px 24px;margin-bottom:48px;display:flex;gap:16px;align-items:flex-start}
+.warning-icon{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--red);color:white;padding:4px 8px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.warning-text{font-size:14px;color:rgba(255,255,255,.7);line-height:1.6;font-weight:300}
+.warning-text strong{color:white;font-weight:500}
+
+.truths-list{display:flex;flex-direction:column;gap:0;margin-bottom:48px;border:1px solid var(--grey-200);border-radius:14px;overflow:hidden}
+
+.truth-item{padding:28px 28px;border-bottom:1px solid var(--grey-200);position:relative}
+.truth-item:last-child{border-bottom:none}
+
+.truth-num{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.truth-num::after{content:'';flex:1;height:1px;background:var(--grey-200)}
+
+.truth-headline{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--black);margin-bottom:12px;line-height:1.25}
+
+.truth-body{font-size:14px;color:var(--grey-600);line-height:1.7;font-weight:300}
+.truth-body strong{color:var(--black);font-weight:500}
+
+.truth-callout{background:var(--grey-100);border-radius:8px;padding:14px 16px;margin-top:14px;font-size:13px;color:var(--grey-600);line-height:1.6;font-weight:300;border-left:3px solid var(--green)}
+.truth-callout strong{color:var(--black);font-weight:500}
+
+.myth-vs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+@media(max-width:520px){.myth-vs{grid-template-columns:1fr}}
+.myth-box{border-radius:8px;padding:12px 14px}
+.myth-label{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;margin-bottom:6px}
+.myth-text{font-size:13px;font-weight:300;line-height:1.5}
+
+.divider{border:none;border-top:1px solid var(--grey-200);margin:48px 0}
+
+.bottom-truth{background:var(--black);color:var(--white);border-radius:14px;padding:32px;margin-bottom:48px}
+.bt-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-600);margin-bottom:12px}
+.bt-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:14px;line-height:1.3}
+.bt-body{font-size:14px;color:rgba(255,255,255,.6);line-height:1.75;font-weight:300}
+.bt-body strong{color:white;font-weight:500}
+
+.gate-block{border:2px solid var(--black);border-radius:14px;padding:28px 32px;margin-bottom:48px}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px}
+.gate-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px}
+.gate-text{font-size:14px;color:var(--grey-600);line-height:1.65;font-weight:300}
+
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+<div class="top-bar">
+  <span class="brand">Everything AI</span>
+  <span class="reward-badge">Day 2 Reward</span>
+</div>
+
+<div class="hero">
+  <span class="reward-tag">5-Day Challenge — Unlocked</span>
+  <h1>7 Things AI Gurus<br>Won't Tell You</h1>
+  <p class="hero-sub">The information the loudest voices in AI are leaving out — and why knowing this separates the business owners making money from the ones making noise.</p>
+</div>
+
+<div class="warning-bar">
+  <span class="warning-icon">NOTE</span>
+  <span class="warning-text">Everything in here is something I wish I'd known before I started. Some of it is uncomfortable. All of it is true. <strong>Read it carefully — it changes how you evaluate everything you'll hear about AI from this point on.</strong></span>
+</div>
+
+<div class="truths-list">
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 01</div>
+    <div class="truth-headline">Generic AI is why most people fail — not AI itself</div>
+    <div class="truth-body">When someone tells you "AI didn't work for my business," what they almost always mean is "ChatGPT didn't work for my business." <strong>Generic AI and specialist AI are completely different products.</strong> One is a conversation partner. The other is a trained professional built for your exact job. The failure rate people talk about is almost entirely in the generic category.</div>
+    <div class="myth-vs">
+      <div class="myth-box" style="background:var(--red-light)">
+        <div class="myth-label" style="color:var(--red)">What people do</div>
+        <div class="myth-text" style="color:var(--red)">Ask ChatGPT to write their entire marketing strategy</div>
+      </div>
+      <div class="myth-box" style="background:var(--green-light)">
+        <div class="myth-label" style="color:var(--green-dark)">What actually works</div>
+        <div class="myth-text" style="color:var(--green-dark)">Use a specialist tool built for that specific marketing job</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 02</div>
+    <div class="truth-headline">The best AI tools cost almost nothing to start</div>
+    <div class="truth-body">The narrative that "serious AI is expensive" is pushed by agencies who want to charge you for the setup. <strong>The tools doing the most damage to traditional business models cost between £0 and £50 a month to trial.</strong> The real cost is time spent learning — and that drops dramatically when you follow a proven system rather than piecing it together from YouTube videos.</div>
+    <div class="truth-callout">The barrier to entry is not money. It's knowing which £20/month tool to use instead of the £2,000/month agency.</div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 03</div>
+    <div class="truth-headline">Prompt quality is the actual skill — and almost nobody teaches it properly</div>
+    <div class="truth-body">The most common complaint about AI output is that it's generic, robotic, and unusable. That's almost always a prompt problem, not a tool problem. <strong>The difference between a useless output and a world-class one is entirely in how you ask for it.</strong> Giving AI a vague instruction is like hiring a brilliant employee and telling them nothing about the job. The output reflects the input — always.</div>
+    <div class="truth-callout"><strong>The rule:</strong> the more context, specificity, and constraint you give the tool, the more precisely targeted and immediately usable the output becomes. This is a learnable skill — and most people never learn it.</div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 04</div>
+    <div class="truth-headline">AI doesn't replace the need for real business skills</div>
+    <div class="truth-body">The worst advice circulating right now is "you don't need any experience, just use AI." That's dangerous. <strong>AI multiplies whatever skills and judgment you already have.</strong> A good marketer using AI becomes a great one. Someone with no marketing knowledge using AI produces confident-sounding nonsense faster. The tool amplifies you — it doesn't replace the need for you to know what good looks like.</div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 05</div>
+    <div class="truth-headline">The businesses winning aren't using more tools — they're using fewer, better</div>
+    <div class="truth-body">There's a temptation to build an enormous AI tool stack because every new tool sounds impressive. The reality is different. <strong>The highest-performing AI-integrated businesses typically use three to five tools extremely well.</strong> Tool overload creates integration problems, data silos, and decision paralysis. The goal is a lean system that runs consistently — not a collection of impressive-sounding subscriptions.</div>
+    <div class="truth-callout">More tools is a beginner trap. A focused stack with clear inputs and outputs is a professional system.</div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 06</div>
+    <div class="truth-headline">The relationship and trust elements of your business cannot be automated — and shouldn't be</div>
+    <div class="truth-body">AI can handle the volume work brilliantly. It cannot replace the thing that makes clients choose you over a competitor who does the same thing at a lower price. <strong>Your judgment, your relationships, your reputation, your specific expertise — these are what you protect.</strong> The goal of AI is to free you to spend more time on those things, not to simulate them. Anyone who tells you otherwise is selling the wrong thing.</div>
+  </div>
+
+  <div class="truth-item">
+    <div class="truth-num">Truth 07</div>
+    <div class="truth-headline">The people making the most money with AI are not the ones who know the most about it</div>
+    <div class="truth-body">This one surprises people. The highest earners in the AI space are not the deepest technical experts. <strong>They're the people who understood where AI fit into a real business problem and implemented it faster than everyone else.</strong> Speed of implementation beats depth of knowledge every time. The person who builds something imperfect this week will outperform the person perfecting their strategy for the next three months.</div>
+    <div class="truth-callout"><strong>The only thing that matters is what you build, not what you know.</strong> This challenge is giving you the knowledge. What happens next depends on whether you act on it.</div>
+  </div>
+
+</div>
+
+<div class="bottom-truth">
+  <div class="bt-eyebrow">The meta truth</div>
+  <div class="bt-title">The information isn't the problem. The implementation gap is.</div>
+  <div class="bt-body">Every person who's watched 50 YouTube videos about AI and hasn't changed their business has an information problem — they have too much of it, poorly organised, with no clear first step. <strong>The gap isn't between knowing and not knowing. It's between knowing and doing.</strong> The rest of this challenge is about closing that gap — and giving you a system that makes doing it feel obvious rather than overwhelming.</div>
+</div>
+
+<div class="gate-block">
+  <div class="gate-eyebrow">Tomorrow — Day 3</div>
+  <div class="gate-title">Now you know what not to believe. Tomorrow you meet the tool that changes everything.</div>
+  <div class="gate-text">Day 3 is your introduction to Claude — what it actually is, how to set it up properly for your business, and the things I wish someone had told me when I started. You'll also work through finding your first real AI opportunity: the one area in your business where AI can make an immediate, practical difference.</div>
+</div>
+
+<footer class="footer">
+  <span class="footer-note">Everything AI · everythingai.org.uk</span>
+  <a class="footer-day" href="../rewards-tracker/" style="color:inherit;text-decoration:none">Day 2 of 5 · Back to Rewards Tracker →</a>
+</footer>
+
+</div>
+</body>
+</html>

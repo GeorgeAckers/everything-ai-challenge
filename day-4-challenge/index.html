@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4 — Your Implementation Plan | Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0a0a0a;--white:#f5f4f0;--blue:#1a56db;--blue-light:#dbeafe;--blue-dark:#1e3a8a;--blue-bright:#93c5fd;--surface:#fff;--grey-50:#f8f7f4;--grey-100:#f0eeea;--grey-200:#dddbd5;--grey-300:#c5c3bc;--grey-400:#9e9c97;--grey-600:#5a5855;--ok:#16a34a;--ok-light:#f0fdf4;--ok-dark:#166534;--purple:#7c3aed;--purple-light:#f3e8ff;--amber:#d97706;--amber-light:#fffbeb;--cyan:#0891b2;--cyan-light:#cffafe;--red:#dc2626;--red-light:#fef2f2}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:0 0 80px;min-height:100vh}
+.page{max-width:680px;margin:0 auto;padding:0 20px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;margin-bottom:32px;border-bottom:1px solid var(--grey-200)}
+.brand{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.day-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--blue);color:#fff;padding:6px 14px;border-radius:100px}
+.progress-row{display:flex;align-items:center;gap:6px;margin-bottom:32px}
+.prog-dot{width:48px;height:5px;border-radius:3px;background:var(--grey-200)}
+.prog-dot.active{background:var(--blue)}
+.prog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400);margin-left:4px}
+.hero{margin-bottom:28px}
+.day-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.08;letter-spacing:-.02em;color:var(--black);margin-bottom:12px}
+.hero-sub{font-size:15px;color:var(--grey-600);line-height:1.65;font-weight:300}
+.task-card{background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:32px;display:flex;gap:16px;align-items:flex-start}
+.task-icon{width:36px;height:36px;border-radius:8px;background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.task-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:5px}
+.task-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300}
+.task-text strong{color:#fff;font-weight:500}
+
+/* TIME BANK */
+.time-bank-card{background:linear-gradient(135deg,var(--ok-light) 0%,#dcfce7 100%);border:1.5px solid #bbf7d0;border-radius:14px;padding:18px 20px;margin-bottom:32px;display:flex;align-items:center;gap:14px}
+.time-bank-icon{width:44px;height:44px;border-radius:11px;background:rgba(22,163,74,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.time-bank-content{flex:1}
+.time-bank-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ok-dark);margin-bottom:3px;opacity:.7}
+.time-bank-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--ok-dark);line-height:1.1}
+.time-bank-sub{font-size:12px;color:var(--ok-dark);font-weight:300;margin-top:3px;opacity:.75}
+
+/* PROGRESS TRACKER */
+.progress-tracker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:32px}
+.pt-item{border:1.5px solid var(--grey-200);border-radius:10px;padding:13px 10px;text-align:center;transition:all .2s}
+.pt-item.done{border-color:var(--ok);background:var(--ok-light)}
+.pt-num{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--grey-300);margin-bottom:3px;transition:color .2s}
+.pt-item.done .pt-num{color:var(--ok)}
+.pt-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--grey-400);line-height:1.3;transition:color .2s}
+.pt-item.done .pt-label{color:var(--ok)}
+.pt-tick{display:none;font-size:14px;color:var(--ok);font-weight:700}
+.pt-item.done .pt-tick{display:block}
+.pt-item.done .pt-num{display:none}
+
+/* SEC LABEL */
+.sec-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--black);margin-bottom:5px}
+.sec-hint{font-size:13px;color:var(--grey-400);margin-bottom:18px;font-weight:300;line-height:1.5}
+
+/* PILLAR CARD */
+.pillar-card{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:16px;transition:border-color .2s}
+.pillar-card.complete{border-color:var(--ok)}
+.pillar-head{padding:16px 20px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;gap:14px;background:var(--grey-50);transition:background .2s}
+.pillar-card.complete .pillar-head{background:var(--ok-light);border-bottom-color:rgba(22,163,74,.2)}
+.pillar-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff;flex-shrink:0}
+.pillar-icon.marketing{background:var(--purple)}
+.pillar-icon.sales{background:var(--blue)}
+.pillar-icon.ops{background:var(--cyan)}
+.pillar-title-wrap{flex:1}
+.pillar-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.pillar-sub{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:1px}
+.pillar-badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:4px 10px;border-radius:100px;background:var(--grey-200);color:var(--grey-600)}
+.pillar-card.complete .pillar-badge{background:var(--ok);color:#fff}
+.pillar-body{padding:18px 20px}
+
+/* SUBSTEP */
+.substep{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--grey-100)}
+.substep:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.substep-num{display:inline-flex;align-items:center;gap:8px;margin-bottom:10px}
+.substep-circle{width:22px;height:22px;border-radius:50%;background:var(--grey-100);color:var(--grey-600);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;display:inline-flex;align-items:center;justify-content:center}
+.substep-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--black);letter-spacing:.01em}
+
+/* FIELD */
+.field{margin-bottom:0}
+.field-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400);margin-bottom:8px;display:block}
+input[type=text],input[type=number]{width:100%;border:1.5px solid var(--grey-200);border-radius:9px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--blue)}
+input[type=text]::placeholder,input[type=number]::placeholder{color:var(--grey-300)}
+
+/* COST GRID */
+.cost-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cost-input-wrap{position:relative}
+.cost-prefix,.cost-suffix{position:absolute;top:50%;transform:translateY(-50%);font-family:'DM Mono',monospace;font-size:13px;color:var(--grey-400);pointer-events:none}
+.cost-prefix{left:14px}
+.cost-suffix{right:14px}
+.cost-input-wrap input{padding-left:26px}
+.cost-input-wrap.suffix input{padding-left:14px;padding-right:50px}
+
+/* TOOL CHOICE */
+.tool-options{display:flex;flex-direction:column;gap:8px}
+.tool-opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--grey-200);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .15s;background:#fff}
+.tool-opt:hover{border-color:var(--blue)}
+.tool-opt.selected{border-color:var(--blue);background:var(--blue-light)}
+.tool-opt-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--grey-300);flex-shrink:0;position:relative;transition:all .15s}
+.tool-opt.selected .tool-opt-radio{border-color:var(--blue)}
+.tool-opt.selected .tool-opt-radio::after{content:'';position:absolute;inset:3px;background:var(--blue);border-radius:50%}
+.tool-opt-content{flex:1;min-width:0}
+.tool-opt-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--black)}
+.tool-opt-why{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px;line-height:1.4}
+.tool-recommended{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;background:var(--blue-light);padding:2px 6px;border-radius:4px;margin-left:6px}
+.tool-opt-other{border:1.5px solid var(--grey-200);border-radius:10px;padding:12px 14px;background:#fff;margin-top:2px}
+.tool-opt-other-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:6px}
+.tool-opt-other input{width:100%;border:1.5px solid var(--grey-200);border-radius:7px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--black);background:transparent;outline:none;transition:border-color .15s;margin-bottom:0}
+.tool-opt-other input:focus{border-color:var(--blue)}
+
+/* PROMPT LIBRARY */
+.prompt-lib{background:var(--grey-50);border:1.5px solid var(--grey-200);border-radius:10px;overflow:hidden;margin-top:8px}
+.prompt-lib-hdr{padding:9px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--grey-200);background:#fff;display:flex;align-items:center;gap:6px}
+.prompt-item{padding:12px 14px;border-bottom:1px solid var(--grey-200);display:flex;gap:12px;align-items:flex-start}
+.prompt-item:last-child{border-bottom:none}
+.prompt-text{flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--grey-600);font-weight:400;line-height:1.55}
+.prompt-copy{background:#fff;border:1.5px solid var(--grey-200);color:var(--grey-600);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:5px 10px;border-radius:6px;cursor:pointer;flex-shrink:0;transition:all .15s}
+.prompt-copy:hover{border-color:var(--blue);color:var(--blue)}
+.prompt-copy.copied{background:var(--ok);border-color:var(--ok);color:#fff}
+
+/* SETUP CHECKLIST */
+.setup-list{display:flex;flex-direction:column;gap:8px}
+.setup-row{display:flex;align-items:flex-start;gap:11px;padding:10px 12px;border:1.5px solid var(--grey-200);border-radius:9px;cursor:pointer;transition:all .15s;background:#fff}
+.setup-row:hover{border-color:var(--blue)}
+.setup-row.checked{background:var(--ok-light);border-color:var(--ok)}
+.setup-box{width:18px;height:18px;border-radius:5px;border:2px solid var(--grey-300);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
+.setup-row.checked .setup-box{background:var(--ok);border-color:var(--ok)}
+.setup-row.checked .setup-box::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.setup-text{flex:1;font-size:13px;color:var(--grey-600);font-weight:400;line-height:1.5}
+.setup-row.checked .setup-text{color:var(--ok-dark);text-decoration:line-through;text-decoration-color:rgba(22,163,74,.4)}
+
+/* DAY 7 PROMISE / TEXTAREA */
+textarea{width:100%;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;border:1.5px solid var(--grey-200);border-radius:9px;outline:none;resize:none;line-height:1.6;transition:border-color .15s}
+textarea:focus{border-color:var(--blue)}
+textarea::placeholder{color:var(--grey-300)}
+
+/* SUCCESS METRIC */
+.metric-row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:11px 13px;border:1.5px solid var(--grey-200);border-radius:9px;background:#fff}
+.metric-icon{color:var(--blue)}
+
+/* MARKETING VOICE EXTRA */
+.voice-extra{background:var(--purple-light);border:1.5px solid #e9d5ff;border-radius:10px;padding:14px;margin-top:14px}
+.voice-extra-hdr{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.voice-extra-text{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.6;margin-bottom:10px}
+.voice-extra-text strong{color:var(--black);font-weight:500}
+
+/* SUMMARY CARD */
+.summary-card{background:var(--black);border-radius:14px;padding:24px;margin-bottom:24px}
+.summary-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.summary-sub{font-size:12px;color:rgba(255,255,255,.4);font-weight:300;margin-bottom:18px}
+.summary-row{padding:14px 0;border-top:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.summary-row:first-of-type{border-top:none;padding-top:0}
+.summary-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--blue-bright);letter-spacing:.06em}
+.summary-content{}
+.summary-area{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
+.summary-line{font-size:13px;color:rgba(255,255,255,.7);font-weight:300;line-height:1.5}
+.summary-line.empty{color:rgba(255,255,255,.3);font-style:italic}
+.summary-tool{display:inline-block;font-family:'DM Mono',monospace;font-size:11px;color:var(--blue-bright);background:rgba(26,86,219,.2);border:0.5px solid rgba(147,197,253,.2);padding:2px 8px;border-radius:4px;margin-top:4px}
+
+/* COMMITMENT BLOCK */
+.write-block{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.write-hdr{background:var(--grey-50);padding:10px 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400);letter-spacing:.05em;border-bottom:1px solid var(--grey-200)}
+.write-block textarea{border:none;border-radius:0;padding:14px 16px}
+.write-block textarea:focus{border:none}
+
+/* REALITY CHECK */
+.reality-check{border:1.5px solid var(--amber);background:var(--amber-light);border-radius:12px;padding:18px;margin-bottom:24px}
+.reality-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.reality-icon{font-size:18px}
+.reality-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#92400e}
+.reality-text{font-size:13px;color:#78350f;font-weight:300;line-height:1.55;margin-bottom:14px}
+.reality-yn{display:flex;gap:8px}
+.reality-btn{flex:1;padding:10px;border:1.5px solid #fde68a;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#92400e;transition:all .15s}
+.reality-btn:hover{border-color:var(--amber)}
+.reality-btn.selected{background:var(--amber);border-color:var(--amber);color:#fff;font-weight:700}
+.reality-backup{margin-top:12px;display:none}
+.reality-backup.show{display:block}
+
+/* EMAIL */
+.email-section{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:32px}
+.email-section-header{background:var(--grey-50);padding:18px 22px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;gap:14px}
+.email-section-icon{width:38px;height:38px;border-radius:9px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.email-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.email-section-sub{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+.email-section-body{padding:20px 22px}
+.email-desc{font-size:13px;color:var(--grey-600);line-height:1.6;font-weight:300;margin-bottom:16px}
+.email-row{display:flex;gap:10px}
+.email-input{flex:1;border:1.5px solid var(--grey-200);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s}
+.email-input:focus{border-color:var(--blue)}
+.email-input::placeholder{color:var(--grey-300)}
+.send-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.send-btn:hover{background:var(--blue-dark)}
+.send-btn:disabled{opacity:.6;cursor:not-allowed}
+.email-status{margin-top:12px;font-size:13px;line-height:1.5;display:none;padding:10px 14px;border-radius:8px}
+.email-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.email-status.success{display:block;background:var(--blue-light);color:var(--blue-dark);border:1px solid #bfdbfe}
+.email-status.loading{display:block;background:var(--grey-100);color:var(--grey-600);border:1px solid var(--grey-200)}
+
+/* REVEAL */
+.reveal-wrap{margin:32px 0}
+.reveal-locked{background:var(--black);border-radius:16px;padding:36px 24px;text-align:center;position:relative;overflow:hidden}
+.reveal-border{position:absolute;inset:0;border-radius:16px;border:1.5px solid transparent;background:linear-gradient(var(--black),var(--black)) padding-box,linear-gradient(135deg,#1a56db 0%,#93c5fd 50%,#1a56db 100%) border-box;background-size:300% 300%;animation:borderSpin 3s linear infinite}
+@keyframes borderSpin{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.reveal-inner{position:relative;z-index:1}
+.reveal-lock{width:52px;height:52px;border-radius:50%;background:rgba(147,197,253,.12);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.reveal-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:8px}
+.reveal-heading{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.reveal-sub{font-size:13px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;max-width:380px;margin:0 auto 22px}
+.reveal-btn-main{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.reveal-btn-main:hover{background:var(--blue-dark);transform:scale(1.02)}
+.reveal-open{display:none;border:2px solid var(--blue);border-radius:16px;overflow:hidden;animation:popIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.reveal-open-top{background:var(--black);padding:28px 24px;text-align:center}
+.done-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.2);border:1px solid rgba(147,197,253,.3);color:var(--blue-bright);font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border-radius:100px;margin-bottom:16px}
+.code-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px}
+.code-display{font-family:'DM Mono',monospace;font-size:clamp(20px,5vw,30px);font-weight:500;letter-spacing:.14em;color:#fff;background:rgba(26,86,219,.2);border:1.5px solid rgba(147,197,253,.25);padding:14px 22px;border-radius:10px;display:inline-block;margin-bottom:16px;animation:pulse 2.5s ease-in-out infinite alternate}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(26,86,219,0)}to{box-shadow:0 0 18px 3px rgba(26,86,219,.3)}}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.copy-btn:hover,.copy-btn.copied{border-color:var(--blue-bright);color:var(--blue-bright)}
+.reveal-open-bottom{background:var(--blue-light);padding:14px 22px;text-align:center}
+.reveal-instruction{font-size:13px;color:var(--blue-dark);font-weight:400;line-height:1.6}
+.reveal-instruction a{color:var(--blue-dark);font-weight:700;text-decoration:underline}
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center;margin-top:40px}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-next{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);font-weight:500}
+@media(max-width:480px){.cost-grid{grid-template-columns:1fr}}
+.copy-section{margin-bottom:32px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.copy-response-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 22px;background:var(--black);color:var(--white);border:1.5px solid var(--grey-200);border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.copy-response-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.copy-hint{font-size:12px;color:var(--grey-400);font-weight:300;text-align:center;line-height:1.5}
+.copy-status{font-size:13px;font-weight:400;text-align:center;min-height:20px;transition:all .2s}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+  <div class="top-bar"><span class="brand">Everything AI</span><span class="day-badge">Day 04 — Challenge</span></div>
+  <div class="progress-row">
+    <div class="prog-dot active"></div><div class="prog-dot active"></div><div class="prog-dot active"></div><div class="prog-dot active"></div><div class="prog-dot"></div>
+    <span class="prog-label">4 of 5</span>
+  </div>
+
+  <div class="hero">
+    <span class="day-eyebrow">Day 04 — Finding the Right Tools & Strategy</span>
+    <h1>Pick your tools.<br>Build the strategy.</h1>
+    <p class="hero-sub">Today is about examples — real tools, real strategies, real use cases from businesses like yours. Work through all three pillars, choose what fits, and leave with everything you need to build your full AI roadmap on Day 5.</p>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l3.5 3.5L14 6"/><circle cx="9" cy="9" r="7"/></svg></div>
+    <div>
+      <div class="task-label">Today's task</div>
+      <div class="task-text"><strong>Prepare everything for your Day 5 roadmap.</strong> For each pillar — name the task, count the real cost to your business, pick the right tool, steal a starter prompt, and tick off the setup steps. Everything you fill in today feeds directly into the roadmap you'll build tomorrow.</div>
+    </div>
+  </div>
+
+  <!-- TIME BANK -->
+  <div class="time-bank-card">
+    <div class="time-bank-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="9"/><path d="M11 6v5l3 2"/></svg>
+    </div>
+    <div class="time-bank-content">
+      <div class="time-bank-label">Your weekly AI time bank</div>
+      <div class="time-bank-value" id="time-bank-display">— hrs · £—</div>
+      <div class="time-bank-sub" id="time-bank-sub">Fill in the cost for each pillar below to see what AI could give you back</div>
+    </div>
+  </div>
+
+  <div class="progress-tracker">
+    <div class="pt-item" id="pt-marketing"><div class="pt-tick">✓</div><div class="pt-num">01</div><div class="pt-label">Marketing</div></div>
+    <div class="pt-item" id="pt-sales"><div class="pt-tick">✓</div><div class="pt-num">02</div><div class="pt-label">Sales</div></div>
+    <div class="pt-item" id="pt-ops"><div class="pt-tick">✓</div><div class="pt-num">03</div><div class="pt-label">Operations</div></div>
+  </div>
+
+  <div class="sec-label">The three pillars</div>
+  <div class="sec-hint">Work through each one. Everything you fill in here becomes the raw material for your Day 5 AI roadmap.</div>
+
+  <!-- ============================ -->
+  <!-- PILLAR 1 — MARKETING -->
+  <!-- ============================ -->
+  <div class="pillar-card" id="card-marketing">
+    <div class="pillar-head">
+      <div class="pillar-icon marketing">M</div>
+      <div class="pillar-title-wrap">
+        <div class="pillar-title">Pillar 01 — Marketing & Content</div>
+        <div class="pillar-sub">Marketing, content, and brand voice</div>
+      </div>
+      <div class="pillar-badge" id="badge-marketing">0 of 5</div>
+    </div>
+    <div class="pillar-body">
+
+      <!-- Substep 1: Task -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">1</div><div class="substep-title">Name the one marketing task</div></div>
+        <div class="field">
+          <input type="text" id="task-marketing" placeholder="e.g. Repurposing my latest blog into 5 LinkedIn posts and an email..." oninput="update()"/>
+        </div>
+      </div>
+
+      <!-- Substep 2: Cost -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">2</div><div class="substep-title">What does this currently cost you?</div></div>
+        <div class="cost-grid">
+          <div>
+            <label class="field-label">Hours per week</label>
+            <div class="cost-input-wrap suffix">
+              <input type="number" id="hours-marketing" min="0" max="40" step="0.5" placeholder="3" oninput="update()"/>
+              <span class="cost-suffix">hrs</span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Or £ paid out</label>
+            <div class="cost-input-wrap">
+              <span class="cost-prefix">£</span>
+              <input type="number" id="cost-marketing" min="0" step="10" placeholder="200" oninput="update()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 3: Tool -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">3</div><div class="substep-title">Pick your tool</div></div>
+        <div class="tool-options">
+          <div class="tool-opt" onclick="selTool('marketing','Claude',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Claude <span class="tool-recommended">Recommended</span></div>
+              <div class="tool-opt-why">Your content engine — writing, drafting, repurposing</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('marketing','Gamma',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Gamma</div>
+              <div class="tool-opt-why">For presentations, pitch decks, visual documents</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('marketing','Ideogram',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Ideogram</div>
+              <div class="tool-opt-why">For images, social graphics, ad creatives</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('marketing','ElevenLabs',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">ElevenLabs</div>
+              <div class="tool-opt-why">For AI voiceovers, podcast intros, ad audio</div>
+            </div>
+          </div>
+          <div class="tool-opt-other">
+            <div class="tool-opt-other-label">Other — add your own</div>
+            <input type="text" id="other-marketing" placeholder="e.g. Midjourney, Jasper, Canva AI..." oninput="setOtherTool('marketing',this.value)"/>
+          </div>
+        </div>
+        <div class="voice-extra">
+          <div class="voice-extra-hdr">🎙️ Make it sound like you</div>
+          <div class="voice-extra-text">Before you generate any marketing content, set up a <strong>Claude Project</strong> with your brand voice. Drop in 3 past pieces of content you're proud of and tell Claude: <em>"Match the tone, structure, and voice of these examples."</em> The difference between this and generic AI output is night and day.</div>
+        </div>
+      </div>
+
+      <!-- Substep 4: Starter Prompts -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">4</div><div class="substep-title">Steal a starter prompt</div></div>
+        <div class="prompt-lib">
+          <div class="prompt-lib-hdr">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h7v7H2z"/><path d="M4 4.5h3M4 6.5h3"/></svg>
+            Ready-to-use prompts
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Take this blog post and turn it into 5 LinkedIn posts written for [your audience]. Each post should make a single point, be 100–150 words, and end with a question or hook. Match my tone — direct, no fluff.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Take this blog post and turn it into 5 LinkedIn posts written for [your audience]. Each post should make a single point, be 100-150 words, and end with a question or hook. Match my tone - direct, no fluff.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Write 10 ad copy variations for [product/service]. Each one should test a different hook — pain, desire, curiosity, social proof, urgency, contrarian, surprising stat, story, question, direct. Max 30 words each.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Write 10 ad copy variations for [product/service]. Each one should test a different hook - pain, desire, curiosity, social proof, urgency, contrarian, surprising stat, story, question, direct. Max 30 words each.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Here are 3 past pieces of my best content. Study the voice, tone, sentence rhythm, and word choices. Then write a [blog/email/post] about [topic] in this voice. Don't summarise — write it.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Here are 3 past pieces of my best content. Study the voice, tone, sentence rhythm, and word choices. Then write a [blog/email/post] about [topic] in this voice. Don't summarise - write it.`)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 5: Setup Checklist -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">5</div><div class="substep-title">Set it up — optional but advised</div></div>
+        <div class="setup-list">
+          <div class="setup-row" onclick="toggleSetup(this,'marketing',0)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Create a Claude Project called "Marketing Content" and add your business description as context</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'marketing',1)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Upload 3 past pieces of your best content as voice examples</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'marketing',2)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Copy one of the starter prompts above into the project and customise it for your task</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'marketing',3)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Run the prompt and review the first output — note what works and what doesn't</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- PILLAR 2 — SALES -->
+  <!-- ============================ -->
+  <div class="pillar-card" id="card-sales">
+    <div class="pillar-head">
+      <div class="pillar-icon sales">S</div>
+      <div class="pillar-title-wrap">
+        <div class="pillar-title">Pillar 02 — Customer Communication & Sales</div>
+        <div class="pillar-sub">Lead follow-up, proposals, and client communication</div>
+      </div>
+      <div class="pillar-badge" id="badge-sales">0 of 5</div>
+    </div>
+    <div class="pillar-body">
+
+      <!-- Substep 1: Task -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">1</div><div class="substep-title">Name the one sales task</div></div>
+        <div class="field">
+          <input type="text" id="task-sales" placeholder="e.g. Setting up automatic lead response for new website enquiries..." oninput="update()"/>
+        </div>
+      </div>
+
+      <!-- Substep 2: Cost -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">2</div><div class="substep-title">What's this currently costing you?</div></div>
+        <div class="cost-grid">
+          <div>
+            <label class="field-label">Hours per week</label>
+            <div class="cost-input-wrap suffix">
+              <input type="number" id="hours-sales" min="0" max="40" step="0.5" placeholder="4" oninput="update()"/>
+              <span class="cost-suffix">hrs</span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Or lost £ per month</label>
+            <div class="cost-input-wrap">
+              <span class="cost-prefix">£</span>
+              <input type="number" id="cost-sales" min="0" step="100" placeholder="500" oninput="update()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 3: Tool -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">3</div><div class="substep-title">Pick your tool</div></div>
+        <div class="tool-options">
+          <div class="tool-opt" onclick="selTool('sales','GoHighLevel',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">GoHighLevel (GHL) <span class="tool-recommended">Recommended</span></div>
+              <div class="tool-opt-why">CRM, workflows, and follow-up automation — all in one platform</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('sales','Claude',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Claude</div>
+              <div class="tool-opt-why">For proposals, complex enquiries, follow-up writing</div>
+            </div>
+          </div>
+          <div class="tool-opt-other">
+            <div class="tool-opt-other-label">Other — add your own</div>
+            <input type="text" id="other-sales" placeholder="e.g. HubSpot, Instantly, Tidio..." oninput="setOtherTool('sales',this.value)"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 4: Starter Prompts -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">4</div><div class="substep-title">Steal a starter prompt</div></div>
+        <div class="prompt-lib">
+          <div class="prompt-lib-hdr">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h7v7H2z"/><path d="M4 4.5h3M4 6.5h3"/></svg>
+            Ready-to-use prompts
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Write a 4-message follow-up sequence for a lead who got a quote but hasn't replied. Day 1: gentle nudge. Day 3: value add. Day 7: scarcity / soft deadline. Day 14: graceful exit. Match my tone — professional, warm, not pushy.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Write a 4-message follow-up sequence for a lead who got a quote but hasn't replied. Day 1: gentle nudge. Day 3: value add. Day 7: scarcity / soft deadline. Day 14: graceful exit. Match my tone - professional, warm, not pushy.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Here's a client's enquiry and their requirements. Write a personalised proposal for them. Use my standard structure: intro, understanding of their problem, proposed approach, deliverables, pricing, timeline, next step. Tone: confident but human.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Here's a client's enquiry and their requirements. Write a personalised proposal for them. Use my standard structure: intro, understanding of their problem, proposed approach, deliverables, pricing, timeline, next step. Tone: confident but human.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Set up an instant response message for a new lead enquiry. The reply should: acknowledge them by name, confirm we've received their enquiry, set a clear expectation for when they'll hear from a real person, and feel warm not robotic. Keep it under 80 words.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Set up an instant response message for a new lead enquiry. The reply should: acknowledge them by name, confirm we've received their enquiry, set a clear expectation for when they'll hear from a real person, and feel warm not robotic. Keep it under 80 words.`)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 5: Setup Checklist -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">5</div><div class="substep-title">Set it up — optional but advised</div></div>
+        <div class="step-how" style="margin-bottom:14px">
+          <div class="step-how-label">Important — read this first</div>
+          <div class="step-how-text">What we're building here is <strong>automation, not AI</strong> — and that distinction matters in sales more than anywhere else. No tool closes a deal better than a human. The goal is simple: use automation to handle the mechanics — instant acknowledgement, timed follow-ups, staying visible — so that by the time you pick up the phone or send that personal message, the lead is warm and expecting you. You do the selling. The workflow does the legwork.<br><br>AI conversation assistants, voice agents, and deeper sales automation are covered inside <strong><a href="https://everythingai.org.uk" target="_blank" style="color:var(--blue);text-decoration:underline">AI for Business Domination</a></strong>. What's below gets you started.</div>
+        </div>
+        <div class="setup-list">
+          <div class="setup-row" onclick="toggleSetup(this,'sales',0)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Log in to GoHighLevel (or sign up at gohighlevel.com) and create a new Workflow</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'sales',1)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Set the trigger: "Contact submitted a form" (or your landing page form source) — this fires the workflow the moment a lead signs up</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'sales',2)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Add a first action: send an instant confirmation email or SMS — use Claude to write it (warm, personal-feeling, sets expectation for human follow-up)</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'sales',3)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Add timed follow-up steps at Day 3 and Day 7 — these keep you visible while you prepare to have a real conversation. Then you take over.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- PILLAR 3 — OPERATIONS -->
+  <!-- ============================ -->
+  <div class="pillar-card" id="card-ops">
+    <div class="pillar-head">
+      <div class="pillar-icon ops">O</div>
+      <div class="pillar-title-wrap">
+        <div class="pillar-title">Pillar 03 — Operations & Internal Processes</div>
+        <div class="pillar-sub">Meeting notes, SOPs, admin, and reporting</div>
+      </div>
+      <div class="pillar-badge" id="badge-ops">0 of 5</div>
+    </div>
+    <div class="pillar-body">
+
+      <!-- Substep 1: Task -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">1</div><div class="substep-title">Name the one operations task</div></div>
+        <div class="field">
+          <input type="text" id="task-ops" placeholder="e.g. Auto-transcribing and summarising every client meeting from now on..." oninput="update()"/>
+        </div>
+      </div>
+
+      <!-- Substep 2: Cost -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">2</div><div class="substep-title">What's this currently costing you?</div></div>
+        <div class="cost-grid">
+          <div>
+            <label class="field-label">Hours per week</label>
+            <div class="cost-input-wrap suffix">
+              <input type="number" id="hours-ops" min="0" max="40" step="0.5" placeholder="5" oninput="update()"/>
+              <span class="cost-suffix">hrs</span>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Or £ on tools/staff</label>
+            <div class="cost-input-wrap">
+              <span class="cost-prefix">£</span>
+              <input type="number" id="cost-ops" min="0" step="50" placeholder="300" oninput="update()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 3: Tool -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">3</div><div class="substep-title">Pick your tool</div></div>
+        <div class="tool-options">
+          <div class="tool-opt" onclick="selTool('ops','Fathom',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Fathom <span class="tool-recommended">Recommended</span></div>
+              <div class="tool-opt-why">Auto-joins meetings, transcribes, summarises, lists action points</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('ops','Notion AI',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Notion AI</div>
+              <div class="tool-opt-why">For documentation, SOPs, searchable knowledge base</div>
+            </div>
+          </div>
+          <div class="tool-opt" onclick="selTool('ops','Claude',this)">
+            <div class="tool-opt-radio"></div>
+            <div class="tool-opt-content">
+              <div class="tool-opt-name">Claude</div>
+              <div class="tool-opt-why">For data analysis, reporting, repetitive admin</div>
+            </div>
+          </div>
+          <div class="tool-opt-other">
+            <div class="tool-opt-other-label">Other — add your own</div>
+            <input type="text" id="other-ops" placeholder="e.g. Make.com, Zapier, Otter.ai..." oninput="setOtherTool('ops',this.value)"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 4: Starter Prompts -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">4</div><div class="substep-title">Steal a starter prompt</div></div>
+        <div class="prompt-lib">
+          <div class="prompt-lib-hdr">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2h7v7H2z"/><path d="M4 4.5h3M4 6.5h3"/></svg>
+            Ready-to-use prompts
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Here's a process I do regularly: [describe step by step]. Turn this into a clean, structured Standard Operating Procedure document anyone on my team could follow without asking me questions. Include why each step matters.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Here's a process I do regularly: [describe step by step]. Turn this into a clean, structured Standard Operating Procedure document anyone on my team could follow without asking me questions. Include why each step matters.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Here's my sales/operations data from the last month [paste]. Tell me: what's performing, what isn't, what stands out, and what action you'd recommend based on the patterns. Be direct — no fluff.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Here's my sales/operations data from the last month [paste]. Tell me: what's performing, what isn't, what stands out, and what action you'd recommend based on the patterns. Be direct - no fluff.`)">Copy</button>
+          </div>
+          <div class="prompt-item">
+            <div class="prompt-text">Here's a meeting transcript. Give me: (1) a 3-bullet summary of what was discussed, (2) the decisions made, (3) the action items with owners and deadlines, (4) anything that needs follow-up but wasn't resolved.</div>
+            <button class="prompt-copy" onclick="copyPrompt(this,`Here's a meeting transcript. Give me: (1) a 3-bullet summary of what was discussed, (2) the decisions made, (3) the action items with owners and deadlines, (4) anything that needs follow-up but wasn't resolved.`)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Substep 5: Setup Checklist -->
+      <div class="substep">
+        <div class="substep-num"><div class="substep-circle">5</div><div class="substep-title">Set it up — optional but advised</div></div>
+        <div class="setup-list">
+          <div class="setup-row" onclick="toggleSetup(this,'ops',0)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Sign up to fathom.video and connect your calendar (Zoom, Google Meet, or Teams)</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'ops',1)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Make sure Fathom is set to auto-join your next 3 meetings</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'ops',2)">
+            <div class="setup-box"></div>
+            <div class="setup-text">Create a Notion page called "Meeting Notes Archive" — every Fathom summary gets pasted here</div>
+          </div>
+          <div class="setup-row" onclick="toggleSetup(this,'ops',3)">
+            <div class="setup-box"></div>
+            <div class="setup-text">After your next meeting, test it — open the Fathom summary and confirm action items are clear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ -->
+  <!-- SUMMARY -->
+  <!-- ============================ -->
+  <div class="sec-label" style="margin-top:32px">Your Day 5 preparation summary</div>
+  <div class="sec-hint">This updates live as you fill the pillars in above. This is what you'll take into Day 5.</div>
+  <div class="summary-card">
+    <div class="summary-title">Ready for your roadmap</div>
+    <div class="summary-sub">Everything you've chosen today becomes the foundation of your Day 5 AI roadmap.</div>
+    <div class="summary-row">
+      <div class="summary-num">01</div>
+      <div class="summary-content">
+        <div class="summary-area">Marketing</div>
+        <div class="summary-line empty" id="sum-marketing">Pick a task and a tool above</div>
+      </div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-num">02</div>
+      <div class="summary-content">
+        <div class="summary-area">Sales</div>
+        <div class="summary-line empty" id="sum-sales">Pick a task and a tool above</div>
+      </div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-num">03</div>
+      <div class="summary-content">
+        <div class="summary-area">Operations</div>
+        <div class="summary-line empty" id="sum-ops">Pick a task and a tool above</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS METRIC -->
+  <div class="sec-label" style="margin-top:8px">Your measurable result</div>
+  <div class="sec-hint" style="margin-bottom:12px">This is what you'll use on Day 5 to judge whether your roadmap is working. Does it save time, save money, or create an output good enough to use?</div>
+  <div class="write-block">
+    <div class="write-hdr">I'll know this worked when...</div>
+    <textarea id="metric" rows="2" placeholder="e.g. ...I've spent less than 2 hours total on content production this week and still posted everything I planned, and no lead has waited more than 5 minutes for a first reply."></textarea>
+  </div>
+
+  <!-- REALITY CHECK -->
+  <div class="reality-check">
+    <div class="reality-hdr">
+      <div class="reality-icon">⚠️</div>
+      <div class="reality-title">Pick one and stick to it</div>
+    </div>
+    <div class="reality-text">You've explored all three pillars. Now be honest. Trying to implement all three at once is the fastest route to implementing none of them. Pick the one area that will make the biggest difference to your business right now — and commit to that one first. The others aren't going anywhere.</div>
+    <div class="reality-backup show" id="reality-backup" style="display:block!important">
+      <label class="field-label" style="margin-top:8px;display:block">Which ONE pillar are you starting with?</label>
+      <div class="reality-yn" style="margin-bottom:10px">
+        <button class="reality-btn" id="rb-marketing" onclick="setReality(this,'Marketing')">Marketing</button>
+        <button class="reality-btn" id="rb-sales" onclick="setReality(this,'Sales')">Sales</button>
+        <button class="reality-btn" id="rb-ops" onclick="setReality(this,'Operations')">Operations</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL -->
+
+  <div class="copy-section">
+    <button class="copy-response-btn" id="copyBtn" onclick="copyResponse()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg>
+      Copy my responses to clipboard
+    </button>
+    <div class="copy-hint">Paste into a notes app, Google Doc, or anywhere you keep your work.</div>
+    <div class="copy-status" id="copyStatus"></div>
+  </div>
+
+<!-- REVEAL -->
+  <div class="reveal-wrap">
+    <div class="reveal-locked" id="locked">
+      <div class="reveal-border"></div>
+      <div class="reveal-inner">
+        <div class="reveal-lock"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="10" width="14" height="11" rx="2.5"/><path d="M7 10V7.5a4 4 0 018 0V10"/><circle cx="11" cy="16" r="1.5" fill="#93c5fd" stroke="none"/></svg></div>
+        <p class="reveal-eyebrow">Day 4 complete</p>
+        <p class="reveal-heading">Your reward is waiting</p>
+        <p class="reveal-sub">Complete all three pillars, your measurable result, and pick your one starting pillar — then tap to reveal your Day 4 unlock code.</p>
+        <button class="reveal-btn-main" onclick="reveal()">Reveal my code <span style="font-size:17px;margin-left:2px">→</span></button>
+      </div>
+    </div>
+    <div class="reveal-open" id="opened">
+      <div class="reveal-open-top">
+        <div class="done-badge"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Day 4 complete</div>
+        <div class="code-label">Your unlock code</div>
+        <div class="code-display">EAI-D4-AUDIT</div><br>
+        <button class="copy-btn" id="cpBtn" onclick="cp('EAI-D4-AUDIT','cpBtn')"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code</button>
+      </div>
+      <div class="reveal-open-bottom">
+        <p class="reveal-instruction">Go to the <a href="../rewards-tracker/">Everything AI rewards tracker</a>, enter this code and unlock your Day 4 reward — <strong>The AI Business Blueprint</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer"><span class="footer-note">Everything AI · everythingai.org.uk</span><span class="footer-next">Day 05 tomorrow →</span></footer>
+</div>
+
+<script>
+const state={
+  marketing:{task:'',tool:'',otherTool:'',hours:0,cost:0,setup:[false,false,false,false]},
+  sales:{task:'',tool:'',otherTool:'',hours:0,cost:0,setup:[false,false,false,false]},
+  ops:{task:'',tool:'',otherTool:'',hours:0,cost:0,setup:[false,false,false,false]}
+};
+let reality=null;
+
+function selTool(pillar,tool,el){
+  state[pillar].tool=tool;
+  document.getElementById('other-'+pillar).value='';
+  state[pillar].otherTool='';
+  const wrap=el.closest('.tool-options');
+  wrap.querySelectorAll('.tool-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  update();
+}
+
+function setOtherTool(pillar,val){
+  state[pillar].otherTool=val.trim();
+  if(val.trim()){
+    const wrap=document.getElementById('other-'+pillar).closest('.tool-options');
+    wrap.querySelectorAll('.tool-opt').forEach(o=>o.classList.remove('selected'));
+    state[pillar].tool='';
+  }
+  update();
+}
+
+function toggleSetup(el,pillar,idx){
+  state[pillar].setup[idx]=!state[pillar].setup[idx];
+  el.classList.toggle('checked');
+  update();
+}
+
+function copyPrompt(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.textContent='Copied ✓';
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='Copy';},2000);
+  });
+}
+
+function setReality(btn,val){
+  reality=val;
+  document.querySelectorAll('.reality-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function pillarProgress(p){
+  let count=0;
+  if(state[p].task.trim()) count++;
+  if(state[p].hours>0||state[p].cost>0) count++;
+  if(state[p].tool||state[p].otherTool) count++;
+  if(state[p].setup.every(s=>s)) count++;
+  return count;
+}
+
+function resolvedTool(p){
+  return state[p].otherTool||state[p].tool||'';
+}
+
+function update(){
+  ['marketing','sales','ops'].forEach(p=>{
+    state[p].task=document.getElementById('task-'+p).value;
+    state[p].hours=parseFloat(document.getElementById('hours-'+p).value)||0;
+    state[p].cost=parseFloat(document.getElementById('cost-'+p).value)||0;
+
+    const progress=pillarProgress(p);
+    const complete=progress===4;
+    const card=document.getElementById('card-'+p);
+    const pt=document.getElementById('pt-'+p);
+    const badge=document.getElementById('badge-'+p);
+
+    if(complete){
+      card.classList.add('complete');
+      pt.classList.add('done');
+      badge.textContent='Complete';
+    } else {
+      card.classList.remove('complete');
+      pt.classList.remove('done');
+      badge.textContent=`${progress} of 4`;
+    }
+
+    const sum=document.getElementById('sum-'+p);
+    const tool=resolvedTool(p);
+    if(state[p].task.trim()||tool){
+      const parts=[];
+      if(state[p].task.trim()) parts.push(`<strong style="color:#fff">Task:</strong> ${state[p].task.trim()}`);
+      if(tool) parts.push(`<span class="summary-tool">${tool}</span>`);
+      sum.innerHTML=parts.join('<br>');
+      sum.classList.remove('empty');
+    } else {
+      sum.textContent='Pick a task and a tool above';
+      sum.classList.add('empty');
+    }
+  });
+
+  // Time bank
+  const totalHrs=['marketing','sales','ops'].reduce((s,p)=>s+state[p].hours,0);
+  const totalCost=['marketing','sales','ops'].reduce((s,p)=>s+state[p].cost,0);
+  const display=document.getElementById('time-bank-display');
+  const sub=document.getElementById('time-bank-sub');
+  if(totalHrs>0||totalCost>0){
+    const yearlyHrs=totalHrs*52;
+    display.textContent=`${totalHrs} hrs/week · £${totalCost.toLocaleString()} ${state.sales.cost>0?'lost':''}`;
+    sub.textContent=`Across the year that's roughly ${yearlyHrs} hours and £${(totalCost*12).toLocaleString()} — that's the AI prize.`;
+  } else {
+    display.textContent='— hrs · £—';
+    sub.textContent='Fill in the cost for each pillar below to see what AI could give you back';
+  }
+}
+
+function buildSummary(){
+  const metric=document.getElementById('metric').value.trim();
+  const missing=[];
+  ['marketing','sales','ops'].forEach(p=>{
+    const labels={marketing:'Marketing',sales:'Sales',ops:'Operations'};
+    if(!state[p].task.trim()) missing.push(`${labels[p]} — task not named`);
+    if(!(state[p].hours>0||state[p].cost>0)) missing.push(`${labels[p]} — cost (hours or £) not added`);
+    if(!resolvedTool(p)) missing.push(`${labels[p]} — tool not selected`);
+  });
+  if(!metric) missing.push('your measurable result ("I\'ll know this worked when...")');
+  if(!reality) missing.push('your starting pillar — pick one in the box below the summary');
+  if(missing.length) return{error:missing};
+
+  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const pillarBlock=(label,p)=>{
+    const tool=resolvedTool(p);
+    const toolLine=state[p].otherTool?`Tool: ${state[p].otherTool} (added by user)`:`Tool: ${tool}`;
+    return `${label}\nTask: ${state[p].task.trim()}\nCurrent cost: ${state[p].hours>0?state[p].hours+' hrs/week':''}${state[p].hours>0&&state[p].cost>0?' · ':''}${state[p].cost>0?'£'+state[p].cost.toLocaleString():''}\n${toolLine}`;
+  };
+  const totalHrs=['marketing','sales','ops'].reduce((s,p)=>s+state[p].hours,0);
+  const totalCost=['marketing','sales','ops'].reduce((s,p)=>s+state[p].cost,0);
+  const focusLine=`Starting pillar: ${reality}`;
+
+  return{text:`EVERYTHING AI — DAY 4 PREPARATION NOTES\n${date}\n─────────────────────────────────────────\n\nYOUR WEEKLY AI TIME BANK\n${totalHrs} hrs/week · £${totalCost.toLocaleString()}\nAcross the year: ${totalHrs*52} hours · £${(totalCost*12).toLocaleString()}\nThat's the AI prize.\n\n─────────────────────────────────────────\n\n${pillarBlock('01. MARKETING','marketing')}\n\n${pillarBlock('02. SALES','sales')}\n\n${pillarBlock('03. OPERATIONS','ops')}\n\n─────────────────────────────────────────\n\nMEASURABLE RESULT\nI'll know this worked when... ${metric}\n\nSTARTING FOCUS\n${focusLine}\n\n─────────────────────────────────────────\nTomorrow: build your AI Roadmap.\n\nEverything AI · everythingai.org.uk`};
+}
+
+function reveal(){
+  const missing=[];
+  ['marketing','sales','ops'].forEach(p=>{
+    const labels={marketing:'Marketing',sales:'Sales',ops:'Operations'};
+    if(!state[p].task.trim()) missing.push(`${labels[p]} — task not named`);
+    if(!(state[p].hours>0||state[p].cost>0)) missing.push(`${labels[p]} — cost not added`);
+    if(!resolvedTool(p)) missing.push(`${labels[p]} — tool not selected`);
+  });
+  if(!document.getElementById('metric').value.trim()) missing.push('your measurable result');
+  if(!reality) missing.push('your starting pillar — tap Marketing, Sales, or Operations in the box below the summary');
+  if(missing.length){alert('Please complete all sections before revealing your reward:\n\n• '+missing.join('\n• '));return;}
+  document.getElementById('locked').style.display='none';
+  document.getElementById('opened').style.display='block';
+}
+
+function copyResponse() {
+  const btn = document.getElementById('copyBtn');
+  const status = document.getElementById('copyStatus');
+  const result = buildSummary();
+  if (result.error) {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Please complete all sections first: ' + result.error.join(', ') + '.';
+    return;
+  }
+  navigator.clipboard.writeText(result.text).then(function() {
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg> Copied!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+    status.style.color = '#16a34a';
+    status.textContent = 'Your responses are on your clipboard — paste them anywhere.';
+    setTimeout(function() {
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg> Copy my responses to clipboard';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      status.textContent = '';
+    }, 3000);
+  }).catch(function() {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Copy failed — please try again.';
+  });
+}
+
+function cp(code,id){navigator.clipboard.writeText(code).then(()=>{const b=document.getElementById(id);b.classList.add('copied');b.innerHTML='<svg width="13" height="13" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';setTimeout(()=>{b.classList.remove('copied');b.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code'},2500)});}
+update();
+</script>
+</body>
+</html>

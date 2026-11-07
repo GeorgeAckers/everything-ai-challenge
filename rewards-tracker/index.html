@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenge Rewards — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0a0a0a;
+  --white: #f5f4f0;
+  --green: #1a56db;
+  --green-light: #dbeafe;
+  --blue-mid: #60a5fa;
+  --green-dark: #1e3a8a;
+  --grey-50: #f8f7f4;
+  --grey-100: #f0eeea;
+  --grey-200: #dddbd5;
+  --grey-300: #c5c3bc;
+  --grey-400: #9e9c97;
+  --grey-600: #5a5855;
+  --grey-800: #2a2926;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0a0a0a;
+  color: var(--white);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Full viewport dark background — covers the entire page behind all content */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+  background: var(--black);
+  z-index: -1;
+}
+
+/* Force full black background in GHL wrapper */
+html {
+  background: var(--black);
+  margin: 0;
+  padding: 0;
+}
+
+/* Centre all direct content at 560px max-width */
+.site-header,
+.hero,
+.value-bar,
+.days-progress,
+.tabs-bar,
+.days-list,
+.site-footer,
+.progress-bar-wrap {
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+}
+
+.site-header,
+.hero,
+.value-bar,
+.days-progress,
+.tabs-bar,
+.days-list,
+.site-footer {
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+}
+
+/* ─── HEADER ─── */
+.site-header {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0 0;
+  margin-bottom: 48px;
+}
+
+.logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-400);
+}
+
+.progress-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.06);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  padding: 6px 14px;
+  border-radius: 100px;
+  color: var(--grey-400);
+  transition: all 0.3s;
+}
+
+.progress-pill.has-progress {
+  background: rgba(26,86,219,0.15);
+  border-color: rgba(26,86,219,0.3);
+  color: #60a5fa;
+}
+
+/* ─── HERO ─── */
+.hero {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-400);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 8vw, 52px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: #60a5fa;
+  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--grey-400);
+  line-height: 1.65;
+  font-weight: 300;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar-wrap {
+  width: 100%;
+  max-width: 560px;
+  margin-bottom: 32px;
+}
+
+.progress-track {
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--grey-600);
+  letter-spacing: 0.05em;
+}
+
+/* ─── DAY CARDS ─── */
+.days-list {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.day-card {
+  background: rgba(26,86,219,0.06);
+  border: 0.5px solid rgba(26,86,219,0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.day-card.unlocked {
+  background: rgba(26,86,219,0.08);
+  border-color: rgba(26,86,219,0.4);
+}
+
+.day-card.day-5-special {
+  border-color: rgba(5,150,105,0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.day-card.day-5-special:not(.unlocked) {
+  background: linear-gradient(135deg, rgba(5,150,105,0.08) 0%, rgba(5,150,105,0.04) 100%);
+}
+
+.day-card.day-5-special.unlocked {
+  background: rgba(5,150,105,0.1);
+  border-color: rgba(5,150,105,0.5);
+}
+
+.day-card.day-5-special .day-num-big { color: #34d399; }
+.day-card.day-5-special .day-reward-label { color: rgba(52,211,153,0.7); }
+
+.day-card-inner {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 0;
+  padding: 18px 20px;
+  cursor: default;
+}
+
+.day-card.active-day .day-card-inner { cursor: pointer; }
+
+.day-num-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.day-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--grey-600);
+  text-transform: uppercase;
+}
+
+.day-num-big {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: #60a5fa;
+  transition: color 0.3s;
+}
+
+.day-card.unlocked .day-num-big { color: #60a5fa; }
+
+.day-content { padding: 0 16px; }
+
+.day-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+  transition: color 0.3s;
+  line-height: 1.3;
+}
+
+.day-card.unlocked .day-title { color: var(--white); }
+
+.day-reward-label {
+  font-size: 12px;
+  color: var(--grey-400);
+  font-weight: 300;
+  transition: color 0.3s;
+}
+
+.day-card.unlocked .day-reward-label { color: #60a5fa; }
+
+.day-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.status-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-icon.lock-btn {
+  background: rgba(26,86,219,0.2);
+  border: 1.5px solid #60a5fa;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.status-icon.lock-btn:hover {
+  background: rgba(26,86,219,0.4);
+  transform: scale(1.08);
+}
+
+.status-icon.done-icon {
+  background: var(--green);
+}
+
+.status-icon svg { width: 16px; height: 16px; }
+
+.unlock-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: #60a5fa;
+  letter-spacing: 0.04em;
+  text-align: right;
+}
+
+/* ─── EXPANDED REWARD AREA ─── */
+.day-expand {
+  display: block;
+  border-top: 0.5px solid rgba(255,255,255,0.08);
+  padding: 20px;
+}
+
+.day-card.active-day .day-expand { display: block; }
+.day-card.unlocked .day-expand { display: block; border-top-color: rgba(26,86,219,0.2); }
+
+.reward-detail-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-600);
+  margin-bottom: 12px;
+}
+
+.reward-items { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+.reward-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.reward-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue-mid);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.reward-item-text { font-size: 14px; font-weight: 300; color: var(--grey-300); line-height: 1.5; }
+.reward-item-text strong { color: var(--white); font-weight: 500; }
+
+/* ─── UNLOCK FORM ─── */
+.unlock-form-wrap {
+  margin-top: 4px;
+}
+
+.unlock-label {
+  font-size: 12px;
+  color: var(--grey-600);
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.unlock-row {
+  display: flex;
+  gap: 8px;
+}
+
+.unlock-input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--white);
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  transition: border-color 0.15s;
+}
+
+.unlock-input:focus { border-color: var(--green); }
+.unlock-input::placeholder { color: rgba(255,255,255,0.15); text-transform: none; letter-spacing: 0; font-weight: 300; }
+
+.unlock-btn {
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.unlock-btn:hover { background: var(--green-dark); }
+
+.unlock-error {
+  font-size: 12px;
+  color: #f09595;
+  margin-top: 8px;
+  display: none;
+  font-weight: 300;
+}
+
+.unlock-success {
+  font-size: 12px;
+  color: #60a5fa;
+  margin-top: 8px;
+  display: none;
+  font-weight: 300;
+}
+
+/* ─── UNLOCKED REWARD DISPLAY ─── */
+.reward-unlocked-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(26,86,219,0.1);
+  border: 0.5px solid rgba(26,86,219,0.3);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.reward-unlocked-icon { font-size: 20px; }
+
+.reward-unlocked-text { flex: 1; }
+.reward-unlocked-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+.reward-unlocked-desc { font-size: 12px; color: var(--grey-400); font-weight: 300; line-height: 1.4; }
+
+.reward-action-btn {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
+  background: transparent;
+  border: 1px solid rgba(26,86,219,0.4);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #60a5fa;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.reward-action-btn:hover { background: rgba(26,86,219,0.1); border-color: #60a5fa; }
+
+
+/* ─── RESET ─── */
+.reset-btn {
+  display: block;
+  margin: 28px auto 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.15s;
+  text-align: center;
+}
+
+.reset-btn:hover { color: #888; }
+/* GHL background override — fills the full column GHL gives us */
+html, body,
+.site-header, .hero, .value-bar,
+.days-progress, .tabs-bar, .days-list,
+.site-footer, .day-card, .day-expand {
+  background-color: var(--black);
+}
+</style>
+</head>
+<body>
+
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0a;z-index:-1;"></div>
+<div style="position:relative;z-index:1;width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 80px;box-sizing:border-box;">
+
+<header class="site-header">
+  <span class="logo">Everything AI</span>
+  <div class="progress-pill" id="progressPill">0 of 5 unlocked</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">5-Day AI Challenge</div>
+  <h1 class="hero-title">Your <em>rewards</em><br>tracker</h1>
+  <p class="hero-sub">Complete each day's challenge in the Skool community. Enter your daily code here to unlock your reward — a learning resource and a free tool — for each day you complete.</p>
+</div>
+
+<div class="progress-bar-wrap">
+
+  <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div style="font-size:13px;color:rgba(255,255,255,.5);font-weight:300;">Total value across all 5 days</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,.3);text-decoration:line-through;">£540+ value</span>
+      <span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--green);">Free with the challenge</span>
+    </div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <div class="progress-labels">
+    <span>Day 1</span>
+    <span>Day 2</span>
+    <span>Day 3</span>
+    <span>Day 4</span>
+    <span>Day 5</span>
+  </div>
+</div>
+
+<div class="days-list" id="daysList"></div>
+
+<p class="reset-btn" onclick="resetAll()" style="cursor:pointer">Reset progress</p>
+
+<script>
+const DAYS_DATA = [
+  {
+    id: 1, title: "Why you're already behind",
+    rewardLabel: "The AI Wealth Map + Claude Free Account",
+    challengeLink: "../day-1-challenge/", code: "EAI-D1-LAUNCH",
+    teaser: [
+      { text: "<strong>The AI Wealth Map</strong> — where every business type makes money with AI right now" },
+      { text: "<strong>Bonus:</strong> Claude free account — the best generic AI available, completely free" }
+    ],
+    unlockedReward: { name: "The AI Wealth Map", desc: "Where AI is generating real profit — mapped by business type.", link: "../reward-day-1/", linkLabel: "Open The AI Wealth Map →" },
+    tool: {
+      name: "Claude — Free Account", tagline: "The best generic AI available right now",
+      value: "Free forever", valueNote: "No credit card · No expiry",
+      what: "Claude is the best starting point for AI — smarter than ChatGPT for writing and thinking. Use it to start. The rewards get far more specific and valuable from Day 2 onwards.",
+      link: "https://claude.ai", linkLabel: "Create your free Claude account →",
+      color: "#7c3aed", colorLight: "rgba(124,58,237,.12)", colorBorder: "rgba(124,58,237,.25)"
+    }
+  },
+  {
+    id: 2, title: "The #1 mistake killing every AI strategy",
+    rewardLabel: "7 Things Gurus Won't Tell You + Gamma Free",
+    challengeLink: "../day-2-challenge/", code: "EAI-D2-DANGER",
+    teaser: [
+      { text: "<strong>7 Things AI Gurus Won't Tell You</strong> — the uncomfortable truths nobody else is sharing" },
+      { text: "<strong>Bonus:</strong> Gamma — full AI presentations in under a minute. 400 free credits." }
+    ],
+    unlockedReward: { name: "7 Things AI Gurus Won't Tell You", desc: "The insider knowledge that separates businesses making money from those making noise.", link: "../reward-day-2/", linkLabel: "Read the full guide →" },
+    tool: {
+      name: "Gamma — Free Plan", tagline: "AI presentations, docs and websites in seconds",
+      value: "400 free credits", valueNote: "No credit card · Free forever",
+      what: "Type a prompt, get a polished presentation. 400 credits at signup — enough for multiple full decks.",
+      link: "https://gamma.app", linkLabel: "Get your free Gamma account →",
+      color: "#0891b2", colorLight: "rgba(8,145,178,.12)", colorBorder: "rgba(8,145,178,.25)"
+    }
+  },
+  {
+    id: 3, title: "The AI sweet spot",
+    rewardLabel: "Specialist AI Tool Stack + Zapier Trial",
+    challengeLink: "../day-3-challenge/", code: "EAI-D3-FILTER",
+    teaser: [
+      { text: "<strong>The Specialist AI Tool Stack</strong> — the exact tools doing real work in real businesses. The list gurus don't share." },
+      { text: "<strong>Bonus:</strong> Zapier 14-day Pro trial — automate your business without writing a single line of code. Worth £85." }
+    ],
+    unlockedReward: { name: "The Specialist AI Tool Stack", desc: "Every tool worth using, broken down by category — named, described, and rated.", link: "../reward-day-3/", linkLabel: "Open The Specialist Tool Stack →" },
+    tool: {
+      name: "Zapier — 14-Day Pro Trial", tagline: "Automate your entire business without code",
+      value: "£85 value", valueNote: "No credit card · Drops to free automatically",
+      what: "Connect your apps. New lead — email sent, CRM updated, follow-up scheduled. All automatic. No code.",
+      link: "https://zapier.com/sign-up", linkLabel: "Start your free Zapier trial →",
+      color: "#ff4a00", colorLight: "rgba(255,74,0,.1)", colorBorder: "rgba(255,74,0,.25)"
+    }
+  },
+  {
+    id: 4, title: "What this looks like in your business",
+    rewardLabel: "The AI Business Blueprint + ElevenLabs Free",
+    challengeLink: "../day-4-challenge/", code: "EAI-D4-AUDIT",
+    teaser: [
+      { text: "<strong>The AI Business Blueprint</strong> — what a fully AI-integrated business looks like from the inside. Real numbers." },
+      { text: "<strong>Bonus:</strong> ElevenLabs free forever — clone your voice, generate audio content. 10,000 credits every month." }
+    ],
+    unlockedReward: { name: "The AI Business Blueprint", desc: "The full system architecture, before/after, and the numbers. This is the destination.", link: "../reward-day-4/", linkLabel: "Open The Business Blueprint →" },
+    tool: {
+      name: "ElevenLabs — Free Forever", tagline: "AI voice generation and voice cloning",
+      value: "10,000 credits/month", valueNote: "No credit card · Resets every month",
+      what: "Generate realistic AI voices from text — ads, course narration, video content. 10 minutes of audio free every month.",
+      link: "https://elevenlabs.io/sign-up", linkLabel: "Get your free ElevenLabs account →",
+      bonusLink: "https://elevenlabs.io/startup-grants", bonusLinkLabel: "Apply for 1 year free (worth $264) — ElevenLabs Startup Grants →",
+      color: "#be185d", colorLight: "rgba(190,24,93,.12)", colorBorder: "rgba(190,24,93,.3)"
+    }
+  },
+  {
+    id: 5, title: "Your next move",
+    rewardLabel: "Most valuable rewards — unlock to reveal",
+    challengeLink: "../day-5-challenge/", code: "EAI-D5-REWARD",
+    mystery: true,
+    teaser: [],
+    unlockedReward: { name: "AI for Business Domination — 90% off", desc: "Step-by-step implementation, automation blueprints, prompt libraries, and community. £269 → £27/month.", link: "../reward-day-5/", linkLabel: "Open Day 5 Reward →", link2: "https://everythingai.org.uk", linkLabel2: "AI for Business Domination →", link3: "../command-centre/", linkLabel3: "Open the Command Centre →" },
+    tool: {
+      // GEORGE: Replace the link below with your GHL affiliate link
+      // Sign up at: https://www.gohighlevel.com/affiliate-program
+      // Your link: https://www.gohighlevel.com/?fp_ref=YOUR_ID
+      // You earn 40% recurring commission every month.
+      name: "GoHighLevel — 30-Day Free Trial", tagline: "The Ultimate AI Tool Hub — CRM, funnels and automation",
+      value: "£194 value", valueNote: "30 days free · Full platform · Via affiliate link",
+      what: "The gamechanging platform no one is talking about, hidden in plain sight. Replace your CRM, funnels, email, booking, and automation with one AI-powered hub.",
+      link: "https://www.gohighlevel.com/?fp_ref=everything-ai32", linkLabel: "Start your free 30-day GoHighLevel trial →",
+      color: "#059669", colorLight: "rgba(5,150,105,.12)", colorBorder: "rgba(5,150,105,.3)"
+    },
+    isSpecial: true
+  }
+];
+
+function getUnlocked() {
+  try { return JSON.parse(localStorage.getItem('eai_unlocked') || '[]'); } catch(e) { return []; }
+}
+function saveUnlocked(arr) { localStorage.setItem('eai_unlocked', JSON.stringify(arr)); }
+
+function focusInput(dayId) {
+  const el = document.getElementById('input-' + dayId);
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(function(){ el.focus(); }, 320); }
+}
+
+function toolCardHTML(t) {
+  if (!t) return '';
+  return `<div style="margin-top:14px;background:rgba(255,255,255,.04);border:1px solid ${t.colorBorder};border-radius:10px;overflow:hidden;">
+    <div style="padding:12px 16px;border-bottom:1px solid ${t.colorBorder};display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-family:Syne,sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">${t.name}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);font-weight:300;">${t.tagline}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-family:monospace;font-size:13px;font-weight:500;color:${t.color};">${t.value}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;">${t.valueNote}</div>
+      </div>
+    </div>
+    <div style="padding:12px 16px 14px;">
+      <p style="font-size:12px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6;margin-bottom:12px;">${t.what}</p>
+      <a href="${t.link}" target="_blank" rel="noopener" style="display:block;text-align:center;background:${t.color};color:#fff;border-radius:8px;padding:10px 16px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:${t.bonusLink?'8px':'0'};">${t.linkLabel}</a>
+      ${t.bonusLink ? `<a href="${t.bonusLink}" target="_blank" rel="noopener" style="display:block;text-align:center;background:transparent;color:${t.color};border:1.5px solid ${t.colorBorder};border-radius:8px;padding:9px 16px;font-family:Syne,sans-serif;font-size:12px;font-weight:700;text-decoration:none;">⭐ ${t.bonusLinkLabel}</a>` : ''}
+    </div>
+  </div>`;
+}
+
+function unlockFormHTML(dayId, placeholder) {
+  const day = DAYS_DATA.find(function(d){ return d.id === dayId; });
+  const challengeBtn = day && day.challengeLink
+    ? `<a href="${day.challengeLink}" target="_blank" rel="noopener" style="display:block;text-align:center;font-family:'DM Mono',monospace;font-size:12px;color:rgba(147,197,253,.7);text-decoration:none;margin-bottom:12px;padding:9px;border:1px solid rgba(147,197,253,.2);border-radius:8px;transition:all .15s;" onmouseover="this.style.borderColor='rgba(147,197,253,.5)';this.style.color='#93c5fd'" onmouseout="this.style.borderColor='rgba(147,197,253,.2)';this.style.color='rgba(147,197,253,.7)'">Go to Day ${dayId} Challenge →</a>`
+    : '';
+  return `<div class="unlock-form-wrap">
+    ${challengeBtn}
+    <div class="unlock-label">Enter your Day ${dayId} code from the Skool community</div>
+    <div class="unlock-row">
+      <input class="unlock-input" id="input-${dayId}" type="text" placeholder="${placeholder}" maxlength="20" />
+      <button class="unlock-btn" onclick="tryUnlock(${dayId})">Unlock</button>
+    </div>
+    <div class="unlock-error" id="error-${dayId}">Code does not match. Check the Skool post.</div>
+    <div class="unlock-success" id="success-${dayId}">Unlocked! Refreshing...</div>
+  </div>`;
+}
+
+function buildCards() {
+  const unlocked = getUnlocked();
+  const list = document.getElementById('daysList');
+  list.innerHTML = '';
+
+  DAYS_DATA.forEach(function(day) {
+    const isDone = unlocked.includes(day.id);
+    const card = document.createElement('div');
+    card.className = 'day-card' + (isDone ? ' unlocked' : '') + (day.isSpecial ? ' day-5-special' : '');
+    card.id = 'card-' + day.id;
+
+    const lockSVG = `<svg viewBox="0 0 16 16" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round"><rect x="3.5" y="7" width="9" height="7.5" rx="1.5"/><path d="M5 7V5.5a3 3 0 016 0V7"/><circle cx="8" cy="11" r="1" fill="#93c5fd" stroke="none"/></svg>`;
+    const tickSVG = `<svg viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    const statusIcon = isDone
+      ? `<div class="status-icon done-icon">${tickSVG}</div>`
+      : `<div class="status-icon lock-btn" onclick="focusInput(${day.id})" title="Click to enter code">${lockSVG}</div>`;
+
+    const rewardLabel = (!isDone && day.mystery) ? 'Most valuable rewards — finish to unlock' : day.rewardLabel;
+    const unlockTag = isDone ? '<span class="unlock-tag">Unlocked</span>' : '';
+
+    let expand = '';
+
+    if (isDone) {
+      expand = `<div class="reward-detail-title">Your reward</div>
+        <div class="reward-unlocked-display">
+          <div class="reward-unlocked-text">
+            <div class="reward-unlocked-name">${day.unlockedReward.name}</div>
+            <div class="reward-unlocked-desc">${day.unlockedReward.desc}</div>
+          </div>
+        </div>
+        <a href="${day.unlockedReward.link}" target="_blank" rel="noopener" class="reward-action-btn">${day.unlockedReward.linkLabel}</a>
+        ${day.unlockedReward.link2 ? `<a href="${day.unlockedReward.link2}" target="_blank" rel="noopener" class="reward-action-btn" style="margin-top:8px;">${day.unlockedReward.linkLabel2}</a>` : ''}
+        ${day.unlockedReward.link3 ? `<a href="${day.unlockedReward.link3}" target="_blank" rel="noopener" class="reward-action-btn" style="margin-top:8px;">${day.unlockedReward.linkLabel3}</a>` : ''}
+        ${toolCardHTML(day.tool)}`;
+
+    } else if (day.mystery) {
+      expand = `<div style="text-align:center;padding:8px 0 4px;">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:rgba(5,150,105,.15);border:1.5px solid rgba(5,150,105,.3);margin-bottom:14px;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#34d399" stroke-width="1.5" stroke-linecap="round"><rect x="4" y="10" width="14" height="11" rx="2.5"/><path d="M7 10V7.5a4 4 0 018 0V10"/><circle cx="11" cy="16" r="1.5" fill="#34d399" stroke="none"/></svg>
+          </div>
+          <div style="font-family:Syne,sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.25;">Most valuable rewards<br>worth over £300</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);font-weight:300;line-height:1.6;max-width:320px;margin:0 auto 20px;">And the gamechanging platform no one is talking about, hidden in plain sight. Complete the challenge to reveal everything.</div>
+        </div>
+        ${unlockFormHTML(5, 'EAI-D5-XXXXX')}`;
+
+    } else {
+      const teaser = day.teaser.slice(0, 1).map(function(t) {
+        return `<div class="reward-item"><div class="reward-dot"></div><div class="reward-item-text">${t.text}</div></div>`;
+      }).join('');
+
+      const toolPrev = day.tool ? `<div style="margin-top:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:300;min-width:0;overflow:hidden;">
+            <span style="font-weight:500;color:rgba(255,255,255,.7);">${day.tool.name}</span> — ${day.tool.tagline}
+          </div>
+          <div style="font-family:monospace;font-size:11px;font-weight:500;color:${day.tool.color};flex-shrink:0;background:${day.tool.colorLight};border:1px solid ${day.tool.colorBorder};padding:3px 10px;border-radius:100px;">${day.tool.value}</div>
+        </div>` : '';
+
+      expand = `<div class="reward-detail-title">What you will unlock</div>
+        <div class="reward-items">${teaser}</div>
+        ${toolPrev}
+        ${unlockFormHTML(day.id, 'EAI-D' + day.id + '-XXXXX')}`;
+    }
+
+    card.innerHTML = `
+      <div class="day-card-inner">
+        <div class="day-num-block">
+          <span class="day-num">Day</span>
+          <span class="day-num-big">0${day.id}</span>
+        </div>
+        <div class="day-content">
+          <div class="day-title">${day.title}</div>
+          <div class="day-reward-label">${rewardLabel}</div>
+        </div>
+        <div class="day-status">${statusIcon}${unlockTag}</div>
+      </div>
+      <div class="day-expand">${expand}</div>`;
+
+    list.appendChild(card);
+  });
+
+  updateProgress(unlocked);
+}
+
+function fireConfetti() {
+  const end = Date.now() + 3000;
+  const colors = ['#1a56db','#93c5fd','#60a5fa','#ffffff','#34d399'];
+  (function frame() {
+    confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 }, colors });
+    confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 }, colors });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  }());
+}
+
+function tryUnlock(dayId) {
+  const day = DAYS_DATA.find(function(d){ return d.id === dayId; });
+  const input = document.getElementById('input-' + dayId);
+  const error = document.getElementById('error-' + dayId);
+  const success = document.getElementById('success-' + dayId);
+  const entered = input.value.trim().toUpperCase();
+  error.style.display = 'none';
+  success.style.display = 'none';
+
+  // Sequential unlock check — all previous days must be unlocked first
+  if (dayId > 1) {
+    const unlocked = getUnlocked();
+    const missing = [];
+    for (let i = 1; i < dayId; i++) {
+      if (!unlocked.includes(i)) missing.push('Day ' + i);
+    }
+    if (missing.length > 0) {
+      error.textContent = 'Complete ' + missing.join(' and ') + ' first before unlocking Day ' + dayId + '.';
+      error.style.display = 'block';
+      return;
+    }
+  }
+
+  if (entered === day.code.toUpperCase()) {
+    success.style.display = 'block';
+    const unlocked = getUnlocked();
+    if (!unlocked.includes(dayId)) unlocked.push(dayId);
+    saveUnlocked(unlocked);
+    if (dayId === 5) { setTimeout(fireConfetti, 400); }
+    setTimeout(buildCards, 800);
+  } else {
+    error.style.display = 'block';
+    input.style.borderColor = 'rgba(240,149,149,0.5)';
+    setTimeout(function(){ input.style.borderColor = ''; }, 2000);
+  }
+}
+
+function updateProgress(unlocked) {
+  const count = unlocked.length;
+  document.getElementById('progressFill').style.width = (count / 5 * 100) + '%';
+  const pill = document.getElementById('progressPill');
+  pill.textContent = count + ' of 5 unlocked';
+  pill.className = 'progress-pill' + (count > 0 ? ' has-progress' : '');
+}
+
+function resetAll() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    localStorage.removeItem('eai_unlocked');
+    buildCards();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function checkURLUnlock() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('unlock');
+  if (!code) return;
+  const day = DAYS_DATA.find(function(d){ return d.code.toUpperCase() === code.toUpperCase(); });
+  if (!day) return;
+  const unlocked = getUnlocked();
+  if (!unlocked.includes(day.id)) unlocked.push(day.id);
+  saveUnlocked(unlocked);
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+checkURLUnlock();
+buildCards();
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.target.classList.contains('unlock-input')) {
+    var id = parseInt(e.target.id.replace('input-', ''));
+    tryUnlock(id);
+  }
+});
+
+</script>
+</div>
+</body>
+</html>

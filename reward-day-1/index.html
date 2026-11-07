@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Wealth Map — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--white:#f5f4f0;
+  --green:#1a9e6e;--green-light:#d4f0e5;--green-dark:#0f6e4d;--green-mid:#5dcaa5;
+  --grey-100:#f0eeea;--grey-200:#dddbd5;--grey-400:#9e9c97;--grey-600:#5a5855;
+}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:48px 24px 80px;min-height:100vh}
+.page{max-width:760px;margin:0 auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--grey-200);margin-bottom:48px}
+.brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.reward-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--green-light);color:var(--green-dark);padding:5px 12px;border-radius:100px}
+
+.hero{margin-bottom:48px}
+.reward-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(36px,6vw,52px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+h1 span{color:var(--green)}
+.hero-sub{font-size:16px;color:var(--grey-600);line-height:1.65;font-weight:300;max-width:560px}
+
+.intro-block{background:var(--black);color:var(--white);border-radius:14px;padding:28px 32px;margin-bottom:48px}
+.intro-block p{font-size:15px;line-height:1.75;font-weight:300;color:rgba(255,255,255,.7)}
+.intro-block p+p{margin-top:12px}
+.intro-block strong{color:var(--white);font-weight:500}
+
+h2{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--black);margin-bottom:20px}
+
+.map-grid{display:flex;flex-direction:column;gap:16px;margin-bottom:48px}
+
+.biz-card{border:1px solid var(--grey-200);border-radius:14px;overflow:hidden}
+.biz-header{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--grey-200);background:var(--grey-100)}
+.biz-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.biz-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.biz-sub{font-size:12px;color:var(--grey-400);margin-top:2px;font-weight:300}
+.profit-pill{font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;border-radius:100px;font-weight:500;white-space:nowrap}
+
+.biz-body{padding:20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+@media(max-width:680px){.biz-body{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.biz-body{grid-template-columns:1fr}}
+.tools-col{border-left:1px solid var(--grey-200);padding-left:20px}
+@media(max-width:680px){.tools-col{border-left:none;padding-left:0;border-top:1px solid var(--grey-200);padding-top:16px}}
+.tool-item{margin-bottom:9px}
+.tool-name{font-size:12px;font-weight:500;color:var(--black);margin-bottom:2px}
+.tool-desc{font-size:12px;color:var(--grey-400);font-weight:300;line-height:1.4}
+
+.biz-col-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400);margin-bottom:10px}
+.biz-items{display:flex;flex-direction:column;gap:7px}
+.biz-item{display:flex;align-items:flex-start;gap:8px}
+.biz-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.biz-item-text{font-size:13px;color:var(--grey-600);line-height:1.45;font-weight:300}
+
+.divider{border:none;border-top:1px solid var(--grey-200);margin:48px 0}
+
+.truth-block{background:var(--grey-100);border-radius:14px;padding:28px 32px;margin-bottom:32px}
+.truth-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--black);margin-bottom:6px}
+.truth-text{font-size:14px;color:var(--grey-600);line-height:1.65;font-weight:300}
+
+.gate-block{border:2px solid var(--black);border-radius:14px;padding:28px 32px;margin-bottom:48px}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px}
+.gate-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px}
+.gate-text{font-size:14px;color:var(--grey-600);line-height:1.65;font-weight:300;margin-bottom:20px}
+.gate-list{display:flex;flex-direction:column;gap:8px}
+.gate-item{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--grey-600);font-weight:300}
+.gate-tick{width:18px;height:18px;border-radius:4px;background:var(--green-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.gate-tick svg{width:10px;height:10px}
+
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+<div class="top-bar">
+  <span class="brand">Everything AI</span>
+  <span class="reward-badge">Day 1 Reward</span>
+</div>
+
+<div class="hero">
+  <span class="reward-tag">5-Day Challenge — Unlocked</span>
+  <h1>The AI <span>Wealth</span> Map</h1>
+  <p class="hero-sub">Every major business type. The exact areas where AI is generating the most profit right now. This is the landscape — so you can see the full picture before you choose your starting point.</p>
+</div>
+
+<div class="intro-block">
+  <p>Most people approach AI backwards. They find a tool they like and try to fit their business around it. That's why they fail.</p>
+  <p>The businesses making real money with AI do the opposite. They <strong>identify the highest-value area first</strong> — then find the tool built specifically for that job. What you're looking at is a map of those areas, by business type.</p>
+  <p>Use this to understand where the opportunity is in your world. The next four days of the challenge will show you how to evaluate it.</p>
+</div>
+
+<h2>The AI profit landscape — by business type</h2>
+
+<div class="map-grid">
+
+  <div class="biz-card">
+    <div class="biz-header">
+      <div class="biz-icon" style="background:#eeebfd;color:#3c3489">AG</div>
+      <div><div class="biz-name">Agencies & freelancers</div><div class="biz-sub">Marketing, design, copywriting, consulting</div></div>
+      <div class="profit-pill" style="background:#eeebfd;color:#3c3489">Very high</div>
+    </div>
+    <div class="biz-body">
+      <div>
+        <div class="biz-col-label">Where AI creates most value</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#7f77dd"></div><div class="biz-item-text">Content and campaign production at 10x speed</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#7f77dd"></div><div class="biz-item-text">Client reporting and proposal generation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#7f77dd"></div><div class="biz-item-text">Ad creative testing and optimisation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#7f77dd"></div><div class="biz-item-text">Onboarding and fulfilment automation</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-col-label">What it actually changes</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#afa9ec"></div><div class="biz-item-text">Solo operators managing 3–4x more clients</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#afa9ec"></div><div class="biz-item-text">Margins increase because delivery costs drop</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#afa9ec"></div><div class="biz-item-text">Less time in production, more time on strategy</div></div>
+        </div>
+      </div>
+      <div class="tools-col">
+        <div class="biz-col-label">Best tools to use</div>
+        <div class="tool-item"><div class="tool-name">Claude</div><div class="tool-desc">Writing, proposals, briefs, and client-ready copy at speed</div></div>
+        <div class="tool-item"><div class="tool-name">Gamma</div><div class="tool-desc">Instant pitch decks and presentations from a prompt</div></div>
+        <div class="tool-item"><div class="tool-name">Make.com</div><div class="tool-desc">Automates client onboarding and reporting workflows</div></div>
+        <div class="tool-item"><div class="tool-name">Ideogram</div><div class="tool-desc">AI image generation for ad creatives and social assets</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="biz-card">
+    <div class="biz-header">
+      <div class="biz-icon" style="background:#e1f5ee;color:#085041">EC</div>
+      <div><div class="biz-name">E-commerce</div><div class="biz-sub">Physical or digital products, dropshipping, DTC</div></div>
+      <div class="profit-pill" style="background:#e1f5ee;color:#085041">Very high</div>
+    </div>
+    <div class="biz-body">
+      <div>
+        <div class="biz-col-label">Where AI creates most value</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#1d9e75"></div><div class="biz-item-text">Product copy and listing generation at scale</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#1d9e75"></div><div class="biz-item-text">24/7 customer service via AI chat</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#1d9e75"></div><div class="biz-item-text">Ad creative and variation testing</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#1d9e75"></div><div class="biz-item-text">Abandoned cart and post-purchase sequences</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-col-label">What it actually changes</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#5dcaa5"></div><div class="biz-item-text">Stores running with 50–80% less manual work</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#5dcaa5"></div><div class="biz-item-text">Revenue scales without headcount scaling</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#5dcaa5"></div><div class="biz-item-text">Customer satisfaction improves with faster replies</div></div>
+        </div>
+      </div>
+      <div class="tools-col">
+        <div class="biz-col-label">Best tools to use</div>
+        <div class="tool-item"><div class="tool-name">Claude</div><div class="tool-desc">Product descriptions, email sequences, and ad copy in bulk</div></div>
+        <div class="tool-item"><div class="tool-name">Tidio / Intercom</div><div class="tool-desc">AI-powered live chat and customer service automation</div></div>
+        <div class="tool-item"><div class="tool-name">Make.com</div><div class="tool-desc">Connects your store to abandoned cart and follow-up flows</div></div>
+        <div class="tool-item"><div class="tool-name">Ideogram</div><div class="tool-desc">Ad creative variations generated quickly for testing</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="biz-card">
+    <div class="biz-header">
+      <div class="biz-icon" style="background:#faeeda;color:#633806">CO</div>
+      <div><div class="biz-name">Coaching & education</div><div class="biz-sub">Online courses, memberships, 1:1 coaching</div></div>
+      <div class="profit-pill" style="background:#faeeda;color:#633806">High</div>
+    </div>
+    <div class="biz-body">
+      <div>
+        <div class="biz-col-label">Where AI creates most value</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#ef9f27"></div><div class="biz-item-text">Curriculum and content creation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#ef9f27"></div><div class="biz-item-text">Community question management</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#ef9f27"></div><div class="biz-item-text">Personalised student follow-up sequences</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#ef9f27"></div><div class="biz-item-text">Sales call prep and objection handling scripts</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-col-label">What it actually changes</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#fac775"></div><div class="biz-item-text">One expert serving thousands instead of dozens</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#fac775"></div><div class="biz-item-text">Income decouples from time spent</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#fac775"></div><div class="biz-item-text">Completion rates improve with personalisation</div></div>
+        </div>
+      </div>
+      <div class="tools-col">
+        <div class="biz-col-label">Best tools to use</div>
+        <div class="tool-item"><div class="tool-name">Claude</div><div class="tool-desc">Curriculum writing, lesson plans, and student Q&A responses</div></div>
+        <div class="tool-item"><div class="tool-name">ElevenLabs</div><div class="tool-desc">AI voiceover for course content without re-recording</div></div>
+        <div class="tool-item"><div class="tool-name">Fathom</div><div class="tool-desc">Transcribes and summarises coaching calls automatically</div></div>
+        <div class="tool-item"><div class="tool-name">Make.com</div><div class="tool-desc">Automates student follow-up and onboarding sequences</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="biz-card">
+    <div class="biz-header">
+      <div class="biz-icon" style="background:#e6f1fb;color:#0c447c">SV</div>
+      <div><div class="biz-name">Service businesses</div><div class="biz-sub">Local trades, fitness, real estate, finance, law</div></div>
+      <div class="profit-pill" style="background:#e6f1fb;color:#0c447c">High</div>
+    </div>
+    <div class="biz-body">
+      <div>
+        <div class="biz-col-label">Where AI creates most value</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#378add"></div><div class="biz-item-text">Lead follow-up and qualification automation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#378add"></div><div class="biz-item-text">Proposal and quote generation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#378add"></div><div class="biz-item-text">Review collection and reputation management</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#378add"></div><div class="biz-item-text">Admin and scheduling automation</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-col-label">What it actually changes</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#85b7eb"></div><div class="biz-item-text">No more leads slipping through the cracks</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#85b7eb"></div><div class="biz-item-text">Hours of admin recovered every week</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#85b7eb"></div><div class="biz-item-text">Faster response time wins more business</div></div>
+        </div>
+      </div>
+      <div class="tools-col">
+        <div class="biz-col-label">Best tools to use</div>
+        <div class="tool-item"><div class="tool-name">GoHighLevel</div><div class="tool-desc">CRM with built-in AI for lead follow-up and pipeline management</div></div>
+        <div class="tool-item"><div class="tool-name">Claude</div><div class="tool-desc">Proposal writing, quote templates, and client communication</div></div>
+        <div class="tool-item"><div class="tool-name">Fathom</div><div class="tool-desc">Records and summarises client meetings automatically</div></div>
+        <div class="tool-item"><div class="tool-name">Make.com</div><div class="tool-desc">Automates review requests and scheduling confirmations</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="biz-card">
+    <div class="biz-header">
+      <div class="biz-icon" style="background:#fbeaf0;color:#72243e">CR</div>
+      <div><div class="biz-name">Content creators & personal brands</div><div class="biz-sub">YouTube, social media, newsletters, podcasts</div></div>
+      <div class="profit-pill" style="background:#fbeaf0;color:#72243e">Medium–high</div>
+    </div>
+    <div class="biz-body">
+      <div>
+        <div class="biz-col-label">Where AI creates most value</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#d4537e"></div><div class="biz-item-text">Script writing and content repurposing</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#d4537e"></div><div class="biz-item-text">Thumbnail and graphic creation</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#d4537e"></div><div class="biz-item-text">Email newsletter drafting and scheduling</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#d4537e"></div><div class="biz-item-text">Clip generation from long-form content</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="biz-col-label">What it actually changes</div>
+        <div class="biz-items">
+          <div class="biz-item"><div class="biz-dot" style="background:#ed93b1"></div><div class="biz-item-text">Output multiplies without more recording time</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#ed93b1"></div><div class="biz-item-text">One piece of content becomes ten</div></div>
+          <div class="biz-item"><div class="biz-dot" style="background:#ed93b1"></div><div class="biz-item-text">Consistent posting without the burnout</div></div>
+        </div>
+      </div>
+      <div class="tools-col">
+        <div class="biz-col-label">Best tools to use</div>
+        <div class="tool-item"><div class="tool-name">Claude</div><div class="tool-desc">Scripts, newsletters, captions, and content repurposing</div></div>
+        <div class="tool-item"><div class="tool-name">ElevenLabs</div><div class="tool-desc">AI voiceover for videos and audio content</div></div>
+        <div class="tool-item"><div class="tool-name">Ideogram</div><div class="tool-desc">Thumbnail and graphic creation without a designer</div></div>
+        <div class="tool-item"><div class="tool-name">Notion AI</div><div class="tool-desc">Content calendar management and idea organisation</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider">
+
+<h2>The pattern across every business type</h2>
+
+<div class="truth-block">
+  <div class="truth-title">The areas that work are always the same three categories</div>
+  <div class="truth-text" style="margin-top:8px">Every profitable AI use case in every business type above falls into one of three buckets: <strong style="color:var(--black)">content and communication</strong> (writing, designing, producing), <strong style="color:var(--black)">automation and operations</strong> (follow-ups, scheduling, admin), or <strong style="color:var(--black)">customer experience</strong> (support, personalisation, retention). If an opportunity doesn't fit into one of these three, it's almost certainly not where you should start.</div>
+</div>
+
+<div class="truth-block" style="background:var(--white);border:1px solid var(--grey-200)">
+  <div class="truth-title">The size of your business doesn't determine the size of the opportunity</div>
+  <div class="truth-text" style="margin-top:8px">A solo trader using AI for follow-up automation can have the same infrastructure as a company with 20 people — and often better, because they move faster. The map above applies whether your business does £10k a year or £1m. The tools scale with you.</div>
+</div>
+
+<div class="truth-block" style="background:var(--white);border:1px solid var(--grey-200)">
+  <div class="truth-title">The opportunity is still wide open — but the window is narrowing</div>
+  <div class="truth-text" style="margin-top:8px">In most UK industries, fewer than 10% of businesses are using AI in a meaningful way. That gap is the opportunity. The businesses implementing now will be the standard-setters in their category inside 18 months. Everyone else will be catching up.</div>
+</div>
+
+<hr class="divider">
+
+  <div class="gate-block">
+  <div class="gate-eyebrow">What comes next — Day 2 onwards</div>
+  <div class="gate-title">You've seen the map. The next step is choosing your territory.</div>
+  <div class="gate-text">The rest of the challenge takes you from this overview to a specific, ranked, personal AI opportunity — one that fits your business, your budget, and your current level. Here's what each day covers:</div>
+  <div class="gate-list">
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#1a9e6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Day 2 — Identify which areas on this map are wrong for your business right now and why</div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#1a9e6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Day 3 — Your introduction to Claude and identifying your first real AI opportunity</div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#1a9e6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Day 4 — Finding the right tools for your business and defining your AI strategy</div>
+    <div class="gate-item"><div class="gate-tick"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5L8.5 2" stroke="#1a9e6e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Day 5 — Building and implementing your personal AI roadmap</div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span class="footer-note">Everything AI · everythingai.org.uk</span>
+  <a class="footer-day" href="../rewards-tracker/" style="color:inherit;text-decoration:none">Day 1 of 5 · Back to Rewards Tracker →</a>
+</footer>
+
+</div>
+</body>
+</html>

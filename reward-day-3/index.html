@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Specialist AI Tool Stack — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--white:#f5f4f0;
+  --green:#1a9e6e;--green-light:#d4f0e5;--green-dark:#0f6e4d;--green-mid:#5dcaa5;
+  --purple:#6c4fcf;--purple-light:#eeebfd;--purple-dark:#3c3489;
+  --grey-100:#f0eeea;--grey-200:#dddbd5;--grey-400:#9e9c97;--grey-600:#5a5855;
+}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:48px 24px 80px;min-height:100vh}
+.page{max-width:760px;margin:0 auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--grey-200);margin-bottom:48px}
+.brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.reward-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--purple-light);color:var(--purple-dark);padding:5px 12px;border-radius:100px}
+
+.hero{margin-bottom:48px}
+.reward-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:16px}
+h1 span{color:var(--purple)}
+.hero-sub{font-size:16px;color:var(--grey-600);line-height:1.65;font-weight:300;max-width:560px}
+
+.key-point{background:var(--black);border-radius:12px;padding:22px 26px;margin-bottom:48px}
+.key-point p{font-size:15px;line-height:1.7;font-weight:300;color:rgba(255,255,255,.7)}
+.key-point strong{color:white;font-weight:500}
+
+h2{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--black);margin-bottom:20px}
+
+.category{margin-bottom:40px}
+.cat-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1.5px solid var(--grey-200)}
+.cat-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0}
+.cat-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--black)}
+.cat-desc{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:540px){.tools-grid{grid-template-columns:1fr}}
+
+.tool-card{border:1px solid var(--grey-200);border-radius:10px;padding:16px;position:relative}
+.tool-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.tool-tag{font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500}
+.tool-desc{font-size:13px;color:var(--grey-600);line-height:1.5;font-weight:300;margin-bottom:10px}
+.tool-output{font-size:12px;color:var(--grey-400);font-weight:300;font-style:italic}
+.tool-output strong{font-style:normal;font-weight:500;color:var(--grey-600)}
+
+.tool-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--green-dark);text-decoration:none;border:1px solid var(--green-mid);border-radius:6px;padding:5px 11px;transition:all .15s}
+.tool-link:hover{background:var(--green-light);border-color:var(--green-dark)}
+.tool-link svg{flex-shrink:0}
+.tool-link.affiliate{color:#7c4c00;border-color:#d4933a;background:#fffbeb}
+.tool-link.affiliate:hover{background:#fef3c7;border-color:#7c4c00}
+
+.divider{border:none;border-top:1px solid var(--grey-200);margin:48px 0}
+
+.comparison{border:1px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:48px}
+.comp-header{background:var(--grey-100);padding:14px 20px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-600);border-bottom:1px solid var(--grey-200)}
+.comp-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--grey-200)}
+.comp-row:last-child{border-bottom:none}
+.comp-cell{padding:14px 18px;font-size:13px;line-height:1.5;font-weight:300}
+.comp-cell:first-child{border-right:1px solid var(--grey-200);color:var(--grey-600)}
+.comp-cell:last-child{color:var(--green-dark)}
+.comp-cell-header{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;padding:10px 18px;letter-spacing:.04em}
+.comp-cell-header:first-child{background:#fdecea;color:#c0392b;border-right:1px solid var(--grey-200)}
+.comp-cell-header:last-child{background:var(--green-light);color:var(--green-dark)}
+
+.gate-block{border:2px solid var(--black);border-radius:14px;padding:28px 32px;margin-bottom:48px}
+.gate-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-400);margin-bottom:12px}
+.gate-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px}
+.gate-text{font-size:14px;color:var(--grey-600);line-height:1.65;font-weight:300}
+
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+<div class="top-bar">
+  <span class="brand">Everything AI</span>
+  <span class="reward-badge">Day 3 Reward</span>
+</div>
+
+<div class="hero">
+  <span class="reward-tag">5-Day Challenge — Unlocked</span>
+  <h1>The <span>Specialist</span><br>AI Tool Stack</h1>
+  <p class="hero-sub">The exact tools that are doing real work in real businesses — broken down by job. Named, described, and shown for what they actually produce. Not a generic list. The ones that matter.</p>
+</div>
+
+<div class="key-point">
+  <p>Generic AI tools try to do everything. <strong>Specialist AI tools do one thing extraordinarily well.</strong> The gap in output quality between the two is not small — it's the difference between something you'd actually use and something you'd delete after a week. This is the stack that serious businesses are building with.</p>
+</div>
+
+<h2>The stack — by category</h2>
+
+<div class="category">
+  <div class="cat-header">
+    <div class="cat-icon" style="background:#eeebfd;color:#6c4fcf">WR</div>
+    <div>
+      <div class="cat-name">Writing & content</div>
+      <div class="cat-desc">Copy, email, ads, blogs, scripts, proposals</div>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-name">Claude <span class="tool-tag" style="background:#eeebfd;color:#6c4fcf">Strategic writing</span></div>
+      <div class="tool-desc">Best for long-form writing that requires nuance, tone-matching, and strategic thinking. Consistently produces the most natural-sounding copy of any AI.</div>
+      <div class="tool-output"><strong>Best for:</strong> Email sequences, proposals, brand voice content, sales copy</div>
+      <a class="tool-link" href="https://claude.ai" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Claude free</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Jasper <span class="tool-tag" style="background:#eeebfd;color:#6c4fcf">Marketing copy</span></div>
+      <div class="tool-desc">Built specifically for marketing teams. Pre-trained on high-converting marketing frameworks so outputs are structured for performance, not just readability.</div>
+      <div class="tool-output"><strong>Best for:</strong> Ad copy, landing pages, product descriptions at scale</div>
+      <a class="tool-link" href="https://www.jasper.ai" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Jasper</a>
+    </div>
+  </div>
+</div>
+
+<div class="category">
+  <div class="cat-header">
+    <div class="cat-icon" style="background:#e1f5ee;color:#0f6e4d">VS</div>
+    <div>
+      <div class="cat-name">Visuals & creative</div>
+      <div class="cat-desc">Images, ads, graphics, video, presentations</div>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-name">Midjourney <span class="tool-tag" style="background:#e1f5ee;color:#0f6e4d">Image generation</span></div>
+      <div class="tool-desc">The highest quality AI image generator available. Used by professional designers, ad agencies, and brand studios. The output is genuinely beautiful — not obviously AI.</div>
+      <div class="tool-output"><strong>Best for:</strong> Ad creatives, brand imagery, product mockups, social content</div>
+      <a class="tool-link" href="https://www.midjourney.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Midjourney</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Gamma <span class="tool-tag" style="background:#e1f5ee;color:#0f6e4d">Presentations</span></div>
+      <div class="tool-desc">Describe a presentation and Gamma builds the entire deck — slides, design, layout, content — in seconds. Produces genuinely good-looking decks without design skills.</div>
+      <div class="tool-output"><strong>Best for:</strong> Pitch decks, proposals, course slides, internal reports</div>
+      <a class="tool-link" href="https://gamma.app" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Gamma free</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">HeyGen <span class="tool-tag" style="background:#e1f5ee;color:#0f6e4d">AI video</span></div>
+      <div class="tool-desc">Create video content with a photorealistic AI avatar that looks and sounds like you. Used by content creators to scale video production without recording every piece.</div>
+      <div class="tool-output"><strong>Best for:</strong> Course content, product demos, explainer videos, multilingual content</div>
+      <a class="tool-link" href="https://www.heygen.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try HeyGen</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">ElevenLabs <span class="tool-tag" style="background:#e1f5ee;color:#0f6e4d">AI voice</span></div>
+      <div class="tool-desc">Clone your voice with a two-minute recording. Then generate unlimited audio in your voice without ever recording again. Indistinguishable from the real thing.</div>
+      <div class="tool-output"><strong>Best for:</strong> Podcast content, course narration, ad voiceovers, multilingual audio</div>
+      <a class="tool-link" href="https://elevenlabs.io" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try ElevenLabs free</a>
+    </div>
+  </div>
+</div>
+
+<div class="category">
+  <div class="cat-header">
+    <div class="cat-icon" style="background:#faeeda;color:#633806">AU</div>
+    <div>
+      <div class="cat-name">Automation & operations</div>
+      <div class="cat-desc">Workflows, CRM, follow-ups, scheduling, admin</div>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-name">GoHighLevel <span class="tool-tag" style="background:#faeeda;color:#633806">Business OS</span></div>
+      <div class="tool-desc">The most complete AI-integrated business platform available. CRM, email, SMS, funnels, booking, automation — all in one place. Used by thousands of agencies and service businesses.</div>
+      <div class="tool-output"><strong>Best for:</strong> Service businesses, agencies, anyone with a client pipeline</div>
+      <a class="tool-link affiliate" href="https://www.gohighlevel.com/?fp_ref=everything-ai32" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Start your free trial →</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Zapier <span class="tool-tag" style="background:#faeeda;color:#633806">Automation</span></div>
+      <div class="tool-desc">Connects your tools together and automates the flow between them. When X happens in one app, Y happens automatically in another — no code, no developers, no manual effort.</div>
+      <div class="tool-output"><strong>Best for:</strong> Connecting tools, removing admin, building automated workflows</div>
+      <a class="tool-link" href="https://zapier.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Zapier free</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Notion AI <span class="tool-tag" style="background:#faeeda;color:#633806">Ops & strategy</span></div>
+      <div class="tool-desc">AI layered into your business operating system. Summarises meetings, generates SOPs, drafts project plans, answers questions about your stored information.</div>
+      <div class="tool-output"><strong>Best for:</strong> Team knowledge management, SOPs, project planning, internal docs</div>
+      <a class="tool-link" href="https://www.notion.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Notion free</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Make (Integromat) <span class="tool-tag" style="background:#faeeda;color:#633806">Advanced automation</span></div>
+      <div class="tool-desc">More powerful than Zapier for complex automation. Visual workflow builder that handles multi-step logic, data transformation, and high-volume automation without a developer.</div>
+      <div class="tool-output"><strong>Best for:</strong> Complex multi-step workflows, data-heavy operations, API connections</div>
+      <a class="tool-link" href="https://www.make.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Make free</a>
+    </div>
+  </div>
+</div>
+
+<div class="category">
+  <div class="cat-header">
+    <div class="cat-icon" style="background:#e6f1fb;color:#0c447c">CS</div>
+    <div>
+      <div class="cat-name">Customer service & sales</div>
+      <div class="cat-desc">Chatbots, lead qualification, support, follow-up</div>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-name">Tidio <span class="tool-tag" style="background:#e6f1fb;color:#0c447c">AI chat</span></div>
+      <div class="tool-desc">AI-powered live chat and chatbot that handles customer enquiries 24/7. Learns from your business information and escalates to a human only when genuinely needed.</div>
+      <div class="tool-output"><strong>Best for:</strong> E-commerce, service businesses, any site with high-volume enquiries</div>
+      <a class="tool-link" href="https://www.tidio.com" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Tidio free</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-name">Instantly <span class="tool-tag" style="background:#e6f1fb;color:#0c447c">Cold outreach</span></div>
+      <div class="tool-desc">AI-powered cold email at scale — personalised outreach to thousands of prospects with AI-written copy that reads like a real person wrote each one individually.</div>
+      <div class="tool-output"><strong>Best for:</strong> B2B lead generation, agencies, consultants, service businesses</div>
+      <a class="tool-link" href="https://instantly.ai" target="_blank"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9L9 2M9 2H4.5M9 2v4.5"/></svg> Try Instantly</a>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="comparison">
+  <div class="comp-header">Generic vs specialist — the real output gap</div>
+  <div class="comp-row">
+    <div class="comp-cell-header">Generic AI (ChatGPT prompt)</div>
+    <div class="comp-cell-header">Specialist tool (built for the job)</div>
+  </div>
+  <div class="comp-row">
+    <div class="comp-cell">Ad copy that sounds like an ad written by someone who's read about ads</div>
+    <div class="comp-cell">Ad copy trained on millions of high-performing ads in your category</div>
+  </div>
+  <div class="comp-row">
+    <div class="comp-cell">Images that look "AI-generated" — clearly synthetic, slightly off</div>
+    <div class="comp-cell">Images indistinguishable from professional photography or design</div>
+  </div>
+  <div class="comp-row">
+    <div class="comp-cell">An automation idea that still requires a developer to actually build</div>
+    <div class="comp-cell">A working automation you set up in an afternoon without writing code</div>
+  </div>
+  <div class="comp-row">
+    <div class="comp-cell">A customer chatbot that goes off-script and confuses people</div>
+    <div class="comp-cell">A support agent trained specifically on your business that rarely needs help</div>
+  </div>
+</div>
+
+<div class="gate-block">
+  <div class="gate-eyebrow">Tomorrow — Day 4</div>
+  <div class="gate-title">You've got the tools. Tomorrow you find the right ones for your business.</div>
+  <div class="gate-text">Day 4 is where it gets specific. You'll work through finding the right tools for your exact situation, cut through the noise of every tool claiming to be essential, and leave with a clear, prioritised AI strategy built around what your business actually needs — not what's trending on LinkedIn. By the end of Day 4, you'll know exactly what to implement, in what order, and why.</div>
+</div>
+
+<footer class="footer">
+  <span class="footer-note">Everything AI · everythingai.org.uk</span>
+  <a class="footer-day" href="../rewards-tracker/" style="color:inherit;text-decoration:none">Day 3 of 5 · Back to Rewards Tracker →</a>
+</footer>
+
+</div>
+</body>
+</html>

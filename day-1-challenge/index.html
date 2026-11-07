@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 — Where Do You Stand? | Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0a0a0a;--white:#f5f4f0;--blue:#1a56db;--blue-light:#dbeafe;--blue-dark:#1e3a8a;--blue-bright:#93c5fd;--surface:#fff;--grey-50:#f8f7f4;--grey-100:#f0eeea;--grey-200:#dddbd5;--grey-300:#c5c3bc;--grey-400:#9e9c97;--grey-600:#5a5855}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:0 0 80px;min-height:100vh}
+.page{max-width:680px;margin:0 auto;padding:0 20px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;margin-bottom:32px;border-bottom:1px solid var(--grey-200)}
+.brand{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.day-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--blue);color:#fff;padding:6px 14px;border-radius:100px}
+.progress-row{display:flex;align-items:center;gap:6px;margin-bottom:32px}
+.prog-dot{width:48px;height:5px;border-radius:3px;background:var(--grey-200)}
+.prog-dot.active{background:var(--blue)}
+.prog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400);margin-left:4px}
+.hero{margin-bottom:28px}
+.day-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.08;letter-spacing:-.02em;color:var(--black);margin-bottom:12px}
+.hero-sub{font-size:15px;color:var(--grey-600);line-height:1.65;font-weight:300}
+.task-card{background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:32px;display:flex;gap:16px;align-items:flex-start}
+.task-icon{width:36px;height:36px;border-radius:8px;background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.task-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:5px}
+.task-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300}
+.task-text strong{color:#fff;font-weight:500}
+.sec-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--black);margin-bottom:5px}
+.sec-hint{font-size:13px;color:var(--grey-400);margin-bottom:14px;font-weight:300;line-height:1.5}
+.section{margin-bottom:32px}
+.select-card{background:var(--surface);border:1.5px solid var(--grey-200);border-radius:12px;padding:16px 18px;cursor:pointer;display:flex;align-items:flex-start;gap:14px;transition:all .15s;margin-bottom:8px}
+.select-card:hover{border-color:var(--blue);background:#fafbff}
+.select-card.active{border-color:var(--blue);background:var(--blue-light)}
+.radio-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--grey-300);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.select-card.active .radio-dot{border-color:var(--blue);background:var(--blue)}
+.select-card.active .radio-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+.select-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.select-desc{font-size:13px;color:var(--grey-600);font-weight:300;line-height:1.5}
+.select-card.active .select-name{color:var(--blue-dark)}
+.select-card.active .select-desc{color:var(--blue-dark);opacity:.8}
+.stag{font-family:'DM Mono',monospace;font-size:10px;padding:3px 9px;border-radius:100px;font-weight:500}
+.tag-b{background:#fef9c3;color:#854d0e}
+.tag-c{background:#fee2e2;color:#991b1b}
+.tag-m{background:var(--blue-light);color:var(--blue-dark)}
+.write-block{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.write-hdr{background:var(--grey-50);padding:9px 16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--grey-400);letter-spacing:.05em;border-bottom:1px solid var(--grey-200)}
+textarea{width:100%;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:transparent;border:none;outline:none;resize:none;line-height:1.65}
+textarea::placeholder{color:var(--grey-300)}
+
+/* ── STEP 3 REFLECT GRID ── */
+.reflect-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+@media(max-width:500px){.reflect-grid{grid-template-columns:1fr}}
+.reflect-card{border:1.5px solid var(--grey-200);border-radius:12px;padding:16px;display:flex;flex-direction:column}
+.reflect-q{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:10px;line-height:1.4}
+.reflect-card textarea{border:none;outline:none;resize:none;padding:0;font-size:13px;font-weight:300;color:var(--black);line-height:1.6;flex:1;min-height:70px;background:transparent}
+.reflect-card textarea::placeholder{color:var(--grey-300)}
+.reflect-card textarea:focus{outline:none}
+
+/* ── EMAIL SUMMARY SECTION ── */
+.email-section{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:32px}
+.email-section-header{background:var(--grey-50);padding:18px 22px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;gap:14px}
+.email-section-icon{width:38px;height:38px;border-radius:9px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.email-section-icon svg{width:18px;height:18px;color:var(--blue)}
+.email-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.email-section-sub{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+.email-section-body{padding:20px 22px}
+.email-desc{font-size:13px;color:var(--grey-600);line-height:1.6;font-weight:300;margin-bottom:16px}
+.email-row{display:flex;gap:10px}
+.email-input{flex:1;border:1.5px solid var(--grey-200);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s}
+.email-input:focus{border-color:var(--blue)}
+.email-input::placeholder{color:var(--grey-300)}
+.send-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.send-btn:hover{background:var(--blue-dark)}
+.send-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.email-status{margin-top:12px;font-size:13px;line-height:1.5;display:none;padding:10px 14px;border-radius:8px;font-weight:400}
+.email-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.email-status.success{display:block;background:var(--blue-light);color:var(--blue-dark);border:1px solid #bfdbfe}
+.email-status.loading{display:block;background:var(--grey-100);color:var(--grey-600);border:1px solid var(--grey-200)}
+
+/* ── REVEAL ── */
+.reveal-wrap{margin:0 0 32px}
+.reveal-locked{background:var(--black);border-radius:16px;padding:36px 24px;text-align:center;position:relative;overflow:hidden}
+.reveal-border{position:absolute;inset:0;border-radius:16px;border:1.5px solid transparent;background:linear-gradient(var(--black),var(--black)) padding-box,linear-gradient(135deg,#1a56db 0%,#93c5fd 50%,#1a56db 100%) border-box;background-size:300% 300%;animation:borderSpin 3s linear infinite}
+@keyframes borderSpin{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.reveal-inner{position:relative;z-index:1}
+.reveal-lock{width:52px;height:52px;border-radius:50%;background:rgba(147,197,253,.12);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.reveal-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:8px}
+.reveal-heading{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.reveal-sub{font-size:13px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;max-width:360px;margin:0 auto 22px}
+.reveal-btn-main{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.reveal-btn-main:hover{background:var(--blue-dark);transform:scale(1.02)}
+.reveal-open{display:none;border:2px solid var(--blue);border-radius:16px;overflow:hidden;animation:popIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.reveal-open-top{background:var(--black);padding:28px 24px;text-align:center}
+.done-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.2);border:1px solid rgba(147,197,253,.3);color:var(--blue-bright);font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border-radius:100px;margin-bottom:16px}
+.code-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px}
+.code-display{font-family:'DM Mono',monospace;font-size:clamp(20px,5vw,30px);font-weight:500;letter-spacing:.14em;color:#fff;background:rgba(26,86,219,.2);border:1.5px solid rgba(147,197,253,.25);padding:14px 22px;border-radius:10px;display:inline-block;margin-bottom:16px;animation:pulse 2.5s ease-in-out infinite alternate}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(26,86,219,0)}to{box-shadow:0 0 18px 3px rgba(26,86,219,.3)}}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.copy-btn:hover{border-color:var(--blue-bright);color:var(--blue-bright)}
+.copy-btn.copied{border-color:var(--blue-bright);color:var(--blue-bright)}
+.reveal-open-bottom{background:var(--blue-light);padding:14px 22px;text-align:center}
+.reveal-instruction{font-size:13px;color:var(--blue-dark);font-weight:400;line-height:1.6}
+.reveal-instruction a{color:var(--blue-dark);font-weight:700;text-decoration:underline}
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center;margin-top:40px}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-next{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);font-weight:500}
+.copy-section{margin-bottom:32px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.copy-response-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 22px;background:var(--black);color:var(--white);border:1.5px solid var(--grey-200);border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.copy-response-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.copy-hint{font-size:12px;color:var(--grey-400);font-weight:300;text-align:center;line-height:1.5}
+.copy-status{font-size:13px;font-weight:400;text-align:center;min-height:20px;transition:all .2s}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+  <div class="top-bar">
+    <span class="brand">Everything AI</span>
+    <span class="day-badge">Day 01 — Challenge</span>
+  </div>
+
+  <div class="progress-row">
+    <div class="prog-dot active"></div>
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+    <div class="prog-dot"></div>
+    <span class="prog-label">1 of 5</span>
+  </div>
+
+  <div class="hero">
+    <span class="day-eyebrow">Day 01 — Self Audit</span>
+    <h1>Where do you<br>actually stand?</h1>
+    <p class="hero-sub">Don't worry — we're starting easy. No tools to install, nothing to set up, no technical knowledge required. Day 1 is just about getting honest with yourself. Before you can move forward you need a clear picture of where you are right now. This takes 5 minutes and sets the foundation for everything this week.</p>
+  </div>
+
+  <div class="task-card">
+    <div class="task-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round">
+        <circle cx="9" cy="9" r="7"/><path d="M9 6v4M9 12.5v.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="task-label">Today's task</div>
+      <div class="task-text"><strong>Identify your starting position.</strong> Choose which type of AI user you are right now, then answer four honest questions about your business. Your answers unlock everything that follows this week.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Step 1 — Which type are you?</div>
+    <div class="sec-hint">Pick the one that's closest. Be honest — there's no wrong answer here.</div>
+
+    <div class="select-card" onclick="pick(this,'The Dabbler')">
+      <div class="radio-dot"></div>
+      <div>
+        <div class="select-name">The Dabbler <span class="stag tag-b">Too basic</span></div>
+        <div class="select-desc">You've used ChatGPT to write an email or summarise something. That's where it ends. You know AI exists but haven't gone deeper than the surface.</div>
+      </div>
+    </div>
+
+    <div class="select-card" onclick="pick(this,'The Deep Diver')">
+      <div class="radio-dot"></div>
+      <div>
+        <div class="select-name">The Deep Diver <span class="stag tag-c">Too complex</span></div>
+        <div class="select-desc">You've gone down the rabbit hole — APIs, custom models, automation stacks. Fascinating but time-consuming, with no clear return yet.</div>
+      </div>
+    </div>
+
+    <div class="select-card" onclick="pick(this,'The Overwhelmed')">
+      <div class="radio-dot"></div>
+      <div>
+        <div class="select-name">The Overwhelmed <span class="stag tag-m">In the middle</span></div>
+        <div class="select-desc">You know AI is important, you want to use it properly, but every time you start you end up more confused than when you began. You're here because something has to change.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Step 2 — Name the gap</div>
+    <div class="sec-hint">One area in your business where AI could help — but you have no idea where to start.</div>
+    <div class="write-block">
+      <div class="write-hdr">Your answer</div>
+      <textarea id="gap" rows="3" placeholder="e.g. I spend hours writing content every week and know AI could help, but I don't know which tool to trust or if the output would actually be good enough..."></textarea>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-label">Step 3 — Honest inventory</div>
+    <div class="sec-hint">Four quick questions. Write your instinctive answers — don't overthink these.</div>
+    <div class="reflect-grid">
+      <div class="reflect-card">
+        <div class="reflect-q">How many hours a week go on repetitive tasks you could hand off?</div>
+        <textarea id="q1" placeholder="e.g. Probably 8–10 hours on emails and reports..."></textarea>
+      </div>
+      <div class="reflect-card">
+        <div class="reflect-q">What takes the most time for the least return in your business?</div>
+        <textarea id="q2" placeholder="e.g. Writing social media posts that barely get any engagement..."></textarea>
+      </div>
+      <div class="reflect-card">
+        <div class="reflect-q">If you could automate one thing tomorrow, what would it be?</div>
+        <textarea id="q3" placeholder="e.g. Follow-up emails to leads after calls..."></textarea>
+      </div>
+      <div class="reflect-card">
+        <div class="reflect-q">What would it change if that one thing ran itself?</div>
+        <textarea id="q4" placeholder="e.g. I'd get my evenings back and never miss a follow-up again..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL SUMMARY SECTION -->
+
+  <div class="copy-section">
+    <button class="copy-response-btn" id="copyBtn" onclick="copyResponse()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg>
+      Copy my responses to clipboard
+    </button>
+    <div class="copy-hint">Paste into a notes app, Google Doc, or anywhere you keep your work.</div>
+    <div class="copy-status" id="copyStatus"></div>
+  </div>
+
+<div class="reveal-wrap">
+    <div class="reveal-locked" id="locked">
+      <div class="reveal-border"></div>
+      <div class="reveal-inner">
+        <div class="reveal-lock">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round">
+            <rect x="4" y="10" width="14" height="11" rx="2.5"/><path d="M7 10V7.5a4 4 0 018 0V10"/>
+            <circle cx="11" cy="16" r="1.5" fill="#93c5fd" stroke="none"/>
+          </svg>
+        </div>
+        <p class="reveal-eyebrow">Day 1 complete</p>
+        <p class="reveal-heading">Your reward is waiting</p>
+        <p class="reveal-sub">You've completed today's challenge. Your unlock code for the rewards tracker is sealed below — tap to reveal it.</p>
+        <button class="reveal-btn-main" onclick="revealCode()">Reveal my code <span style="font-size:17px;margin-left:2px">→</span></button>
+      </div>
+    </div>
+    <div class="reveal-open" id="opened">
+      <div class="reveal-open-top">
+        <div class="done-badge">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Day 1 complete
+        </div>
+        <div class="code-label">Your unlock code</div>
+        <div class="code-display">EAI-D1-LAUNCH</div><br>
+        <button class="copy-btn" id="cpBtn" onclick="cp('EAI-D1-LAUNCH','cpBtn')">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg>
+          Copy code
+        </button>
+      </div>
+      <div class="reveal-open-bottom">
+        <p class="reveal-instruction">Go to the <a href="../rewards-tracker/">Everything AI rewards tracker</a>, enter this code and unlock your Day 1 reward — <strong>The AI Wealth Map</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-note">Everything AI · everythingai.org.uk</span>
+    <span class="footer-next">Day 02 tomorrow →</span>
+  </footer>
+
+</div>
+<script>
+
+let selectedType = '';
+
+function pick(el, type) {
+  document.querySelectorAll('.select-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedType = type;
+}
+
+function revealCode() {
+  const gap = document.getElementById('gap').value.trim();
+  const q1  = document.getElementById('q1').value.trim();
+  const q2  = document.getElementById('q2').value.trim();
+  const q3  = document.getElementById('q3').value.trim();
+  const q4  = document.getElementById('q4').value.trim();
+  const missing = [];
+  if (!selectedType) missing.push('your AI type (Step 1)');
+  if (!gap)  missing.push('the gap in your business (Step 2)');
+  if (!q1)   missing.push('Q1 — hours on repetitive tasks');
+  if (!q2)   missing.push('Q2 — most time for least return');
+  if (!q3)   missing.push('Q3 — what you\'d automate first');
+  if (!q4)   missing.push('Q4 — what it would change');
+  if (missing.length) {
+    alert('Please complete all sections before revealing your reward:\n\n• ' + missing.join('\n• '));
+    return;
+  }
+  document.getElementById('locked').style.display = 'none';
+  document.getElementById('opened').style.display = 'block';
+}
+
+function cp(code, id) {
+  navigator.clipboard.writeText(code).then(() => {
+    const b = document.getElementById(id);
+    b.classList.add('copied');
+    b.innerHTML = '<svg width="13" height="13" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+    setTimeout(() => {
+      b.classList.remove('copied');
+      b.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code';
+    }, 2500);
+  });
+}
+
+function buildSummary() {
+  const gap = document.getElementById('gap').value.trim();
+  const q1  = document.getElementById('q1').value.trim();
+  const q2  = document.getElementById('q2').value.trim();
+  const q3  = document.getElementById('q3').value.trim();
+  const q4  = document.getElementById('q4').value.trim();
+
+  // Validation — return list of missing fields
+  const missing = [];
+  if (!selectedType) missing.push('your AI type (Step 1)');
+  if (!gap)  missing.push('the gap in your business (Step 2)');
+  if (!q1)   missing.push('hours spent on repetitive tasks (Step 3, Q1)');
+  if (!q2)   missing.push('what takes most time for least return (Step 3, Q2)');
+  if (!q3)   missing.push('what you\'d automate first (Step 3, Q3)');
+  if (!q4)   missing.push('what it would change (Step 3, Q4)');
+  if (missing.length) return { error: missing };
+
+  const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  return { text:
+`EVERYTHING AI — DAY 1 SELF-AUDIT SUMMARY
+${date}
+─────────────────────────────────────────
+
+YOUR AI TYPE
+${selectedType}
+
+YOUR GAP — Where AI could help most right now
+${gap}
+
+STEP 3 — HONEST INVENTORY
+
+Q1. How many hours a week go on repetitive tasks?
+${q1}
+
+Q2. What takes the most time for the least return?
+${q2}
+
+Q3. If you could automate one thing tomorrow, what would it be?
+${q3}
+
+Q4. What would it change if that one thing ran itself?
+${q4}
+
+─────────────────────────────────────────
+Keep this. Your answers here inform everything in Days 2–5.
+Tomorrow: identify your AI danger zones.
+
+Everything AI · everythingai.org.uk` };
+}
+
+function copyResponse() {
+  const btn = document.getElementById('copyBtn');
+  const status = document.getElementById('copyStatus');
+  const result = buildSummary();
+  if (result.error) {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Please complete all sections first: ' + result.error.join(', ') + '.';
+    return;
+  }
+  navigator.clipboard.writeText(result.text).then(function() {
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg> Copied!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+    status.style.color = '#16a34a';
+    status.textContent = 'Your responses are on your clipboard — paste them anywhere.';
+    setTimeout(function() {
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg> Copy my responses to clipboard';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      status.textContent = '';
+    }, 3000);
+  }).catch(function() {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Copy failed — please try again.';
+  });
+}
+</script>
+</body>
+</html>

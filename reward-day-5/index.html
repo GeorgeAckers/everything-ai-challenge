@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenge Complete — Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--white:#f5f4f0;
+  --green:#1a9e6e;--green-light:#d4f0e5;--green-dark:#0f6e4d;--green-mid:#5dcaa5;
+  --grey-100:#f0eeea;--grey-200:#dddbd5;--grey-400:#9e9c97;--grey-600:#5a5855;
+}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--white);padding:48px 24px 80px;min-height:100vh}
+.page{max-width:680px;margin:0 auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:48px}
+.brand{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-600)}
+.reward-badge{font-family:'DM Mono',monospace;font-size:11px;background:var(--green);color:white;padding:5px 14px;border-radius:100px}
+
+.hero{margin-bottom:48px;text-align:center}
+.hero-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--green-mid);margin-bottom:16px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;line-height:1.02;letter-spacing:-.02em;margin-bottom:18px}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.5);line-height:1.7;font-weight:300;max-width:480px;margin:0 auto}
+
+.completion-row{display:flex;justify-content:center;gap:8px;margin-bottom:48px}
+.comp-day{display:flex;flex-direction:column;align-items:center;gap:5px}
+.comp-circle{width:44px;height:44px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center}
+.comp-circle svg{width:18px;height:18px}
+.comp-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--grey-600)}
+
+.offer-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;overflow:hidden;margin-bottom:32px}
+
+.offer-top{padding:32px 32px 0}
+.offer-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-600);margin-bottom:14px}
+.offer-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--white);margin-bottom:10px;line-height:1.2}
+.offer-tagline{font-size:15px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;margin-bottom:24px}
+
+.price-row{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.price-new{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--green);line-height:1}
+.price-period{font-size:16px;color:rgba(255,255,255,.3);font-weight:300}
+.price-old{font-size:16px;color:rgba(255,255,255,.2);text-decoration:line-through;font-family:'DM Mono',monospace}
+
+.price-note{font-size:13px;color:rgba(255,255,255,.3);font-weight:300;margin-bottom:28px}
+.price-note strong{color:var(--green-mid);font-weight:500}
+
+.offer-divider{height:1px;background:rgba(255,255,255,.06);margin:0 0 28px}
+
+.modules{padding:0 32px;margin-bottom:28px}
+.mod-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-600);margin-bottom:16px}
+.mod-list{display:flex;flex-direction:column;gap:12px}
+.mod-item{display:flex;gap:14px;align-items:flex-start}
+.mod-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.mod-content{}
+.mod-name{font-size:14px;font-weight:500;color:var(--white);margin-bottom:2px}
+.mod-desc{font-size:12px;color:rgba(255,255,255,.35);font-weight:300;line-height:1.45}
+
+.offer-cta{padding:0 32px 32px}
+.cta-btn{display:block;width:100%;background:var(--green);color:white;border:none;border-radius:10px;padding:18px 24px;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;letter-spacing:.02em;transition:background .15s}
+.cta-btn:hover{background:var(--green-dark)}
+.cta-sub{text-align:center;font-size:12px;color:rgba(255,255,255,.2);font-weight:300;margin-top:10px}
+
+.scarcity{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:32px}
+.scarcity-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.scarcity-text{font-size:13px;color:rgba(255,255,255,.4);font-weight:300}
+.scarcity-text strong{color:rgba(255,255,255,.7);font-weight:500}
+
+.testimonials{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.testimonial{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:20px 22px}
+.test-quote{font-size:14px;color:rgba(255,255,255,.6);line-height:1.65;font-weight:300;font-style:italic;margin-bottom:12px}
+.test-attr{display:flex;align-items:center;gap:10px}
+.test-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex-shrink:0}
+.test-name{font-size:13px;font-weight:500;color:rgba(255,255,255,.5)}
+.test-role{font-size:11px;color:rgba(255,255,255,.25);font-weight:300}
+
+.faq{margin-bottom:48px}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.06);padding:18px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:8px}
+.faq-a{font-size:13px;color:rgba(255,255,255,.35);font-weight:300;line-height:1.65}
+
+.footer{padding-top:24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.footer-note{font-size:12px;color:var(--grey-600);font-weight:300}
+.footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--green-mid)}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0a0a;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+
+<div class="top-bar">
+  <span class="brand">Everything AI</span>
+  <span class="reward-badge">Challenge Complete</span>
+</div>
+
+<div class="hero">
+  <span class="hero-tag">5-Day AI Challenge — All days unlocked</span>
+  <h1>You made it.<br>Now build it.</h1>
+  <p class="hero-sub">Five days. You now understand the opportunity, the tools, and the blueprint. One decision stands between this and a business that actually runs on AI.</p>
+</div>
+
+<div class="completion-row">
+  <div class="comp-day"><div class="comp-circle"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="comp-label">Day 1</div></div>
+  <div class="comp-day"><div class="comp-circle"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="comp-label">Day 2</div></div>
+  <div class="comp-day"><div class="comp-circle"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="comp-label">Day 3</div></div>
+  <div class="comp-day"><div class="comp-circle"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="comp-label">Day 4</div></div>
+  <div class="comp-day"><div class="comp-circle"><svg viewBox="0 0 18 18" fill="none"><path d="M3 9l4 4L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="comp-label">Day 5</div></div>
+</div>
+
+<div class="scarcity">
+  <div class="scarcity-dot"></div>
+  <div class="scarcity-text"><strong>Challenge discount active.</strong> This offer is only available for challenge completers and will close once the cohort is full. There is no public pricing at this level.</div>
+</div>
+
+<div class="offer-card">
+  <div class="offer-top">
+    <div class="offer-eyebrow">Your challenge reward</div>
+    <div class="offer-name">AI for Business Domination</div>
+    <div class="offer-tagline">The step-by-step system to implement AI profitably in your business. Every tool. Every template. Every automation — built for non-technical business owners.</div>
+    <div class="price-row">
+      <span class="price-new">£27</span>
+      <span class="price-period">/month</span>
+      <span class="price-old">£269</span>
+    </div>
+    <div class="price-note">90% off for challenge completers. <strong>Cancel anytime.</strong> First month covers the full course — most members see ROI in week one.</div>
+  </div>
+
+  <div class="offer-divider"></div>
+
+  <div class="modules">
+    <div class="mod-label">What's inside</div>
+    <div class="mod-list">
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(108,79,207,.2);color:#afa9ec">01</div>
+        <div class="mod-content">
+          <div class="mod-name">AI Business Roadmaps — by business type</div>
+          <div class="mod-desc">The exact implementation sequence for agencies, e-commerce, coaching businesses, and service businesses. You follow the map built for your situation — not a generic plan.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(26,158,110,.15);color:#5dcaa5">02</div>
+        <div class="mod-content">
+          <div class="mod-name">Automation blueprints — plug and play</div>
+          <div class="mod-desc">Pre-built Zapier and GoHighLevel flows. Import, customise your details, switch on. The follow-up sequence, the onboarding flow, the content pipeline — all pre-built.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(184,92,0,.15);color:#fac775">03</div>
+        <div class="mod-content">
+          <div class="mod-name">Prompt libraries — the exact words that work</div>
+          <div class="mod-desc">Every specialist tool from the Day 3 reward has a corresponding prompt library. Not "here are some tips" — the exact prompts producing the outputs shown in the Blueprint.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(24,95,165,.15);color:#85b7eb">04</div>
+        <div class="mod-content">
+          <div class="mod-name">Tool guides — setup from scratch, step by step</div>
+          <div class="mod-desc">Screen-recorded walkthroughs for every tool in the stack. How to set it up, how to configure it for your business, how to connect it to everything else.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(192,57,43,.12);color:#f09595">05</div>
+        <div class="mod-content">
+          <div class="mod-name">Tool discounts and free trials</div>
+          <div class="mod-desc">Negotiated access to the tools in the stack at below-market rates. In most cases the savings on tools alone cover the membership cost several times over.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)">06</div>
+        <div class="mod-content">
+          <div class="mod-name">Live updates — every new tool, covered</div>
+          <div class="mod-desc">AI moves fast. Every time a tool worth using launches, it goes into the course. You don't pay more. You don't do the research. You just get the guide.</div>
+        </div>
+      </div>
+      <div class="mod-item">
+        <div class="mod-icon" style="background:rgba(26,158,110,.15);color:#5dcaa5">07</div>
+        <div class="mod-content">
+          <div class="mod-name">Community of business owners doing the same</div>
+          <div class="mod-desc">Share results. Get feedback. Ask questions. Find people in your industry who've already implemented what you're building. This alone is worth the membership for most people.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="offer-cta">
+    <a href="https://everythingai.org.uk" class="cta-btn">Claim your 90% discount — join for £27/month →</a>
+    <div class="cta-sub">Secure checkout · Cancel anytime · Instant access · Limited spaces</div>
+  </div>
+</div>
+
+<div class="testimonials">
+  <div class="testimonial">
+    <div class="test-quote">"I spent months trying to figure out AI on my own. Within two weeks of joining I had a working lead follow-up system that's recovering deals I would have lost. The ROI paid for months of membership in the first week."</div>
+    <div class="test-attr">
+      <div class="test-avatar" style="background:rgba(108,79,207,.2);color:#afa9ec">JM</div>
+      <div><div class="test-name">James M.</div><div class="test-role">Marketing agency owner, London</div></div>
+    </div>
+  </div>
+  <div class="testimonial">
+    <div class="test-quote">"The prompt libraries alone are worth ten times what I'm paying. I used to spend hours getting AI to produce anything usable. Now I get exactly what I need in one attempt, every time."</div>
+    <div class="test-attr">
+      <div class="test-avatar" style="background:rgba(26,158,110,.15);color:#5dcaa5">SC</div>
+      <div><div class="test-name">Sarah C.</div><div class="test-role">E-commerce founder</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="faq">
+  <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:16px">Common questions</div>
+  <div class="faq-item">
+    <div class="faq-q">Do I need technical experience?</div>
+    <div class="faq-a">None. Every guide assumes you start from zero. If you can use a smartphone you can follow everything in the course. No code. No developers. No prior AI experience required.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What if I don't have an existing business?</div>
+    <div class="faq-a">The course includes a track specifically for people building from scratch. AI makes starting a business faster and cheaper than it's ever been — the course shows you how to use that advantage.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">How is this different from free YouTube tutorials?</div>
+    <div class="faq-a">YouTube gives you fragments. This gives you a system — the order, the integration, the exact prompts, the templates, and a community to help when you're stuck. The difference is between collecting information and building something that actually works.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">What happens when I cancel?</div>
+    <div class="faq-a">You keep everything you downloaded during your membership. Access to the live course, updates, and community ends. There's no lock-in and no cancellation fee.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">Why is the price this low?</div>
+    <div class="faq-a">Because the model works on volume and community, not on charging as much as possible to as few people as possible. The goal is to build a community of business owners who are actually implementing this — not to sell an expensive course to people who never finish it. This price is for challenge completers only and will not stay this way.</div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span class="footer-note">Everything AI · everythingai.org.uk</span>
+  <a class="footer-day" href="../command-centre/" style="color:inherit;text-decoration:none">Challenge complete · Open the Command Centre →</a>
+</footer>
+
+</div>
+</body>
+</html>

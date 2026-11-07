@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 5 — Your First AI Roadmap | Everything AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#0a0a0a;--white:#f5f4f0;--blue:#1a56db;--blue-light:#dbeafe;--blue-dark:#1e3a8a;--blue-bright:#93c5fd;--surface:#fff;--grey-50:#f8f7f4;--grey-100:#f0eeea;--grey-200:#dddbd5;--grey-300:#c5c3bc;--grey-400:#9e9c97;--grey-600:#5a5855;--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7}
+body{font-family:'DM Sans',sans-serif;background:transparent;position:relative;z-index:0;color:var(--black);padding:0 0 80px;min-height:100vh}
+.page{max-width:680px;margin:0 auto;padding:0 20px}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:28px 0 24px;margin-bottom:32px;border-bottom:1px solid var(--grey-200)}
+.brand{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-400)}
+.day-badge{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;background:var(--blue);color:#fff;padding:6px 14px;border-radius:100px}
+.progress-row{display:flex;align-items:center;gap:6px;margin-bottom:32px}
+.prog-dot{width:48px;height:5px;border-radius:3px;background:var(--blue)}
+.prog-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);margin-left:4px;font-weight:500}
+.hero{margin-bottom:28px}
+.day-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:block}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,6vw,40px);font-weight:800;line-height:1.08;letter-spacing:-.02em;color:var(--black);margin-bottom:12px}
+.hero-sub{font-size:15px;color:var(--grey-600);line-height:1.65;font-weight:300}
+.task-card{background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:32px;display:flex;gap:16px;align-items:flex-start}
+.task-icon{width:36px;height:36px;border-radius:8px;background:rgba(147,197,253,.15);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.task-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:5px}
+.task-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300}
+.task-text strong{color:#fff;font-weight:500}
+.why-bar{background:var(--blue-light);border-radius:12px;padding:16px 20px;margin-bottom:28px;border-left:3px solid var(--blue)}
+.why-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--blue-dark);margin-bottom:4px}
+.why-text{font-size:13px;color:var(--blue-dark);font-weight:300;line-height:1.6;opacity:.85}
+.sec-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--black);margin-bottom:5px}
+.sec-hint{font-size:13px;color:var(--grey-400);margin-bottom:14px;font-weight:300;line-height:1.5}
+.section{margin-bottom:24px}
+/* Field groups — from old */
+.field-group{border:1.5px solid var(--grey-200);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.field-bar{background:var(--grey-50);padding:9px 16px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.field-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--black)}
+.field-req{font-family:'DM Mono',monospace;font-size:10px;color:var(--grey-400)}
+.field-hint{font-size:12px;color:var(--grey-400);font-weight:300;padding:8px 16px 0;line-height:1.5}
+.field-body{padding:8px 16px 14px}
+input[type=text]{width:100%;border:1.5px solid var(--grey-200);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s;margin-top:8px}
+input[type=text]:focus{border-color:var(--blue)}
+input[type=text]::placeholder{color:var(--grey-300)}
+textarea{width:100%;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;border:1.5px solid var(--grey-200);border-radius:8px;outline:none;resize:none;line-height:1.6;margin-top:8px}
+textarea::placeholder{color:var(--grey-300)}
+textarea:focus{border-color:var(--blue)}
+/* Area toggles — from old */
+.toggle-group{display:flex;gap:7px;flex-wrap:wrap;padding:12px 16px 14px}
+.tbtn{padding:7px 13px;border:1.5px solid var(--grey-200);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;color:var(--grey-600);background:#fff;font-weight:400}
+.tbtn:hover{border-color:var(--blue)}
+.tbtn.on{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark);font-weight:500}
+/* Tool grid — from new */
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 16px 14px}
+.tool-btn{padding:11px 14px;border-radius:10px;border:1.5px solid var(--grey-200);background:#fff;color:var(--grey-600);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:all .15s;text-align:left}
+.tool-btn:hover{border-color:var(--blue);color:var(--black)}
+.tool-btn.on{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.tool-name{font-weight:700;font-size:13px}
+.tool-use{font-size:11px;color:var(--grey-400);margin-top:2px}
+.tool-btn.on .tool-use{color:var(--blue-dark);opacity:.7}
+/* Success checks — from new */
+.check-rows{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px}
+.check-row{display:flex;align-items:center;gap:12px}
+.check-q{flex:1;font-size:13px;color:var(--grey-600);font-weight:300}
+.check-btns{display:flex;gap:6px;flex-shrink:0}
+.cbtn{height:30px;padding:0 12px;border-radius:7px;border:1.5px solid var(--grey-200);background:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--grey-400)}
+.cbtn:hover{border-color:var(--blue);color:var(--blue)}
+.cbtn.yes.on{border-color:var(--green);background:var(--green-light);color:var(--green)}
+.cbtn.no.on{border-color:var(--amber);background:var(--amber-light);color:var(--amber)}
+/* Advice yn — from old */
+.yn-row{display:flex;gap:8px;padding:12px 16px 14px}
+.ybtn{flex:1;padding:10px;border:1.5px solid var(--grey-200);border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;background:#fff;color:var(--grey-600)}
+.ybtn:hover{border-color:var(--blue)}
+.ybtn.on{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+/* Post preview — from old */
+.preview-card{background:var(--black);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.prev-hdr{padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center}
+.prev-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.3)}
+.prev-plat{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue-bright)}
+.prev-body{padding:20px}
+.post-t{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;display:block;margin-bottom:12px}
+.post-l{display:flex;gap:8px;margin-bottom:5px;font-size:13px}
+.post-k{color:var(--blue-bright);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;white-space:nowrap}
+.post-v{color:rgba(255,255,255,.65);font-weight:300}
+.post-hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0}
+.post-ins{color:rgba(255,255,255,.5);font-style:italic;font-size:13px;font-weight:300}
+.copy-post-btn{display:block;width:100%;padding:13px;background:var(--blue);color:#fff;border:none;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .15s;letter-spacing:.02em}
+.copy-post-btn:hover{background:var(--blue-dark)}
+/* Email — from old */
+.email-section{border:1.5px solid var(--grey-200);border-radius:14px;overflow:hidden;margin-bottom:32px}
+.email-section-header{background:var(--grey-50);padding:18px 22px;border-bottom:1px solid var(--grey-200);display:flex;align-items:center;gap:14px}
+.email-section-icon{width:38px;height:38px;border-radius:9px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.email-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--black)}
+.email-section-sub{font-size:12px;color:var(--grey-400);font-weight:300;margin-top:2px}
+.email-section-body{padding:20px 22px}
+.email-desc{font-size:13px;color:var(--grey-600);line-height:1.6;font-weight:300;margin-bottom:16px}
+.email-row{display:flex;gap:10px}
+.email-input{flex:1;border:1.5px solid var(--grey-200);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--black);background:#fff;outline:none;transition:border-color .15s}
+.email-input:focus{border-color:var(--blue)}
+.email-input::placeholder{color:var(--grey-300)}
+.send-btn{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;display:inline-flex;align-items:center;gap:8px}
+.send-btn:hover{background:var(--blue-dark)}
+.send-btn:disabled{opacity:.6;cursor:not-allowed}
+.email-status{margin-top:12px;font-size:13px;line-height:1.5;display:none;padding:10px 14px;border-radius:8px}
+.email-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+.email-status.success{display:block;background:var(--blue-light);color:var(--blue-dark);border:1px solid #bfdbfe}
+.email-status.loading{display:block;background:var(--grey-100);color:var(--grey-600);border:1px solid var(--grey-200)}
+/* Reveal */
+.reveal-wrap{margin:0 0 32px}
+.reveal-locked{background:var(--black);border-radius:16px;padding:36px 24px;text-align:center;position:relative;overflow:hidden}
+.reveal-border{position:absolute;inset:0;border-radius:16px;border:1.5px solid transparent;background:linear-gradient(var(--black),var(--black)) padding-box,linear-gradient(135deg,#1a56db 0%,#93c5fd 50%,#1a56db 100%) border-box;background-size:300% 300%;animation:borderSpin 3s linear infinite}
+@keyframes borderSpin{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.reveal-inner{position:relative;z-index:1}
+.reveal-lock{width:52px;height:52px;border-radius:50%;background:rgba(147,197,253,.12);border:1px solid rgba(147,197,253,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.reveal-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:8px}
+.reveal-heading{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:8px}
+.reveal-sub{font-size:13px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;max-width:380px;margin:0 auto 22px}
+.reveal-btn-main{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 28px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.reveal-btn-main:hover{background:var(--blue-dark);transform:scale(1.02)}
+.reveal-open{display:none;border:2px solid var(--blue);border-radius:16px;overflow:hidden;animation:popIn .35s cubic-bezier(.4,0,.2,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.reveal-open-top{background:var(--black);padding:28px 24px;text-align:center}
+.done-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,86,219,.2);border:1px solid rgba(147,197,253,.3);color:var(--blue-bright);font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border-radius:100px;margin-bottom:16px}
+.code-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px}
+.code-display{font-family:'DM Mono',monospace;font-size:clamp(20px,5vw,30px);font-weight:500;letter-spacing:.14em;color:#fff;background:rgba(26,86,219,.2);border:1.5px solid rgba(147,197,253,.25);padding:14px 22px;border-radius:10px;display:inline-block;margin-bottom:16px;animation:pulse 2.5s ease-in-out infinite alternate}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(26,86,219,0)}to{box-shadow:0 0 18px 3px rgba(26,86,219,.3)}}
+.copy-btn{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.copy-btn:hover,.copy-btn.copied{border-color:var(--blue-bright);color:var(--blue-bright)}
+.reveal-open-bottom{background:var(--blue-light);padding:14px 22px;text-align:center}
+.reveal-instruction{font-size:13px;color:var(--blue-dark);font-weight:400;line-height:1.6}
+.reveal-instruction a{color:var(--blue-dark);font-weight:700;text-decoration:underline}
+.footer{padding-top:24px;border-top:1px solid var(--grey-200);display:flex;justify-content:space-between;align-items:center;margin-top:40px}
+.footer-note{font-size:12px;color:var(--grey-400);font-weight:300}
+.footer-done{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);font-weight:500}
+@media(max-width:480px){.tools-grid{grid-template-columns:1fr}}
+
+/* GRAND SECTION HEADERS */
+.section-header{background:var(--black);border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:flex-start;gap:16px}
+.section-num{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:rgba(255,255,255,.15);flex-shrink:0;line-height:1;margin-top:2px}
+.section-header-content{flex:1}
+.section-header-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:6px}
+.section-header-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:6px}
+.section-header-sub{font-size:13px;color:rgba(255,255,255,.55);font-weight:300;line-height:1.6}
+.section-ref{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:var(--blue-bright);border:1px solid rgba(147,197,253,.25);border-radius:100px;padding:4px 10px;margin-top:10px;opacity:.8}
+
+/* OTHER INPUT FIELD */
+.other-field{padding:0 16px 14px;border-top:1px dashed var(--grey-200);margin-top:2px}
+.other-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-400);margin-bottom:0;padding-top:12px;display:block}
+.other-field input{margin-top:6px}
+
+/* SECONDARY TOOLS */
+.secondary-tools-body{padding:12px 16px 14px}
+.secondary-tools-hint{font-size:12px;color:var(--grey-400);font-weight:300;margin-bottom:8px;line-height:1.5}
+
+/* TARGET GOAL BOX */
+.target-goal-header{background:linear-gradient(135deg,#0f2a6e 0%,var(--blue-dark) 100%);padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.target-goal-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#fff}
+.target-goal-badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);padding:3px 9px;border-radius:100px}
+.field-group.target-goal{border-color:var(--blue)}
+
+/* COMMUNITY POST SECTION HEADER */
+.community-header{background:linear-gradient(135deg,var(--black) 0%,#0f1f4a 100%);border-radius:14px;padding:20px 24px;margin-bottom:16px;border:1.5px solid rgba(26,86,219,.3)}
+.community-header-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:8px}
+.community-header-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
+.community-header-text{font-size:13px;color:rgba(255,255,255,.6);font-weight:300;line-height:1.65}
+.community-header-text strong{color:rgba(255,255,255,.9);font-weight:500}
+
+/* CONGRATULATIONS BLOCK */
+.congrats-block{background:linear-gradient(135deg,#0a0a0a 0%,#0f1f4a 60%,#0a0a0a 100%);border-radius:16px;padding:36px 32px;margin-bottom:40px;text-align:center;border:1.5px solid rgba(26,86,219,.25);position:relative;overflow:hidden}
+.congrats-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(147,197,253,.08) 0%,transparent 70%);pointer-events:none}
+.congrats-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:14px;opacity:.8}
+.congrats-title{font-family:'Syne',sans-serif;font-size:clamp(24px,5vw,34px);font-weight:800;color:#fff;line-height:1.1;margin-bottom:16px;letter-spacing:-.01em}
+.congrats-title span{color:var(--blue-bright)}
+.congrats-stat{display:inline-block;font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:6px 18px;margin-bottom:18px}
+.congrats-text{font-size:14px;color:rgba(255,255,255,.6);line-height:1.75;font-weight:300;max-width:480px;margin:0 auto}
+.congrats-text strong{color:rgba(255,255,255,.9);font-weight:500}
+.copy-section{margin-bottom:32px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.copy-response-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:15px 22px;background:var(--black);color:var(--white);border:1.5px solid var(--grey-200);border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.copy-response-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.copy-hint{font-size:12px;color:var(--grey-400);font-weight:300;text-align:center;line-height:1.5}
+.copy-status{font-size:13px;font-weight:400;text-align:center;min-height:20px;transition:all .2s}
+</style>
+</head>
+<body>
+<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#f5f4f0;z-index:-1;pointer-events:none;"></div>
+<div class="page">
+  <div class="top-bar"><span class="brand">Everything AI</span><span class="day-badge">Day 05 — Challenge</span></div>
+  <div class="progress-row">
+    <div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div><div class="prog-dot"></div>
+    <span class="prog-label">Complete</span>
+  </div>
+
+  <div class="hero">
+    <span class="day-eyebrow">Day 05 — Building Your AI Roadmap</span>
+    <h1>Build your roadmap.<br>Make it real.</h1>
+    <p class="hero-sub">Five days of work comes down to this. Work through the three sections below — Setup, Implementation, and Results — and leave with a specific, structured AI roadmap you can act on immediately. Your community post builds as you go.</p>
+  </div>
+
+  <div class="sec-hint" style="margin-bottom:20px">Work through each section in order. Be specific — a vague plan is no plan at all.</div>
+
+  <!-- SECTION 1: SETUP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-header-content">
+        <div class="section-header-eyebrow">Section 1 of 3</div>
+        <div class="section-header-title">Setup — The right area and the right tools</div>
+        <div class="section-header-sub">Which part of your business are you starting with, and which tools are you committing to? Be specific — vague plans don't get executed.</div>
+        <div class="section-ref">
+          <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5.5h9M6.5 2l3.5 3.5L6.5 9"/></svg>
+          Reference Day 4 — your starting pillar and tools are already chosen
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">First area to implement AI</span><span class="field-req">required</span></div>
+      <div class="toggle-group">
+        <div class="tbtn" onclick="selArea(this,'Marketing & Content')">Marketing & Content</div>
+        <div class="tbtn" onclick="selArea(this,'Customer Communication & Sales')">Customer Communication & Sales</div>
+        <div class="tbtn" onclick="selArea(this,'Operations & Internal Processes')">Operations & Internal Processes</div>
+      </div>
+      <div class="other-field">
+        <span class="other-label">Or type your own area</span>
+        <input type="text" id="areaOther" placeholder="e.g. Financial reporting, HR onboarding, product development..." oninput="setAreaOther(this.value)"/>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Core tool you're committing to</span><span class="field-req">required</span></div>
+      <div class="tools-grid">
+        <button class="tool-btn" onclick="selTool(this,'Claude')"><div class="tool-name">Claude</div><div class="tool-use">Writing, thinking, research</div></button>
+        <button class="tool-btn" onclick="selTool(this,'GoHighLevel')"><div class="tool-name">GoHighLevel</div><div class="tool-use">CRM, follow-up, automation</div></button>
+        <button class="tool-btn" onclick="selTool(this,'Gamma')"><div class="tool-name">Gamma</div><div class="tool-use">Presentations & docs</div></button>
+        <button class="tool-btn" onclick="selTool(this,'Fathom')"><div class="tool-name">Fathom</div><div class="tool-use">Meeting notes & summaries</div></button>
+        <button class="tool-btn" onclick="selTool(this,'Make.com')"><div class="tool-name">Make.com</div><div class="tool-use">Automation & workflows</div></button>
+        <button class="tool-btn" onclick="selTool(this,'Notion AI')"><div class="tool-name">Notion AI</div><div class="tool-use">Docs, SOPs, knowledge base</div></button>
+        <button class="tool-btn" onclick="selTool(this,'ElevenLabs')"><div class="tool-name">ElevenLabs</div><div class="tool-use">AI voice & audio</div></button>
+        <button class="tool-btn" onclick="selTool(this,'Ideogram')"><div class="tool-name">Ideogram</div><div class="tool-use">Images & social graphics</div></button>
+      </div>
+      <div class="other-field">
+        <span class="other-label">Or type your own tool</span>
+        <input type="text" id="toolOther" placeholder="e.g. Zapier, Jasper, HeyGen, Otter.ai..." oninput="setToolOther(this.value)"/>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Secondary tools around your core one</span></div>
+      <div class="secondary-tools-body">
+        <div class="secondary-tools-hint">Any supporting tools that sit around your core tool? Keep it simple — maximum two or three. Don't build a stack, build a system. Refer back to Day 3 — the Specialist AI Tool Stack — for ideas.</div>
+        <input type="text" id="secondaryTools" placeholder="e.g. Notion AI to store outputs, Make.com to automate the workflow" oninput="upd()"/>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">The specific task you're starting with</span><span class="field-req">required</span></div>
+      <div class="field-hint">Be concrete — exactly what do you want this tool to handle?</div>
+      <div class="field-body"><input type="text" id="target" placeholder="e.g. Use Claude to draft my weekly email newsletter every Monday from three key bullet points" oninput="upd()"/></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: IMPLEMENTATION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-header-content">
+        <div class="section-header-eyebrow">Section 2 of 3</div>
+        <div class="section-header-title">Implementation — Your strategy</div>
+        <div class="section-header-sub">How are you actually going to do this? Map out the process from start to finish so it's clear enough for you to begin the moment you close this page.</div>
+        <div class="section-ref">
+          <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5.5h9M6.5 2l3.5 3.5L6.5 9"/></svg>
+          Reference Day 3 — your Claude setup and the prompt strategies from each pillar
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Your implementation strategy</span><span class="field-req">required</span></div>
+      <div class="field-hint">Describe the process step by step — what happens first, what happens next, and what the output looks like.</div>
+      <div class="field-body"><textarea id="strategy" rows="4" placeholder="e.g. 1. Write 3 bullet points about the week's main topic. 2. Paste them into Claude with my brand voice prompt. 3. Claude drafts the full newsletter. 4. I review and edit for 10 mins. 5. Send." oninput="upd()"></textarea></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Any tools or setup steps still needed?</span></div>
+      <div class="field-hint">Anything you need to connect, sign up for, or configure before this is live?</div>
+      <div class="field-body"><textarea id="setupSteps" rows="2" placeholder="e.g. Set up Claude Project with brand voice examples. Sign up for Fathom and connect Google Calendar." oninput="upd()"></textarea></div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: RESULTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-header-content">
+        <div class="section-header-eyebrow">Section 3 of 3</div>
+        <div class="section-header-title">Results — How you'll know it's working</div>
+        <div class="section-header-sub">Set your targets now, before you start. A goal you write down before implementation is a standard you can actually hold yourself to.</div>
+        <div class="section-ref">
+          <svg width="10" height="10" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 5.5h9M6.5 2l3.5 3.5L6.5 9"/></svg>
+          Reference Day 2 — your danger zone results showed what success looks like for your specific task
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group target-goal">
+      <div class="target-goal-header">
+        <span class="target-goal-label">Your target success checks</span>
+        <span class="target-goal-badge">Set these as targets now — not after</span>
+      </div>
+      <div class="field-hint" style="padding-bottom:4px">These are the goals you're setting <strong>before</strong> you implement — not boxes to fill in a week from now. Pick which ones your implementation should achieve. You're committing to these.</div>
+      <div class="check-rows">
+        <div class="check-row">
+          <div class="check-q">Target: This will save me time</div>
+          <div class="check-btns">
+            <button class="cbtn yes" onclick="setChk('time','yes',this)">This is my goal ✓</button>
+            <button class="cbtn no" onclick="setChk('time','no',this)">Not this one</button>
+          </div>
+        </div>
+        <div class="check-row">
+          <div class="check-q">Target: This will save me money</div>
+          <div class="check-btns">
+            <button class="cbtn yes" onclick="setChk('money','yes',this)">This is my goal ✓</button>
+            <button class="cbtn no" onclick="setChk('money','no',this)">Not this one</button>
+          </div>
+        </div>
+        <div class="check-row">
+          <div class="check-q">Target: The output will be good enough to use in my business</div>
+          <div class="check-btns">
+            <button class="cbtn yes" onclick="setChk('output','yes',this)">This is my goal ✓</button>
+            <button class="cbtn no" onclick="setChk('output','no',this)">Not this one</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Your measurable target</span><span class="field-req">required</span></div>
+      <div class="field-hint">In one sentence — what does success look like in concrete, measurable terms? Be specific enough that you'll know unambiguously whether you hit it or not.</div>
+      <div class="field-body"><input type="text" id="metric" placeholder="e.g. Newsletter drafted in under 15 minutes with no more than 10 minutes of editing needed" oninput="upd()"/></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Biggest insight from the challenge</span><span class="field-req">required</span></div>
+      <div class="field-hint">Something that shifted your thinking this week — the thing you'll actually carry forward.</div>
+      <div class="field-body"><textarea id="insight" rows="3" placeholder="e.g. I realised I was using generic AI for everything instead of finding the right specialist tool for the job. That one switch changes everything..." oninput="upd()"></textarea></div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-bar"><span class="field-name">Open to advice in the community?</span></div>
+      <div class="yn-row">
+        <div class="ybtn" onclick="selAdv(this,'Yes — share your thoughts')">Yes — share your thoughts</div>
+        <div class="ybtn" onclick="selAdv(this,'No — just sharing')">No — just sharing</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="community-header">
+    <div class="community-header-eyebrow">The final step</div>
+    <div class="community-header-title">Make it public. Make it stick.</div>
+    <div class="community-header-text">Research consistently shows that people who publicly state a specific goal are <strong>significantly more likely to follow through</strong> than those who keep it to themselves. This isn't motivational fluff — it's accountability in action. Your roadmap is your commitment. Posting it in the community is what makes it real.<br><br>You've put in five days of work. Don't let it sit in a tab. Post this, and let the community hold you to it.</div>
+  </div>
+
+  <div class="sec-label" style="margin-bottom:5px">Your community post</div>
+  <div class="sec-hint" style="margin-bottom:12px">This builds automatically as you fill in your roadmap above. Copy it and paste it into the Everything AI community on Skool.</div>
+  <div class="preview-card">
+    <div class="prev-hdr"><span class="prev-title">Post preview</span><span class="prev-plat">Skool Community</span></div>
+    <div class="prev-body">
+      <span class="post-t">My AI Roadmap 🗺️</span>
+      <div class="post-l"><span class="post-k">Date:</span><span class="post-v" id="pDate"></span></div>
+      <div class="post-l"><span class="post-k">Area:</span><span class="post-v" id="pArea">—</span></div>
+      <div class="post-l"><span class="post-k">Core tool:</span><span class="post-v" id="pTool">—</span></div>
+      <div class="post-l"><span class="post-k">Secondary tools:</span><span class="post-v" id="pSecondary">—</span></div>
+      <div class="post-l"><span class="post-k">Starting task:</span><span class="post-v" id="pTarget">—</span></div>
+      <div class="post-l"><span class="post-k">Target result:</span><span class="post-v" id="pMetric">—</span></div>
+      <div class="post-l"><span class="post-k">Success targets:</span><span class="post-v" id="pChecks">—</span></div>
+      <div class="post-l"><span class="post-k">Advice welcome:</span><span class="post-v" id="pAdv">—</span></div>
+      <hr class="post-hr"/>
+      <div class="post-ins" id="pInsight">Your insight will appear here as you type...</div>
+    </div>
+    <button class="copy-post-btn" id="cpPost" onclick="cpPost()">Copy post to clipboard</button>
+  </div>
+
+  <!-- EMAIL SUMMARY -->
+
+  <div class="copy-section">
+    <button class="copy-response-btn" id="copyBtn" onclick="copyResponse()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg>
+      Copy my responses to clipboard
+    </button>
+    <div class="copy-hint">Paste into a notes app, Google Doc, or anywhere you keep your work.</div>
+    <div class="copy-status" id="copyStatus"></div>
+  </div>
+
+<!-- REVEAL -->
+  <div class="reveal-wrap">
+    <div class="reveal-locked" id="locked">
+      <div class="reveal-border"></div>
+      <div class="reveal-inner">
+        <div class="reveal-lock">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="9"/><path d="M7 11l2.5 2.5 5.5-5.5"/></svg>
+        </div>
+        <p class="reveal-eyebrow">Challenge complete</p>
+        <p class="reveal-heading">Your final reward is waiting</p>
+        <p class="reveal-sub">Five days. All done. Tap to reveal your final unlock code and claim your reward.</p>
+        <button class="reveal-btn-main" onclick="revealCode()">Reveal my final code <span style="font-size:17px;margin-left:2px">→</span></button>
+      </div>
+    </div>
+    <div class="reveal-open" id="opened">
+      <div class="reveal-open-top">
+        <div class="done-badge">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          All 5 days complete 🎉
+        </div>
+        <div class="code-label">Your final unlock code</div>
+        <div class="code-display">EAI-D5-REWARD</div><br>
+        <button class="copy-btn" id="cpBtn" onclick="cp('EAI-D5-REWARD','cpBtn')">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg>
+          Copy code
+        </button>
+      </div>
+      <div class="reveal-open-bottom">
+        <p class="reveal-instruction">Go to the <a href="../rewards-tracker/">Everything AI rewards tracker</a>, enter this code and unlock your final Day 5 reward.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="congrats-block">
+    <div class="congrats-eyebrow">Challenge complete — Day 5 of 5</div>
+    <div class="congrats-title">You actually <span>did it.</span></div>
+    <div class="congrats-stat">Only 1 in 10 people who start this challenge make it to Day 5</div>
+    <div class="congrats-text">That's not a small thing. Most people consume, nod along, and move on to the next piece of content without acting on any of it. You didn't. You showed up every day, did the work, and built something real. <strong>I'm genuinely proud of you for that — and you should be too.</strong><br><br>Now go execute. The roadmap is yours. The only thing left is to use it.</div>
+  </div>
+
+  <footer class="footer">
+    <span class="footer-note">Everything AI · everythingai.org.uk</span>
+    <span class="footer-done">Challenge complete</span>
+  </footer>
+</div>
+
+<script>
+let area='—', tool='—', adv='—';
+const checks={};
+document.getElementById('pDate').textContent = new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+function selArea(el, val) {
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  area=val;
+  document.getElementById('areaOther').value='';
+  document.getElementById('pArea').textContent=val;
+}
+
+function setAreaOther(val) {
+  if(val.trim()){
+    document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('on'));
+    area=val.trim();
+  } else {
+    area='—';
+  }
+  document.getElementById('pArea').textContent=area;
+}
+
+function selTool(el, val) {
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  tool=val;
+  document.getElementById('toolOther').value='';
+  document.getElementById('pTool').textContent=val;
+}
+
+function setToolOther(val) {
+  if(val.trim()){
+    document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('on'));
+    tool=val.trim();
+  } else {
+    tool='—';
+  }
+  document.getElementById('pTool').textContent=tool;
+}
+
+function setChk(key, val, el) {
+  checks[key]=val;
+  el.closest('.check-btns').querySelectorAll('.cbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  updateChecksPreview();
+}
+
+function updateChecksPreview() {
+  const lbls={time:'saves time',money:'saves money',output:'output usable'};
+  const parts=Object.entries(checks).filter(([k,v])=>v==='yes').map(([k])=>lbls[k]);
+  document.getElementById('pChecks').textContent=parts.length?'Targets: '+parts.join(', '):'—';
+}
+
+function selAdv(el, val) {
+  document.querySelectorAll('.ybtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on'); adv=val;
+  document.getElementById('pAdv').textContent=val;
+}
+
+function upd() {
+  document.getElementById('pTarget').textContent=document.getElementById('target').value||'—';
+  document.getElementById('pMetric').textContent=document.getElementById('metric').value||'—';
+  const sec=document.getElementById('secondaryTools').value.trim();
+  document.getElementById('pSecondary').textContent=sec||'—';
+  const ins=document.getElementById('insight').value;
+  document.getElementById('pInsight').textContent=ins||'Your insight will appear here as you type...';
+}
+
+function cpPost() {
+  const d=document.getElementById('pDate').textContent;
+  const t=document.getElementById('target').value||'—';
+  const m=document.getElementById('metric').value||'—';
+  const strategy=document.getElementById('strategy').value||'—';
+  const sec=document.getElementById('secondaryTools').value.trim()||'—';
+  const ins=document.getElementById('insight').value||'—';
+  const lbls={time:'saves time',money:'saves money',output:'output is usable'};
+  const targets=Object.entries(checks).filter(([k,v])=>v==='yes').map(([k])=>lbls[k]);
+  const chkStr=targets.length?targets.join(', '):'not yet set';
+  const txt=`My AI Roadmap 🗺️\n\nI've just completed the Everything AI 5-Day Challenge and this is my commitment.\n\nDate: ${d}\nArea: ${area}\nCore tool: ${tool}\nSecondary tools: ${sec}\nStarting task: ${t}\nTarget result: ${m}\nSuccess targets: ${chkStr}\nStrategy: ${strategy}\nAdvice welcome: ${adv}\n\n${ins}\n\n— Everything AI 5-Day Challenge complete\neverythingai.org.uk`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=document.getElementById('cpPost');
+    b.textContent='✓ Copied to clipboard!';b.style.background='var(--blue-dark)';
+    setTimeout(()=>{b.textContent='Copy post to clipboard';b.style.background='';},2200);
+  });
+}
+
+function buildSummary() {
+  const target=document.getElementById('target').value.trim();
+  const insight=document.getElementById('insight').value.trim();
+  const strategy=document.getElementById('strategy').value.trim();
+  const metric=document.getElementById('metric').value.trim();
+  const setupSteps=document.getElementById('setupSteps').value.trim();
+  const sec=document.getElementById('secondaryTools').value.trim();
+  const missing=[];
+  if(area==='—') missing.push('your AI area (Section 1)');
+  if(tool==='—') missing.push('your core tool (Section 1)');
+  if(!target) missing.push('your specific starting task (Section 1)');
+  if(!strategy) missing.push('your implementation strategy (Section 2)');
+  if(Object.keys(checks).length<3) missing.push('all three success target checks (Section 3)');
+  if(!metric) missing.push('your measurable target (Section 3)');
+  if(!insight) missing.push('your biggest insight (Section 3)');
+  if(missing.length) return{error:missing};
+  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const lbls={time:'Saves time',money:'Saves money',output:'Output usable in business'};
+  const chkStr=Object.entries(checks).map(([k,v])=>`${lbls[k]}: ${v==='yes'?'Target ✓':'Not a target'}`).join('\n');
+  return{text:`EVERYTHING AI — DAY 5: YOUR AI ROADMAP
+${date}
+─────────────────────────────────────────
+
+SECTION 1 — SETUP
+
+Area: ${area}
+Core tool: ${tool}
+Secondary tools: ${sec||'None specified'}
+Starting task: ${target}
+
+SECTION 2 — IMPLEMENTATION
+
+Strategy:
+${strategy}
+${setupSteps?'\nSetup steps still needed:\n'+setupSteps:''}
+
+SECTION 3 — RESULTS
+
+Measurable target: ${metric}
+
+Success targets (set before implementation):
+${chkStr}
+
+─────────────────────────────────────────
+
+BIGGEST INSIGHT FROM THE 5-DAY CHALLENGE
+${insight}
+
+─────────────────────────────────────────
+
+WHAT COMES NEXT
+Post this roadmap in the Everything AI Skool community.
+Then enter your code (EAI-D5-REWARD) in the rewards tracker.
+
+Everything AI · everythingai.org.uk`};
+}
+
+function revealCode() {
+  const target=document.getElementById('target').value.trim();
+  const insight=document.getElementById('insight').value.trim();
+  const strategy=document.getElementById('strategy').value.trim();
+  const metric=document.getElementById('metric').value.trim();
+  const missing=[];
+  if(area==='—') missing.push('your first area (Section 1)');
+  if(tool==='—') missing.push('your core tool (Section 1)');
+  if(!target) missing.push('your specific starting task (Section 1)');
+  if(!strategy) missing.push('your implementation strategy (Section 2)');
+  if(Object.keys(checks).length<3) missing.push('all three success target checks (Section 3)');
+  if(!metric) missing.push('your measurable target (Section 3)');
+  if(!insight) missing.push('your biggest insight (Section 3)');
+  if(missing.length){alert('Please complete all sections before revealing your reward:\n\n• '+missing.join('\n• '));return;}
+  document.getElementById('locked').style.display='none';
+  document.getElementById('opened').style.display='block';
+}
+
+function cp(code,id) {
+  navigator.clipboard.writeText(code).then(()=>{
+    const b=document.getElementById(id);b.classList.add('copied');
+    b.innerHTML='<svg width="13" height="13" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5l2.5 2.5 5.5-5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+    setTimeout(()=>{b.classList.remove('copied');b.innerHTML='<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><path d="M1.5 9V2a.5.5 0 01.5-.5h7" stroke-linecap="round"/></svg> Copy code';},2500);
+  });
+}
+
+function copyResponse() {
+  const btn = document.getElementById('copyBtn');
+  const status = document.getElementById('copyStatus');
+  const result = buildSummary();
+  if (result.error) {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Please complete all sections first: ' + result.error.join(', ') + '.';
+    return;
+  }
+  navigator.clipboard.writeText(result.text).then(function() {
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M1.5 5.5l2.5 2.5 5.5-5.5"/></svg> Copied!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+    status.style.color = '#16a34a';
+    status.textContent = 'Your responses are on your clipboard — paste them anywhere.';
+    setTimeout(function() {
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="4" y="4" width="9" height="9" rx="1.5"/><path d="M2.5 10.5V3A.5.5 0 013 2.5h7.5"/></svg> Copy my responses to clipboard';
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      status.textContent = '';
+    }, 3000);
+  }).catch(function() {
+    status.style.color = 'var(--red, #dc2626)';
+    status.textContent = 'Copy failed — please try again.';
+  });
+}
+</script>
+</body>
+</html>
