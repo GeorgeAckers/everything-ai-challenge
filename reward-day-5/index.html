@@ -84,6 +84,23 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
 .footer{padding-top:24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
 .footer-note{font-size:12px;color:var(--grey-600);font-weight:300}
 .footer-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--green-mid)}
+
+.mc{background:rgba(26,158,110,.06);border:1px solid rgba(93,202,165,.25);border-radius:18px;padding:28px 28px 30px;margin-bottom:32px;scroll-margin-top:24px}
+.mc-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--green-mid);margin-bottom:10px}
+.mc-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:8px}
+.mc-intro{font-size:14px;color:rgba(255,255,255,.5);font-weight:300;line-height:1.6;margin-bottom:22px}
+.mc-steps{list-style:none;display:flex;flex-direction:column;gap:18px}
+.mc-step{display:flex;gap:14px;align-items:flex-start}
+.mc-num{width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;flex-shrink:0}
+.mc-body{flex:1;min-width:0}
+.mc-step-title{font-size:15px;font-weight:500;color:var(--white);margin-bottom:4px}
+.mc-step-text{font-size:13px;color:rgba(255,255,255,.4);font-weight:300;line-height:1.55;margin-bottom:10px}
+.mc-msg{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 16px;font-size:14px;color:rgba(255,255,255,.8);line-height:1.55;margin-bottom:10px;user-select:all}
+.mc-btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#fff;border:none;border-radius:9px;padding:11px 18px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer}
+.mc-btn:hover{background:var(--green-dark)}
+.mc-btn.ghost{background:transparent;color:var(--green-mid);border:1.5px solid rgba(93,202,165,.4)}
+.mc-btn:focus-visible{outline:2px solid var(--green-mid);outline-offset:2px}
+.mc-note{font-size:12px;color:rgba(255,255,255,.3);font-weight:300;margin-top:20px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -111,7 +128,7 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
 
 <div class="scarcity">
   <div class="scarcity-dot"></div>
-  <div class="scarcity-text"><strong>Challenge reward unlocked — 100% off.</strong> AI for Business Domination is now completely free inside the Everything AI Skool community, together with the Claude and GoHighLevel masterclasses.</div>
+  <div class="scarcity-text"><strong>Challenge reward unlocked — 100% off.</strong> AI for Business Domination is now completely free inside the Everything AI Skool community. Finished all 5 days? <a href="#masterclasses" style="color:var(--green-mid)">Message George to unlock the Claude and GoHighLevel masterclasses.</a></div>
 </div>
 
 <div class="offer-card">
@@ -124,7 +141,7 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
       <span class="price-period">100% off</span>
       <span class="price-old">£269</span>
     </div>
-    <div class="price-note">100% off for challenge completers. <strong>Free inside the Skool community.</strong> The full course plus the Claude and GoHighLevel masterclasses — no payment needed.</div>
+    <div class="price-note">100% off for challenge completers. <strong>Free inside the Skool community.</strong> The Claude and GoHighLevel masterclasses are unlocked when you message George — see the steps below.</div>
   </div>
 
   <div class="offer-divider"></div>
@@ -186,8 +203,32 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
 
   <div class="offer-cta">
     <a href="https://www.skool.com/everything-ai-6390/classroom" class="cta-btn" target="_blank" rel="noopener">Claim your 100% discount — join free in Skool →</a>
-    <div class="cta-sub">Free to join · Instant access · Claude + GoHighLevel masterclasses included</div>
+    <div class="cta-sub">Free to join · Instant access · Bonus masterclasses unlocked below</div>
   </div>
+</div>
+
+<div class="mc" id="masterclasses">
+  <div class="mc-eyebrow">Bonus for challenge finishers</div>
+  <div class="mc-title">Unlock the Claude and GoHighLevel masterclasses</div>
+  <p class="mc-intro">Both masterclasses are inside the Skool Classroom, but they stay locked until you tell George you've finished the challenge. It takes a minute.</p>
+  <ol class="mc-steps">
+    <li class="mc-step"><div class="mc-num">1</div><div class="mc-body">
+      <div class="mc-step-title">Join the free Everything AI Skool community</div>
+      <div class="mc-step-text">Skip this if you're already a member.</div>
+      <a class="mc-btn ghost" href="https://www.skool.com/everything-ai-6390" target="_blank" rel="noopener">Join the Skool community →</a>
+    </div></li>
+    <li class="mc-step"><div class="mc-num">2</div><div class="mc-body">
+      <div class="mc-step-title">Copy your message</div>
+      <div class="mc-msg" id="mcMsg">Hi George, I've finished the Everything AI 5-Day Challenge (code EAI-D5-REWARD). Please unlock the Claude and GoHighLevel masterclasses for me.</div>
+      <button class="mc-btn ghost" id="mcCopy" type="button" onclick="mcCopyMsg()">Copy message</button>
+    </div></li>
+    <li class="mc-step"><div class="mc-num">3</div><div class="mc-body">
+      <div class="mc-step-title">Message George on Skool</div>
+      <div class="mc-step-text">Open George's profile, click <strong style="color:rgba(255,255,255,.7);font-weight:500">Chat</strong>, paste your message and send it.</div>
+      <a class="mc-btn" href="https://www.skool.com/@george-ackerley-5654" target="_blank" rel="noopener">Message George on Skool →</a>
+    </div></li>
+  </ol>
+  <p class="mc-note">George unlocks both masterclasses in your Skool Classroom once he's seen your message.</p>
 </div>
 
 <div class="faq">
@@ -206,7 +247,11 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
   </div>
   <div class="faq-item">
     <div class="faq-q">Is it really free?</div>
-    <div class="faq-a">Yes. AI for Business Domination now lives inside the free Everything AI Skool community, alongside the Claude and GoHighLevel masterclasses. Join the community, open the Classroom and start.</div>
+    <div class="faq-a">Yes. AI for Business Domination lives inside the free Everything AI Skool community. Join the community, open the Classroom and start.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">How do I get the Claude and GoHighLevel masterclasses?</div>
+    <div class="faq-a">They're a bonus for people who finish all 5 days. Send George a message on Skool saying you've finished the challenge and he'll unlock both for you. <a href="#masterclasses" style="color:var(--green-mid)">See the steps above.</a></div>
   </div>
   <div class="faq-item">
     <div class="faq-q">Why is it free?</div>
@@ -220,5 +265,21 @@ h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;
 </footer>
 
 </div>
+<script>
+function mcCopyMsg() {
+  var b = document.getElementById('mcCopy');
+  var text = document.getElementById('mcMsg').textContent;
+  function done(msg) { b.textContent = msg; setTimeout(function () { b.textContent = 'Copy message'; }, 2500); }
+  function fallback() {
+    var r = document.createRange(); r.selectNodeContents(document.getElementById('mcMsg'));
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    done(ok ? 'Copied!' : 'Selected — press Ctrl+C');
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { done('Copied!'); }, fallback);
+  } else { fallback(); }
+}
+</script>
 </body>
 </html>
